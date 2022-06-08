@@ -1,0 +1,4 @@
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.004410
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.016460
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.015218
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.015877

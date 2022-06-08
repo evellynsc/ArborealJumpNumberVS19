@@ -1,0 +1,2 @@
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\small_test.txt 0 0 0 1 0.105771
+C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 0 0 0 4 107.890308
