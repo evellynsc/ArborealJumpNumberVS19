@@ -40,9 +40,9 @@ INSTANCE_OBJ=$(PROG_BIN)/instance.o
 PROP_H	=$(PROG_DIR)/base/properties.h
 PROP_OBJ=$(PROG_BIN)/properties.o
 
-SOLUTION_SRC=$(PROG_DIR)/solution.cpp
-SOLUTION_H=$(PROG_DIR)/solution.h
-SOLUTION_OBJ=$(PROG_BIN)/solution.o
+SOLUTION_SRC=$(PROG_DIR)/base/solution.cpp
+SOLUTION_H=$(PROG_DIR)/base/solution.h
+SOLUTION_OBJ=$(PROG_BIN)/base/solution.o
 
 HEURISTIC_SRC	=$(PROG_DIR)/heuristic/minimal_extension.cpp
 HEURISTIC_H		=$(PROG_DIR)/heuristic/minimal_extension.h
