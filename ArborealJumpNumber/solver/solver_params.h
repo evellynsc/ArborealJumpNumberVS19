@@ -21,7 +21,7 @@ namespace solver {
 		std::set<user_cut> cuts;
 
 		solver_params() {
-			time_limit = 1800;
+			time_limit = 600;
 			tree_memory = 2000;
 			solver = PLAIN;
 		}
