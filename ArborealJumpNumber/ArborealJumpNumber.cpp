@@ -36,13 +36,13 @@ int main(int argc, char* argv[]) {
 	auto prop = ajns::properties();
 
 	if (argv[2] == std::string("h")) {
-		prop.algo_t = GREEDY;
+		prop.algo_t = algo_type::HH;
 		auto extension = ajns::minimal_extension(my_instance);
 		extension.run(prop);
 	}
 	else {
 		if (argv[2] == std::string("b")) {
-			prop.algo_t = BRANCH_AND_CUT;
+			prop.algo_t = algo_type::BRANCH_AND_CUT;
 			auto solver_config = solver::solver_params();
 			auto exp_model = solver::ExponentialModel(my_instance);
 			solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 		}
 		else {
 			if (argv[2] == std::string("f")) {
-				prop.algo_t = MFLOW;
+				prop.algo_t = algo_type::MFLOW;
 				auto solver_config = solver::solver_params();
 				auto exp_model = solver::MultiFlowModel(my_instance);
 				solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
