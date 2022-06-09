@@ -42,70 +42,70 @@ PROP_OBJ=$(PROG_BIN)/properties.o
 
 SOLUTION_SRC=$(PROG_DIR)/base/solution.cpp
 SOLUTION_H=$(PROG_DIR)/base/solution.h
-SOLUTION_OBJ=$(PROG_BIN)/base/solution.o
+SOLUTION_OBJ=$(PROG_BIN)/solution.o
 
 HEURISTIC_SRC	=$(PROG_DIR)/heuristic/minimal_extension.cpp
 HEURISTIC_H		=$(PROG_DIR)/heuristic/minimal_extension.h
-HEURISTIC_OBJ	=$(PROG_BIN)/heuristic/minimal_extension.o
+HEURISTIC_OBJ	=$(PROG_BIN)/minimal_extension.o
 
 INSTANCE_GENERATOR_SRC	=$(PROG_DIR)/preprocessing/instance_generator.cpp
 INSTANCE_GENERATOR_H	=$(PROG_DIR)/preprocessing/instance_generator.h
-INSTANCE_GENERATOR_OBJ	=$(PROG_BIN)/preprocessing/instance_generator.o
+INSTANCE_GENERATOR_OBJ	=$(PROG_BIN)/instance_generator.o
 
 READER_SRC	=$(PROG_DIR)/preprocessing/reader.cpp
 READER_H	=$(PROG_DIR)/preprocessing/reader.h
-READER_OBJ	=$(PROG_BIN)/preprocessing/reader.o
+READER_OBJ	=$(PROG_BIN)/reader.o
 
 PROBLEM_DATA_H		=$(PROG_DIR)/preprocessing/problem_data.h
-PROBLEM_DATA_OBJ	=$(PROG_BIN)/preprocessing/problem_data.o
+PROBLEM_DATA_OBJ	=$(PROG_BIN)/problem_data.o
 
 MODEL_SRC	=$(PROG_DIR)/solver/model.cpp
 MODEL_H		=$(PROG_DIR)/solver/model.h
-MODEL_OBJ	=$(PROG_BIN)/solver/model.o
+MODEL_OBJ	=$(PROG_BIN)/model.o
 
 FLOW_MODEL_SRC	=$(PROG_DIR)/solver/multi_flow_model.cpp
 FLOW_MODEL_H	=$(PROG_DIR)/solver/multi_flow_model.h
-FLOW_MODEL_OBJ	=$(PROG_BIN)/solver/multi_flow_model.o
+FLOW_MODEL_OBJ	=$(PROG_BIN)/multi_flow_model.o
 
 EXPONENTIAL_MODEL_SRC	=$(PROG_DIR)/solver/exponential_model.cpp
 EXPONENTIAL_MODEL_H		=$(PROG_DIR)/solver/exponential_model.h
-EXPONENTIAL_MODEL_OBJ	=$(PROG_BIN)/solver/exponential_model.o
+EXPONENTIAL_MODEL_OBJ	=$(PROG_BIN)/exponential_model.o
 
 SOLVER_SRC	=$(PROG_DIR)/solver/solver.cpp
 SOLVER_H	=$(PROG_DIR)/solver/solver.h
-SOLVER_OBJ	=$(PROG_BIN)/solver/solver.o
+SOLVER_OBJ	=$(PROG_BIN)/solver.o
 
 MF_SOLVER_SRC	=$(PROG_DIR)/solver/MFSolver.cpp
 MF_SOLVER_H		=$(PROG_DIR)/solver/MFSolver.h
-MF_SOLVER_OBJ	=$(PROG_BIN)/solver/MFSolver.o
+MF_SOLVER_OBJ	=$(PROG_BIN)/MFSolver.o
 
 BC_SOLVER_SRC	=$(PROG_DIR)/solver/BCSolver.cpp
 BC_SOLVER_H		=$(PROG_DIR)/solver/BCSolver.h
-BC_SOLVER_OBJ	=$(PROG_BIN)/solver/BCSolver.o
+BC_SOLVER_OBJ	=$(PROG_BIN)/BCSolver.o
 
 SOLVER_PARAMS_H		=$(PROG_DIR)/solver/solver_params.h
-SOLVER_PARAMS_OBJ	=$(PROG_BIN)/solver/solver_params.o
+SOLVER_PARAMS_OBJ	=$(PROG_BIN)/solver_params.o
 
 PI_INEQUALITY_H		=$(PROG_DIR)/solver/callbacks/pi_inequality.h
-PI_INEQUALITY_OBJ	=$(PROG_BIN)/solver/callbacks/pi_inequality.o
+PI_INEQUALITY_OBJ	=$(PROG_BIN)/pi_inequality.o
 
 PI_SIGMA_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/pi_sigma_inequality.h
-PI_SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/solver/callbacks/pi_sigma_inequality.o
+PI_SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/pi_sigma_inequality.o
 
 PREC_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/precedence_inequality.h
-PREC_INEQUALITY_OBJ	=$(PROG_BIN)/solver/callbacks/precedence_inequality.o
+PREC_INEQUALITY_OBJ	=$(PROG_BIN)/precedence_inequality.o
 
 REACHES_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/reachabibilty.h
-REACHES_INEQUALITY_OBJ	=$(PROG_BIN)/solver/callbacks/reachabibilty.o
+REACHES_INEQUALITY_OBJ	=$(PROG_BIN)/reachabibilty.o
 
 SIGMA_INEQUALITY_H		=$(PROG_DIR)/solver/callbacks/sigma_inequality.h
-SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/solver/callbacks/sigma_inequality.o
+SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/sigma_inequality.o
 
 UTILS_CALLBACKS_H	=$(PROG_DIR)/utils/callbacks.h
-UTILS_CALLBACKS_OBJ	=$(PROG_BIN)/utils/callbacks.o
+UTILS_CALLBACKS_OBJ	=$(PROG_BIN)/callbacks.o
 
 UTILS_PREPROCESSING_H	=$(PROG_DIR)/utils/preprocessing.h
-UTILS_PREPROCESSING_OBJ	=$(PROG_BIN)/utils/preprocessing.o
+UTILS_PREPROCESSING_OBJ	=$(PROG_BIN)/preprocessing.o
 
 # MAIN_HEURISTIC_SRC=$(PROG_DIR)/heuristic/main.cpp
 # GRAPH_ALGO_SRC=$(PROG_DIR)/graph_algorithms.cpp
