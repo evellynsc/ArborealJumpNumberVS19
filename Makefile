@@ -95,8 +95,8 @@ PI_SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/pi_sigma_inequality.o
 PREC_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/precedence_inequality.h
 PREC_INEQUALITY_OBJ	=$(PROG_BIN)/precedence_inequality.o
 
-REACHES_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/reachabibilty.h
-REACHES_INEQUALITY_OBJ	=$(PROG_BIN)/reachabibilty.o
+REACHES_INEQUALITY_H	=$(PROG_DIR)/solver/callbacks/reachability.h
+REACHES_INEQUALITY_OBJ	=$(PROG_BIN)/reachability.o
 
 SIGMA_INEQUALITY_H		=$(PROG_DIR)/solver/callbacks/sigma_inequality.h
 SIGMA_INEQUALITY_OBJ	=$(PROG_BIN)/sigma_inequality.o
