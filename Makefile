@@ -45,7 +45,7 @@ SOLUTION_H=$(PROG_DIR)/base/solution.h
 SOLUTION_OBJ=$(PROG_BIN)/solution.o
 
 HEURISTIC_SRC	=$(PROG_DIR)/heuristic/minimal_extension.cpp
-HEURISTIC_H		=$(PROG_DIR)/heuristic/minimal_extension.h
+HEURISTIC_H	=$(PROG_DIR)/heuristic/minimal_extension.h
 HEURISTIC_OBJ	=$(PROG_BIN)/minimal_extension.o
 
 INSTANCE_GENERATOR_SRC	=$(PROG_DIR)/preprocessing/instance_generator.cpp
@@ -76,11 +76,11 @@ SOLVER_H	=$(PROG_DIR)/solver/solver.h
 SOLVER_OBJ	=$(PROG_BIN)/solver.o
 
 MF_SOLVER_SRC	=$(PROG_DIR)/solver/MFSolver.cpp
-MF_SOLVER_H		=$(PROG_DIR)/solver/MFSolver.h
+MF_SOLVER_H	=$(PROG_DIR)/solver/MFSolver.h
 MF_SOLVER_OBJ	=$(PROG_BIN)/MFSolver.o
 
 BC_SOLVER_SRC	=$(PROG_DIR)/solver/BCSolver.cpp
-BC_SOLVER_H		=$(PROG_DIR)/solver/BCSolver.h
+BC_SOLVER_H	=$(PROG_DIR)/solver/BCSolver.h
 BC_SOLVER_OBJ	=$(PROG_BIN)/BCSolver.o
 
 SOLVER_PARAMS_H		=$(PROG_DIR)/solver/solver_params.h
@@ -192,6 +192,9 @@ MODEL_OBJ: $(FLOW_MODEL_SRC) $(FLOW_MODEL_H)
 
 EXPONENTIAL_MODEL_OBJ: $(EXPONENTIAL_MODEL_SRC) $(EXPONENTIAL_MODEL_H)
 	$(CC) $(CFLAGS) $(CFLAGS2) -c $(EXPONENTIAL_MODEL_SRC) -o $(EXPONENTIAL_MODEL_OBJ)
+	
+FLOW_MODEL_OBJ: $(FLOW_MODEL_SRC) $(FLOW_MODEL_H)
+	$(CC) $(CFLAGS) $(CFLAGS2) -c $(FLOW_MODEL_SRC) -o $(FLOW_MODEL_OBJ)
 
 SOLVER_OBJ: $(SOLVER_SRC) $(SOLVER_H)
 	$(CC) $(CFLAGS) $(CFLAGS2) -c $(SOLVER_SRC) -o $(SOLVER_OBJ)
