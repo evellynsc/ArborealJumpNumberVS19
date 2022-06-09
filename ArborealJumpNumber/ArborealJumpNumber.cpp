@@ -35,6 +35,9 @@ int main(int argc, char* argv[]) {
 	auto start = std::chrono::high_resolution_clock::now();
 	auto prop = ajns::properties();
 
+	prop.num_arcs = my_instance.num_edges;
+	prop.num_nodes = my_instance.num_vertices;
+
 	if (argv[2] == std::string("h")) {
 		prop.algo_t = algo_type::HH;
 		auto extension = ajns::minimal_extension(my_instance);
