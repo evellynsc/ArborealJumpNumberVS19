@@ -5,7 +5,7 @@ CONCERTDIR    = /home/lapo/cplex/cplex201/concert
 BOOSTLIBDIR = /home/lapo/evellyn/boost_1_79_0
 CPLEXLIBDIR   = $(CPLEXDIR)/cplex/lib/$(SYSTEM)/$(LIBFORMAT)
 CONCERTLIBDIR = $(CONCERTDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
-CLNFLAGS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR) -L$(BOOSTLIBDIR)  -lilocplex -lconcert -lcplex -m64 -lm -lpthread
+CLNFLAGS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR) -L$(BOOSTLIBDIR)  -lilocplex -lconcert -lcplex -m64 -lm -lpthread -ldl
 
 
 COPT  = -m64 -O2 -fPIC -fexceptions -DNDEBUG -DIL_STD -DLONG_MAX=0x7FFFFFFFL
