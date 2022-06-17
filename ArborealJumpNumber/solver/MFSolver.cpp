@@ -32,7 +32,7 @@ void MFSolver::solve() {
 		//		TODO: this can not be done by dynamic cast! FIX IT!
 
 
-		if (false) {
+		if (cplex_solver.solve()) {
 			auto y = model.get_y_variables();
 			auto problem_instance = model.get_ajnp_instance();
 			auto n = problem_instance.num_vertices;
