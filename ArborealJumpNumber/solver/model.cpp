@@ -46,8 +46,10 @@ void Model::create() {
 }
 
 Model::~Model() {
+	std::cout << "desalocando o modelo\n";
 	cplex_model.end();
 	env.end();
+	std::cout << "acabou desalocando o modelo\n";
 }
 
 } /* namespace solver */

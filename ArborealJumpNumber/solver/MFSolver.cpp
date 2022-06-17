@@ -25,18 +25,19 @@ namespace solver {
 
 void MFSolver::solve() {
 	try {
+		std::cout << "mfsolver.cpp\n";
 		setup_cplex();
 		model.create();
 		auto env = model.get_cplex_env();
 		//		TODO: this can not be done by dynamic cast! FIX IT!
 
 
-		if (cplex_solver.solve()) {
+		if (false) {
 			auto y = model.get_y_variables();
 			auto problem_instance = model.get_ajnp_instance();
 			auto n = problem_instance.num_vertices;
 
-			num_jumps = cplex_solver.getObjValue();
+			num_jumps = n - 1 - cplex_solver.getObjValue();
 			std::cout << std::endl << std::endl;
 			std::cout << "================================================\n";
 			std::cout << "================ SOLUTION FOUND ================\n";
@@ -57,7 +58,7 @@ void MFSolver::solve() {
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
 
-
+			// mapear as variáveis num vetor e não numa matriz
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;

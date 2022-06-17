@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
 			auto exp_model = solver::ExponentialModel(my_instance);
 			solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
 			try {
+				std::cout << "entrando solver\n";
 				ajnp_solver->solve(prop);
 			}
 			catch (...) {

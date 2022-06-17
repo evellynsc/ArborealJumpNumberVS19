@@ -23,12 +23,12 @@ solver::solver(solver_params &solver_config,  Model* model) {
 }
 
 void solver::setup_cplex() {
-	cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_ON);
-	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::HeuristicFreq, CPX_ON);
-	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::RINSHeur, CPX_ON);
-	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::FPHeur, CPX_ON);
+//	cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_ON);
+//	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::HeuristicFreq, CPX_ON);
+//	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::RINSHeur, CPX_ON);
+//	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::FPHeur, CPX_ON);
 //	cplex.setParam(IloCplex::Param::Preprocessing::Linear, 0);
-	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::Search, CPX_MIPSEARCH_TRADITIONAL);
+//	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::Search, CPX_MIPSEARCH_TRADITIONAL);
 	cplex_solver.setParam(IloCplex::Param::Threads, 4);
 	cplex_solver.setParam(IloCplex::Param::TimeLimit, config.time_limit);
 	cplex_solver.setParam(IloCplex::Param::MIP::Limits::TreeMemory, config.tree_memory);
@@ -37,6 +37,7 @@ void solver::setup_cplex() {
 //
 
 void solver::solve(ajns::properties &p) {
+	std::cout << "solver.cpp\n";
 	solve();
 	p.num_jumps = num_jumps;
 }
