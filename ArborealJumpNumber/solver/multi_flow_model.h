@@ -31,10 +31,11 @@ class MultiFlowModel : public Model {
 public:
 	MultiFlowModel();
 	MultiFlowModel(ajns::instance&);
-	NumVarMatrix get_y_variables();
+	IloNumVarArray get_y_variables();
+	IloNumVarArray y;
+	IloNumVarArray x;
+
 	virtual ~MultiFlowModel() = default;
-	NumVarMatrix y;
-	NumVar3dMatrix x;
 };
 
 } /* namespace solver */
