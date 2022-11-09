@@ -10,15 +10,15 @@
 namespace solver {
 
 MultiFlowModel::MultiFlowModel() {
-	this->type = COMPACT;
+	this->type = solver::COMPACT;
 }
 
 MultiFlowModel::MultiFlowModel(ajns::instance& problem_instance_) {
-	this->type = COMPACT;
+	this->type = solver::COMPACT;
 	this->problem_instance = problem_instance_;
 }
 
-NumVarMatrix MultiFlowModel::get_y_variables() {
+IloNumVarArray MultiFlowModel::get_y_variables() {
 	return y;
 }
 
@@ -26,13 +26,11 @@ void MultiFlowModel::add_variables() {
 	auto r = problem_instance.input_graph[problem_instance.root].id;
 	auto n = this->problem_instance.num_vertices;
 	
-	x = IloArray<NumVarMatrix>(env, n);
+	x = IloNumVarArray(env, n * n * n);;
 	for (auto i = 0u; i < n; i++) {
-		x[i] = NumVarMatrix(env, n);
 		for (auto j = 0u; j < n; j++) {
-			x[i][j] = IloNumVarArray(env, n);
 			for (auto k = 0u; k < n; k++) {
-				x[i][j][k] = IloNumVar(env, 0.0, 1.0, ILOFLOAT);
+				x[i + n*j + k*n*n] = IloNumVar(env, 0.0, 1.0, ILOFLOAT);
 /*				if (k == r) {
 					x[i][j][k] = 0;
 				}*/
@@ -40,21 +38,21 @@ void MultiFlowModel::add_variables() {
 		}
 	 }
 
-	y = IloArray<IloNumVarArray>(env, n);
+	y = IloNumVarArray(env, n*n);
 	for (auto i = 0u; i < n; i++) {
-		y[i] = IloNumVarArray(env, n);
 		for (auto j = 0u; j < n; j++) {
-			y[i][j] = IloNumVar(env, 0, 1, ILOBOOL);
+			y[n*i+j] = IloNumVar(env, 0, 1, ILOBOOL);
 		}
 	}
 }
 
 void MultiFlowModel::add_objective_function() {
+	auto n = this->problem_instance.num_vertices;
 	IloExpr cost_sum(env);
-	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
+	for (const auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto i = problem_instance.covering_graph[e].source_id;
 		auto j = problem_instance.covering_graph[e].target_id;
-		cost_sum += y[i][j];
+		cost_sum += y[n*i + j];
 	}
 	this->cplex_model.add(IloMaximize(env, cost_sum, "cost_sum"));
 }
@@ -73,7 +71,7 @@ void MultiFlowModel::add_constraints() {
 				in_begin != in_end; ++in_begin) {
 				auto u = boost::source(*in_begin, problem_instance.input_graph);
 				auto i = problem_instance.input_graph[u].id;
-				in_flow_sum_j += x[i][j][j];
+				in_flow_sum_j += x[i + n*j + j*n*n];
 			}
 			cplex_model.add(in_flow_sum_j == 1);
 		}
@@ -93,7 +91,7 @@ void MultiFlowModel::add_constraints() {
 					in_begin != in_end; ++in_begin) {
 					auto u = boost::source(*in_begin, problem_instance.input_graph);
 					auto i = problem_instance.input_graph[u].id;
-					in_flow_sum_k += x[i][j][k];
+					in_flow_sum_k += x[i + n*j + n*n*k];
 				}
 
 				my_graph::digraph::out_edge_iterator out_begin, out_end;
@@ -102,7 +100,7 @@ void MultiFlowModel::add_constraints() {
 					auto u = boost::target(*out_begin, problem_instance.input_graph);
 					auto i = problem_instance.input_graph[u].id;
 
-					out_flow_sum_k += x[j][i][k];
+					out_flow_sum_k += x[j + i*n + k*n*n];
 				}
 				cplex_model.add(in_flow_sum_k == out_flow_sum_k);
 			}
@@ -133,7 +131,7 @@ void MultiFlowModel::add_constraints() {
 		auto j = problem_instance.input_graph[e].target_id;
 		for (auto k = 0u; k < n; k++) {
 			if (k != r)
-				cplex_model.add(x[i][j][k] <= y[i][j]);
+				cplex_model.add(x[i + n*j + n*n*k] <= y[n*i + j]);
 		}
 	}
 
@@ -147,7 +145,7 @@ void MultiFlowModel::add_constraints() {
 				in_begin != in_end; ++in_begin) {
 				auto u = boost::source(*in_begin, problem_instance.input_graph);
 				auto i = problem_instance.input_graph[u].id;
-				source_vertices_sum += y[i][j];
+				source_vertices_sum += y[n*i + j];
 			}
 			cplex_model.add(source_vertices_sum == 1);
 		}
@@ -165,7 +163,7 @@ void MultiFlowModel::add_constraints() {
 				in_begin != in_end; ++in_begin) {
 				auto u = boost::source(*in_begin, problem_instance.input_graph);
 				auto i = problem_instance.input_graph[u].id;
-				reaches_k += x[i][j][k];
+				reaches_k += x[i + n*j + n*n*k];
 			}
 			cplex_model.add(reaches_k == 1);
 		}

@@ -43,7 +43,7 @@ void MFSolver::solve() {
 			std::cout << "================ SOLUTION FOUND ================\n";
 			std::cout << "================================================\n";
 			std::cout << "# Solution status: " << cplex_solver.getStatus() << std::endl;
-			std::cout << "# Arboreal jump number = " << n - 1 - cplex_solver.getObjValue() << std::endl;
+			std::cout << "# Arboreal jump number = " << num_jumps << std::endl;
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
@@ -58,11 +58,11 @@ void MFSolver::solve() {
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
 
-			// mapear as variáveis num vetor e não numa matriz
+		
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;
-				if (cplex_solver.getValue(model.y[i][j]) > 1e-6) {
+				if (cplex_solver.getValue(model.y[n*i + j]) > 1e-6) {
 					std::cout << i+1 << ", " << j+1 << std::endl;
 				}
 			}
@@ -78,7 +78,7 @@ void MFSolver::solve() {
 					auto i = problem_instance.input_graph[e].source_id;
 					auto j = problem_instance.input_graph[e].target_id;
 				
-					if (cplex_solver.getValue(model.x[i][j][k]) > 1e-6) {
+					if (cplex_solver.getValue(model.x[i + j*n + n*n*k]) > 1e-6) {
 						std::cout << i + 1 << ", " << j + 1 << ", " << k + 1 << std::endl;
 					}
 				}
