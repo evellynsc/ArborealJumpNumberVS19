@@ -49,3 +49,5 @@ C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\s15.dat.ajn.txt 1
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\br17.12.sop.ajn.txt 18 215 0 2 0.803624
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\br17.12.sop.ajn.txt 18 215 0 2 0.598270
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc47.sop.ajn.txt 49 2147 0 1 326.302543
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.078090
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.082526

@@ -57,20 +57,45 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 //			std::cout << "dont obey precedence\n";
 //			std::cout << problem_instance.order_graph[head].id << ","
 //					<< problem_instance.order_graph[tail].id << std::endl;
-			auto head_successors = callback::get_neighboors_of(head, tc_graph_x);
-			head_successors.insert(head);
-			auto set_complement = callback::get_set_complement(boost::vertices(problem_instance.input_graph),
-					head_successors);
-			cuts_to_add.push_back({head_successors,set_complement});
+			auto set_q = std::set<my_graph::vertex>();
+			
+			set_q.insert(problem_instance.root);
+			set_q.merge(problem_instance.predecessors.at(head));
+			set_q.merge(problem_instance.sucessors.at(tail));
 
-			auto transpose_tc_graph_x = my_graph::digraph();
+
+			auto set_s = callback::get_neighboors_of(head, tc_graph_x);
+
+			auto head_cut = std::set<my_graph::vertex>();
+			head_cut.insert(head);
+			for (auto& v : set_s)
+			{
+				if (set_q.find(v) != set_q.end()) {
+					head_cut.insert(v);
+				}
+			}
+
+			auto set_complement = callback::get_set_complement(boost::vertices(problem_instance.input_graph),set_s);
+			auto tail_cut = std::set<my_graph::vertex>();
+			tail_cut.insert(tail);
+			for (auto& v : set_complement)
+			{
+				if (set_q.find(v) != set_q.end()) {
+					tail_cut.insert(v);
+				}
+			}
+			//cuts_to_add.push_back({head_successors,set_complement});
+
+			/*auto transpose_tc_graph_x = my_graph::digraph();
 
 			boost::transpose_graph(tc_graph_x, transpose_tc_graph_x);
-			auto tail_predecessors = callback::get_neighboors_of(tail, transpose_tc_graph_x);
+			
+
+			auto tail_predecessors = callback::get_neighboors_of(tail, problem_instance.input_graph);
 			tail_predecessors.insert(tail);
 			set_complement = callback::get_set_complement(boost::vertices(problem_instance.input_graph),
-								tail_predecessors);
-			cuts_to_add.push_back({set_complement,tail_predecessors});
+								tail_predecessors);*/
+			cuts_to_add.push_back({head_cut,tail_cut});
 		}
 	}
 

@@ -78,6 +78,8 @@ void BCSolver::solve() {
 			std::cout << "================================================\n";
 			//		dot -Tps filename.dot -o outfile.ps
 
+			std::cout << "estou aqui?\n";
+
 			IloNumArray x_values(model.get_cplex_model().getEnv());
 			cplex_solver.getValues(x_values, x);
 			auto edges = std::vector<bool>();
@@ -86,6 +88,13 @@ void BCSolver::solve() {
 				else edges.push_back(false);
 			}
 			auto final_solution = ajns::solution::construct_from_edges(problem_instance.input_graph, edges);
+			for (auto e : boost::make_iterator_range(boost::edges(final_solution))) {
+				auto head = final_solution[e].source_id;
+				auto tail = final_solution[e].target_id;
+				std::cout << head << ',' << tail << ' ' << final_solution[e].type << std::endl;
+			}
+
+			boost::print_graph(problem_instance.covering_graph);
 			std::ofstream outFile;
 			auto name_file = problem_instance.id + "_output.dot";
 			outFile.open(name_file);

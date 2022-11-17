@@ -1,2 +1,11 @@
 C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\small_test.txt 0 0 0 1 0.105771
 C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 0 0 0 4 107.890308
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.083493
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.041395
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.058413
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.055419
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.056844
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc07.sop.ajn.txt 9 38 0 2 0.055700
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc12.sop.ajn.txt 14 128 0 5 3.906739
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\br17.10.sop.ajn.txt 18 228 0 1 15.614268
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\br17.10.sop.ajn.txt 18 228 0 1 15.811824

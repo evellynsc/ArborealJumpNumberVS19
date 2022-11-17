@@ -28,9 +28,37 @@ instance instance_generator::create_instance(problem_data &data) {
 	auto t_order_graph = transpose_order_graph(order_graph);
 	auto root = get_root(order_graph);
 
+	map_vertex_set predecessors;
+	
+	my_graph::out_edge_itr ei, ei_end;
+  
+
+	for (auto v : boost::make_iterator_range(boost::vertices(order_graph))) {
+		auto vertex_set = std::set<my_graph::vertex>();
+		for (boost::tie(ei, ei_end) = out_edges(v, order_graph); ei != ei_end; ++ei) {
+			auto target = boost::target(*ei, order_graph);
+			vertex_set.insert(target);
+		}
+
+		predecessors.insert({ v, vertex_set });
+	}
+
+	map_vertex_set sucessors;
+
+	for (auto v : boost::make_iterator_range(boost::vertices(t_order_graph))) {
+		auto vertex_set = std::set<my_graph::vertex>();
+		for (boost::tie(ei, ei_end) = out_edges(v, t_order_graph); ei != ei_end; ++ei) {
+			auto target = boost::target(*ei, t_order_graph);
+			vertex_set.insert(target);
+		}
+
+		sucessors.insert({ v, vertex_set });
+	}
+
+
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
-			covering_graph, input_graph);
-//	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
+			covering_graph, input_graph, predecessors, sucessors);
+	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();
 	std::ofstream outFile;
