@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 		if (argv[2] == std::string("b")) {
 			prop.algo_t = algo_type::BRANCH_AND_CUT;
 			auto solver_config = solver::solver_params();
-			auto exp_model = solver::ExponentialModel(my_instance);
+			auto exp_model = solver::ExponentialModel(my_instance, solver::RELAXED_CUTSET);
 			solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
 			try {
 				std::cout << "entrando solver\n";

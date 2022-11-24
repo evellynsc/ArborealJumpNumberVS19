@@ -21,6 +21,9 @@ namespace ajns {
 	class instance_generator {
 		size_t current_edge_id;
 		std::vector<my_graph::vertex_info> vertex_properties;
+		map_vertex_set get_successors(my_graph::digraph& input_graph);
+		map_vertex_set get_predecessors(my_graph::digraph& input_graph);
+
 
 		void fix_ids_order_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph);
 		std::vector<my_graph::vertex_info> create_vertex_properties(std::vector<std::string> &vertex_labels);

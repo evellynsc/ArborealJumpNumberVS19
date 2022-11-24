@@ -23,7 +23,7 @@ ILOSTLBEGIN
 using namespace solver;
 
 ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArray, x, ajns::instance&, problem_instance) {
-//	std::cout << "find_constraints_for_integral_solution" << std::endl;
+	//std::cout << "find_constraints_for_integral_solution" << std::endl;
 	IloEnv env = getEnv();
 	IloNumArray x_values(env);
 	getValues(x_values, x);
@@ -42,6 +42,19 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 		tc_graph_x[e.second] = graph_x[e.first];
 //
 //	boost::print_graph(graph_x);
+	auto dot = "dot -Tpdf ";
+	auto command = std::string();
+	std::ofstream outFile;
+	auto name_file = "graph_x.dot";
+	outFile.open(name_file);
+	boost::write_graphviz(outFile, graph_x,
+		boost::make_label_writer(
+			boost::get(&my_graph::vertex_info::id, graph_x)),
+		boost::make_label_writer(
+			boost::get(&my_graph::edge_info::type, graph_x)));
+	outFile.close();
+
+
 //	std::cout << "===================" << std::endl;
 //	boost::print_graph(tc_graph_x);
 //	std::cout << "===================" << std::endl;
@@ -54,24 +67,32 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 		auto head = boost::source(e, problem_instance.covering_graph);
 		auto tail = boost::target(e, problem_instance.covering_graph);
 		if (not boost::edge(head, tail, tc_graph_x).second) {
-//			std::cout << "dont obey precedence\n";
-//			std::cout << problem_instance.order_graph[head].id << ","
-//					<< problem_instance.order_graph[tail].id << std::endl;
+
+			//std::cout << "dont obey precedence\n";
+			//std::cout << e << std::endl;
+			std::cout << problem_instance.order_graph[head].id << ","
+					<< problem_instance.order_graph[tail].id << std::endl;
 			auto set_q = std::set<my_graph::vertex>();
 			
 			set_q.insert(problem_instance.root);
 			set_q.merge(problem_instance.predecessors.at(head));
 			set_q.merge(problem_instance.sucessors.at(tail));
 
+			/*for (auto v : set_q) {
+				std::cout << "Q: " << v << "\n";
+			}*/
+
 
 			auto set_s = callback::get_neighboors_of(head, tc_graph_x);
+			set_s.insert(head);
 
 			auto head_cut = std::set<my_graph::vertex>();
-			head_cut.insert(head);
+
 			for (auto& v : set_s)
 			{
-				if (set_q.find(v) != set_q.end()) {
+				if (set_q.find(v) == set_q.end()) {
 					head_cut.insert(v);
+				//	std::cout << "S: " << v << std::endl;
 				}
 			}
 

@@ -28,10 +28,11 @@ class ExponentialModel : public Model {
 	void add_number_of_edges_constraints();
 	void add_limit_indegree_constraints();
 	void add_cutset_constraints();
+	void add_out_edges_constraints();
 
 public:
 	ExponentialModel();
-	ExponentialModel(ajns::instance&);
+	ExponentialModel(ajns::instance&, model_type);
 	IloBoolVarArray get_variables_x();
 	auto get_variables(int);
 	virtual ~ExponentialModel() = default;

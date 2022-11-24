@@ -13,8 +13,8 @@ ExponentialModel::ExponentialModel() {
 	this->type = CUTSET_EXP;
 }
 
-ExponentialModel::ExponentialModel(ajns::instance& problem_instance_) {
-	this->type = CUTSET_EXP;
+ExponentialModel::ExponentialModel(ajns::instance& problem_instance_, model_type type_) {
+	this->type = type_;
 	this->problem_instance = problem_instance_;
 }
 
@@ -33,6 +33,7 @@ void ExponentialModel::add_constraints() {
 		add_number_of_edges_constraints();
 		add_limit_indegree_constraints();
 	}
+	add_out_edges_constraints();
 }
 
 void ExponentialModel::add_objective_function() {
@@ -76,6 +77,20 @@ void ExponentialModel::add_number_of_edges_constraints() {
 	cplex_model.add(
 			number_of_arcs_selected == problem_instance.num_vertices - 1);
 	number_of_arcs_selected.end();
+}
+
+void ExponentialModel::add_out_edges_constraints() {
+	my_graph::out_edge_itr ei, ei_end;
+	for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
+		if (boost::out_degree(v, problem_instance.covering_graph) > 0) {
+			auto vertex_set = std::set<my_graph::vertex>();
+			IloExpr out_edges_exp(env);
+			for (boost::tie(ei, ei_end) = out_edges(v, problem_instance.input_graph); ei != ei_end; ++ei) {
+				out_edges_exp += x[problem_instance.input_graph[*ei].id];
+			}
+			cplex_model.add(out_edges_exp >= 1);
+		}
+	}
 }
 
 void ExponentialModel::add_cutset_constraints() {
