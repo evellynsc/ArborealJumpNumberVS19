@@ -42,7 +42,7 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 		tc_graph_x[e.second] = graph_x[e.first];
 //
 //	boost::print_graph(graph_x);
-	auto dot = "dot -Tpdf ";
+	/*auto dot = "dot -Tpdf ";
 	auto command = std::string();
 	std::ofstream outFile;
 	auto name_file = "graph_x.dot";
@@ -52,7 +52,7 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 			boost::get(&my_graph::vertex_info::id, graph_x)),
 		boost::make_label_writer(
 			boost::get(&my_graph::edge_info::type, graph_x)));
-	outFile.close();
+	outFile.close();*/
 
 
 //	std::cout << "===================" << std::endl;
@@ -70,8 +70,8 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 
 			//std::cout << "dont obey precedence\n";
 			//std::cout << e << std::endl;
-			std::cout << problem_instance.order_graph[head].id << ","
-					<< problem_instance.order_graph[tail].id << std::endl;
+			//std::cout << problem_instance.order_graph[head].id << ","
+			//		<< problem_instance.order_graph[tail].id << std::endl;
 			auto set_q = std::set<my_graph::vertex>();
 			
 			set_q.insert(problem_instance.root);
@@ -101,7 +101,7 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 			tail_cut.insert(tail);
 			for (auto& v : set_complement)
 			{
-				if (set_q.find(v) != set_q.end()) {
+				if (set_q.find(v) == set_q.end()) {
 					tail_cut.insert(v);
 				}
 			}
