@@ -24,6 +24,7 @@ using edge_itr = digraph::edge_iterator;
 using adj_itr = digraph::adjacency_iterator;
 
 using out_edge_itr = digraph::out_edge_iterator;
+using in_edge_itr = digraph::in_edge_iterator;
 
 using color_map = std::map<vertex, boost::default_color_type>;
 

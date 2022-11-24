@@ -28,9 +28,13 @@ instance instance_generator::create_instance(problem_data &data) {
 	auto t_order_graph = transpose_order_graph(order_graph);
 	auto root = get_root(order_graph);
 
+	map_vertex_set sucessors = get_successors(order_graph);
+	map_vertex_set predecessors = get_predecessors(order_graph);
+
+
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
-			covering_graph, input_graph);
-//	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
+			covering_graph, input_graph, predecessors, sucessors);
+	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();
 	std::ofstream outFile;
@@ -66,6 +70,44 @@ instance instance_generator::create_instance(problem_data &data) {
 //	std::system(command.c_str());
 	std::cout << "finish creating instance" << std::endl;
 	return ajnp;
+}
+
+map_vertex_set instance_generator::get_successors(my_graph::digraph& graph) {
+	map_vertex_set successors;
+	my_graph::out_edge_itr ei, ei_end;
+
+	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
+		auto vertex_set = std::set<my_graph::vertex>();
+		for (boost::tie(ei, ei_end) = out_edges(v, graph); ei != ei_end; ++ei) {
+			auto target = boost::target(*ei, graph);
+			vertex_set.insert(target);
+		}
+
+		successors.insert({ v, vertex_set });
+	}
+
+	return successors;
+}
+map_vertex_set instance_generator::get_predecessors(my_graph::digraph& graph) {
+	map_vertex_set predecessors;
+
+	my_graph::in_edge_itr ei, ei_end;
+
+
+	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
+		std::cout << graph[v].id << ": ";
+		auto vertex_set = std::set<my_graph::vertex>();
+		for (boost::tie(ei, ei_end) = in_edges(v, graph); ei != ei_end; ++ei) {
+			auto source = boost::source(*ei, graph);
+			vertex_set.insert(source);
+			std::cout << graph[source].id << ", ";
+		}
+
+		predecessors.insert({ v, vertex_set });
+		std::cout << std::endl;
+	}
+
+	return predecessors;
 }
 
 

@@ -62,6 +62,7 @@ void BCSolver::solve() {
 
 //			cplex_solver.use(separate_precedence_inequalities(env, x, problem_instance));
 //			cplex_solver.use(find_constraints_for_integral_solution(env, x, problem_instance));
+			cplex_solver.use(find_constraints_for_integral_solution(env, x, problem_instance));
 		}
 
 
@@ -78,6 +79,8 @@ void BCSolver::solve() {
 			std::cout << "================================================\n";
 			//		dot -Tps filename.dot -o outfile.ps
 
+			std::cout << "estou aqui?\n";
+
 			IloNumArray x_values(model.get_cplex_model().getEnv());
 			cplex_solver.getValues(x_values, x);
 			auto edges = std::vector<bool>();
@@ -86,8 +89,17 @@ void BCSolver::solve() {
 				else edges.push_back(false);
 			}
 			auto final_solution = ajns::solution::construct_from_edges(problem_instance.input_graph, edges);
+			for (auto e : boost::make_iterator_range(boost::edges(final_solution))) {
+				auto head = final_solution[e].source_id;
+				auto tail = final_solution[e].target_id;
+				std::cout << head << ',' << tail << ' ' << final_solution[e].type << std::endl;
+			}
+
+
+			boost::print_graph(problem_instance.covering_graph);
+			std::cout << "TESTE" << std::endl;
 			std::ofstream outFile;
-			auto name_file = problem_instance.id + "_output.dot";
+			auto name_file = "C:/Users/evellynsc/source/repos/ArborealJumpNumber/ArborealJumpNumber/" + problem_instance.id + "_output.dot";
 			outFile.open(name_file);
 			boost::write_graphviz(outFile, final_solution,
 							boost::make_label_writer(boost::get(&my_graph::vertex_info::id, final_solution)),
