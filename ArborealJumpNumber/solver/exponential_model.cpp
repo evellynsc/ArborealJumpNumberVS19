@@ -55,7 +55,7 @@ void ExponentialModel::add_limit_indegree_constraints() {
 	std::vector<bool> lhs_expr(problem_instance.num_vertices, false);
 	for (auto i = 0u; i < problem_instance.num_vertices; i++)
 		indegree_limits_constraint[i] = IloExpr(env);
-	for (auto e : boost::make_iterator_range(
+	for (const auto& e : boost::make_iterator_range(
 			boost::edges(problem_instance.input_graph))) {
 		auto target_node = problem_instance.input_graph[e].target_id;
 		indegree_limits_constraint[target_node] +=
@@ -99,7 +99,7 @@ void ExponentialModel::add_cutset_constraints() {
 			powerset < std::pow(2, problem_instance.num_vertices); powerset++) {
 		IloExpr extension_constraint(env);
 		auto add_expr = false;
-		for (auto e : boost::make_iterator_range(
+		for (const auto& e : boost::make_iterator_range(
 				boost::edges(problem_instance.input_graph))) {
 			auto head = problem_instance.input_graph[e].source_id;
 			auto tail = problem_instance.input_graph[e].target_id;
