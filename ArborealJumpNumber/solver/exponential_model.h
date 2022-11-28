@@ -29,6 +29,7 @@ class ExponentialModel : public Model {
 	void add_limit_indegree_constraints();
 	void add_cutset_constraints();
 	void add_out_edges_constraints();
+	void fix_arcs_value();
 
 public:
 	ExponentialModel();

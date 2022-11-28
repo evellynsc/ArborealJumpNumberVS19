@@ -22,7 +22,7 @@ namespace solver {
 
 		solver_params() {
 			time_limit = 18000;
-			tree_memory = 4000;
+			tree_memory = 8000;
 			solver = PLAIN;
 		}
 

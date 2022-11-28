@@ -33,7 +33,8 @@ void ExponentialModel::add_constraints() {
 		add_number_of_edges_constraints();
 		add_limit_indegree_constraints();
 	}
-	add_out_edges_constraints();
+	//add_out_edges_constraints();
+	fix_arcs_value();
 }
 
 void ExponentialModel::add_objective_function() {
@@ -116,6 +117,24 @@ void ExponentialModel::add_cutset_constraints() {
 	}
 }
 
+void ExponentialModel::fix_arcs_value() {
+	auto count = 0u;
+	for (const auto &e : boost::make_iterator_range(
+		boost::edges(problem_instance.input_graph))) {
+		if (problem_instance.input_graph[e].value_set) {
+			auto id = problem_instance.input_graph[e].id;
+			IloExpr exp(env);
+			exp += this->x[id];
+			if (problem_instance.input_graph[e].value == 1u)
+				cplex_model.add(exp >= 1);
+			else
+				cplex_model.add(exp <= 0);
+			exp.end();
+			count++;
+		}
+	}
+	std::cout << "\n=> SET VALUE FOR " << count << " EDGES\n";
+}
 
 bool ExponentialModel::in_the_set(unsigned set_, std::size_t element_) {
 	return (set_ & (1 << element_));

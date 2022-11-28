@@ -114,6 +114,8 @@ void BCSolver::solve() {
 			std::cout << "============================\n";
 		}
 
+		cplex_solver.exportModel("my_model.lp");
+
 	} catch (IloException &ex) {
 		std::cerr << "Error: " << ex << std::endl;
 	} catch (...) {
