@@ -2,3 +2,12 @@ C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_exam
 C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.016460
 C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.015218
 C:\Users\evellynsc\source\repos\ArborealJumpNumber\x64\Release\presentation_example.txt 16 22 4 4 0.015877
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc12.sop.ajn.txt 14 128 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc63.sop.ajn.txt 65 3589 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc63.sop.ajn.txt 65 3589 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc47.sop.ajn.txt 49 2147 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc25.sop.ajn.txt 27 605 0 0 0.000000
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc25.sop.ajn.txt 27 605 0 0 0.000000

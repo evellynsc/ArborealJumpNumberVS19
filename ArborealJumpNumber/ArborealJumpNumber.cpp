@@ -71,8 +71,8 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-
 	}
+
 	auto end = std::chrono::high_resolution_clock::now();
 	double run_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count(); // @suppress("Invalid arguments") // @suppress("Symbol is not resolved") // @suppress("Method cannot be resolved")
 	run_time *= 1e-9;

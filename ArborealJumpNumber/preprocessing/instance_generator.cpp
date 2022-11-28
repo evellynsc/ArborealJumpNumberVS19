@@ -23,7 +23,11 @@ instance instance_generator::create_instance(problem_data &data) {
 	auto order_graph = create_order_graph(vertex_properties,
 			data.adjacency_matrix);
 	auto covering_graph = create_covering_graph(order_graph);
+
+	set_vertices_to_remove(covering_graph);
+	set_edges_to_remove(covering_graph);
 	auto input_graph = create_input_graph(order_graph, covering_graph);
+
 	fix_ids_order_graph(order_graph, covering_graph);
 	auto t_order_graph = transpose_order_graph(order_graph);
 	auto root = get_root(order_graph);
@@ -66,11 +70,72 @@ instance instance_generator::create_instance(problem_data &data) {
 			boost::make_label_writer(
 					boost::get(&my_graph::edge_info::type, input_graph)));
 	outFile.close();
-//	command = dot + name_file + " -o " + data.id + "_input.ps";
-//	std::system(command.c_str());
+
+	
+
 	std::cout << "finish creating instance" << std::endl;
+
 	return ajnp;
 }
+
+void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
+	std::unordered_map<my_graph::vertex, size_t> out_dg;
+	std::list<my_graph::vertex> vertices_to_remove;
+
+	my_graph::in_edge_itr ei, ei_end;
+
+	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
+		auto iv = boost::in_degree(v, graph);
+		auto ov = boost::out_degree(v, graph);
+		if (iv == 1 and ov == 0) {
+			//incluir na lista
+			out_dg.insert({v, 0});
+			vertices_to_remove.push_back(v);
+			graph[v].remove = true;
+			std::cout << graph[v].id << std::endl;
+		}
+	}
+
+	while (not vertices_to_remove.empty()) {
+		my_graph::vertex v = vertices_to_remove.front();
+		vertices_to_remove.pop_front();
+		for (boost::tie(ei, ei_end) = in_edges(v, graph); ei != ei_end; ++ei) {
+			auto s = boost::source(*ei, graph);
+			if (boost::in_degree(s, graph) == 1) {
+				if (out_dg.find(s) != out_dg.end()) {
+					out_dg[s] -= 1;
+				}
+				else {
+					out_dg.insert({ s, boost::out_degree(s, graph) - 1 });
+				}
+
+				if (out_dg[s] == 0) {
+					vertices_to_remove.push_back(s);
+					std::cout << graph[s].id << std::endl;
+					graph[v].remove = true;
+				}
+			}
+		}
+	}
+}
+
+void instance_generator::set_edges_to_remove(my_graph::digraph& graph) {
+	std::unordered_map<my_graph::vertex, size_t> out_dg;
+	std::list<my_graph::vertex> vertices_to_remove;
+
+	my_graph::in_edge_itr ei, ei_end;
+
+	for (auto e : boost::make_iterator_range(boost::edges(graph))) {
+		auto s = boost::source(e, graph);
+		auto t = boost::target(e, graph);
+
+		if (graph[s].remove or graph[t].remove) {
+			graph[e].value_set = true;
+			graph[e].value = 1;
+		}
+	}
+}
+
 
 map_vertex_set instance_generator::get_successors(my_graph::digraph& graph) {
 	map_vertex_set successors;
@@ -305,15 +370,20 @@ my_graph::digraph instance_generator::create_input_graph(my_graph::digraph &orde
 
 	my_graph::edge e;
 	auto inserted = false;
+
+	auto value_set = false;
 	for (auto a : incompatible_vertices) {
+		if (covering_graph[a.first].remove or covering_graph[a.second].remove)
+			value_set = true;
 		boost::tie(e, inserted) = boost::add_edge(a.first, a.second,
-				my_graph::edge_info(current_edge_id++, a.first, a.second, my_graph::ARTIFICIAL),
+				my_graph::edge_info(current_edge_id++, a.first, a.second, my_graph::ARTIFICIAL, value_set, 0),
 				input_graph);
 		if (not inserted)
 			exit(0);
 		boost::tie(e, inserted) = boost::add_edge(a.second, a.first,
-				my_graph::edge_info(current_edge_id++, a.second, a.first, my_graph::ARTIFICIAL),
+				my_graph::edge_info(current_edge_id++, a.second, a.first, my_graph::ARTIFICIAL, value_set, 0),
 				input_graph);
+		value_set = false;
 	}
 
 	assert(

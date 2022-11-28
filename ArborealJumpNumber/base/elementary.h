@@ -9,9 +9,9 @@
 #define BASE_ELEMENTARY_H_
 
 #include <string>
-
 #include <boost/config.hpp>
 #include <boost/graph/graph_utility.hpp>
+
 namespace my_graph {
 enum edge_type {
 	ORIGINAL, ARTIFICIAL, FLOW, USINK
@@ -27,18 +27,21 @@ struct vertex_info {
 	bool is_maximum = false;
 	bool is_root = false;
 	size_t level = 0;
+	bool remove = false;
 
 	vertex_info() {
 		label = "";
 		id = index = 0;
+		remove = false;
 	}
 	vertex_info(std::string label) :
-			label(label), id(0) {
-		index = id;
+			label(label), id(0), index(0) {
 	}
 	vertex_info(std::string label, size_t id) :
-			label(label), id(id) {
-		index = id;
+			label(label), id(id), index(id) {
+	}
+	vertex_info(std::string label, size_t id, bool remove) :
+		label(label), id(id), index(id) {
 	}
 	bool operator==(const vertex_info &v2) const {
 		return (label == v2.label and id == v2.id);
@@ -61,6 +64,8 @@ struct edge_info {
 	size_t target_id;
 //	int reverse_id = -1;
 	edge_type type;
+	bool value_set = false;
+	size_t value = 1;
 
 //	TODO: remove this properties from here and insert into flow.h
 	double capacity = 0.0;
@@ -71,9 +76,14 @@ struct edge_info {
 		source_id = 0;
 		target_id = 0;
 		type = ORIGINAL;
+		value_set = false;
+		value = 1;
 	}
 	edge_info(size_t id, size_t source_id, size_t target_id, edge_type type) :
 			id(id), source_id(source_id), target_id(target_id), type(type) { }
+
+	edge_info(size_t id, size_t source_id, size_t target_id, edge_type type, bool value_set, size_t value) :
+		id(id), source_id(source_id), target_id(target_id), type(type), value_set(value_set), value(value) { }
 
 	edge_info(size_t id, size_t source_id, size_t target_id, edge_type type,
 			double capacity) :
