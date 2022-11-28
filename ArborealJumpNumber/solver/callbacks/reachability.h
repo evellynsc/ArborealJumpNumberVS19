@@ -62,26 +62,28 @@ ILOLAZYCONSTRAINTCALLBACK2(find_constraints_for_integral_solution, IloBoolVarArr
 	auto cuts = std::map<my_graph::edge, std::pair<std::vector<my_graph::vertex>, std::vector<my_graph::vertex>>>();
 //	std::cout << "=======================\n";
 //	boost::print_graph(problem_instance.order_graph);
+
+
 	auto cuts_to_add = std::vector<std::pair<std::set<my_graph::vertex>, std::set<my_graph::vertex>>>();
-	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto head = boost::source(e, problem_instance.covering_graph);
 		auto tail = boost::target(e, problem_instance.covering_graph);
 		if (not boost::edge(head, tail, tc_graph_x).second) {
 
-			//std::cout << "dont obey precedence\n";
-			//std::cout << e << std::endl;
-			//std::cout << problem_instance.order_graph[head].id << ","
-			//		<< problem_instance.order_graph[tail].id << std::endl;
 			auto set_q = std::set<my_graph::vertex>();
-			
 			set_q.insert(problem_instance.root);
-			set_q.merge(problem_instance.predecessors.at(head));
-			set_q.merge(problem_instance.sucessors.at(tail));
+			for (auto v : problem_instance.predecessors.at(head)) {
+				set_q.insert(v);
+			}
+			for (auto v : problem_instance.sucessors.at(tail)) {
+				set_q.insert(v);
+			}
 
-			/*for (auto v : set_q) {
-				std::cout << "Q: " << v << "\n";
-			}*/
-
+			/*std::cout << "Q: ";
+			for (auto v : set_q) {
+				std::cout << v << " ";
+			}
+			std::cout << std::endl;*/
 
 			auto set_s = callback::get_neighboors_of(head, tc_graph_x);
 			set_s.insert(head);

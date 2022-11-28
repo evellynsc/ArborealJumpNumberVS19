@@ -20,7 +20,7 @@ void flow::add_missing_reversed_edges() {
 //	TODO: does it work? iterating graph while modifying it?
 	auto reverse = my_graph::edge();
 	auto reverse_exists = false;
-	for (auto e : boost::make_iterator_range(boost::edges(graph_copy))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(graph_copy))) {
 		auto source_vertex = boost::source(e, network);
 		auto target_vertex = boost::target(e, network);
 		boost::tie(reverse, reverse_exists) = boost::edge(target_vertex, source_vertex, network);
@@ -37,12 +37,12 @@ void flow::add_missing_reversed_edges() {
 void flow::fill_aux_maps() {
 	auto reverse = my_graph::edge();
 	auto reverse_exists = false;
-	for (auto e : boost::make_iterator_range(boost::edges(network))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(network))) {
 		auto source_vertex = boost::source(e, network);
 		auto target_vertex = boost::target(e, network);
-		boost::tie(reverse, reverse_exists) = boost::edge(target_vertex, source_vertex, network);
-		if (not reverse_exists) exit(1);
-		reversed_edge_of[e] = reverse;
+		//boost::tie(reverse, reverse_exists) = boost::edge(target_vertex, source_vertex, network);
+		//if (not reverse_exists) exit(1);
+		//reversed_edge_of[e] = reverse;
 		res_capacity_map[e] = 0.0;
 //		std::cout << network[e].capacity << " ";
 	}
@@ -53,14 +53,14 @@ flow::flow(my_graph::digraph network) {
 	this->current_min_cut = std::list<my_graph::edge>();
 	this->network = network;
 	this->current_max_flow_value = -1.0;
-	add_missing_reversed_edges();
+	//add_missing_reversed_edges();
 	fill_aux_maps();
 }
 
 std::set<my_graph::vertex> flow::get_set_s() {
 	auto set_s = std::set<my_graph::vertex>();
 
-	for (auto e : current_min_cut) {
+	for (const auto& e : current_min_cut) {
 		auto head = boost::source(e, network);
 		set_s.insert(head);
 	}
@@ -71,7 +71,7 @@ std::set<my_graph::vertex> flow::get_set_s() {
 std::set<my_graph::vertex> flow::get_set_bar_s() {
 	auto set_bar_s = std::set<my_graph::vertex>();
 
-	for (auto e : current_min_cut) {
+	for (const auto& e : current_min_cut) {
 		auto tail = boost::target(e, network);
 		set_bar_s.insert(tail);
 	}
@@ -103,22 +103,34 @@ double flow::get_max_flow_value() {
 }
 
 std::list<my_graph::edge> flow::get_min_cut() {
+	/*for (const auto& v : vertex_coloring) {
+		if (v.second == boost::default_color_type::black_color)
+			std::cout << v.first << " :: " << " black" << std::endl;
+		else 
+			std::cout << v.first << " :: " << " not black" << std::endl;
+	}*/
 	if (not current_min_cut.empty())
 		return current_min_cut;
+	
 
 	for (auto e : boost::make_iterator_range(boost::edges(network))) {
-		if (network[e].type == my_graph::FLOW or network[e].type == my_graph::USINK) {
+		/*if (network[e].type == my_graph::FLOW or network[e].type == my_graph::USINK) {
 			current_min_cut.clear();
 			break;
-		}
+		}*/
 
-		auto head = boost::source(e, network);
-		auto tail = boost::target(e, network);
-
-		if (vertex_coloring[head] != vertex_coloring[tail]) {
-			this->current_min_cut.emplace_back(e);
+		if (network[e].type == my_graph::ARTIFICIAL or network[e].type == my_graph::ORIGINAL) {
+			auto head = boost::source(e, network);
+			auto tail = boost::target(e, network);
+			if (vertex_coloring[head] == boost::default_color_type::black_color and 
+				vertex_coloring[tail] != boost::default_color_type::black_color) {
+			//if (vertex_coloring[head] != vertex_coloring[tail]) {
+				this->current_min_cut.emplace_back(e);
+				//std::cout << "(" << head << "," << tail << ")\n";
+			}
 		}
 	}
+	//std::cout << std::endl;
 	return current_min_cut;
 }
 
