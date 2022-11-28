@@ -170,6 +170,7 @@
     <ClInclude Include="preprocessing\problem_data.h" />
     <ClInclude Include="preprocessing\reader.h" />
     <ClInclude Include="solver\BCSolver.h" />
+    <ClInclude Include="solver\callbacks\add_min_cuts.h" />
     <ClInclude Include="solver\callbacks\pi_inequality.h" />
     <ClInclude Include="solver\callbacks\pi_sigma_inequality.h" />
     <ClInclude Include="solver\callbacks\precedence_inequality.h" />

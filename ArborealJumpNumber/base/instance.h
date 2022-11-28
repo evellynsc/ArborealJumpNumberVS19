@@ -58,6 +58,22 @@ struct instance {
 					bidirected_edges), order_graph(order_graph), t_order_graph(
 					t_order_graph), covering_graph(covering_graph), input_graph(
 					input_graph), predecessors(predecessors), sucessors(sucessors) {
+
+		for (auto v : predecessors) {
+			std::cout << v.first << ": ";
+			for (auto u : v.second) {
+				std::cout << u << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+		for (auto v : sucessors) {
+			std::cout << v.first << ": ";
+			for (auto u : v.second) {
+				std::cout << u << " ";
+			}
+			std::cout << std::endl;
+		}
 	}
 
 	instance(std::string id, my_graph::vertex root, my_graph::digraph &order_graph, const my_graph::digraph &t_order_graph,
@@ -67,6 +83,22 @@ struct instance {
 					boost::num_edges(input_graph)), order_graph(order_graph), t_order_graph(
 					t_order_graph), covering_graph(covering_graph), input_graph(
 					input_graph), predecessors(predecessors), sucessors(sucessors) {
+
+		for (auto v : predecessors) {
+			std::cout << v.first << ": ";
+			for (auto u : v.second) {
+				std::cout << u << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+		for (auto v : sucessors) {
+			std::cout << v.first << ": ";
+			for (auto u : v.second) {
+				std::cout << u << " ";
+			}
+			std::cout << std::endl;
+		}
 	}
 };
 

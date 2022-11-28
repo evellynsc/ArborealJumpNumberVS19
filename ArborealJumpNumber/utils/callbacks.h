@@ -70,7 +70,7 @@ namespace solver {
 
 	inline void callback::construct_lhside_of_inequality(const my_graph::digraph &graph,
 			std::list<my_graph::edge> &cut, IloBoolVarArray &x, IloExpr &lhside_ineq) {
-		for (auto e : cut) {
+		for (const auto& e : cut) {
 			auto idx = graph[e].id;
 			lhside_ineq += x[idx];
 		}
