@@ -24,6 +24,9 @@ namespace ajns {
 		map_vertex_set get_successors(my_graph::digraph& input_graph);
 		map_vertex_set get_predecessors(my_graph::digraph& input_graph);
 
+		void set_vertices_to_remove(my_graph::digraph&);
+		void set_edges_to_remove(my_graph::digraph&);
+
 
 		void fix_ids_order_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph);
 		std::vector<my_graph::vertex_info> create_vertex_properties(std::vector<std::string> &vertex_labels);
