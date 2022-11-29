@@ -35,12 +35,22 @@ void ExponentialModel::add_constraints() {
 	}
 	//add_out_edges_constraints();
 	fix_arcs_value();
+	add_bidirected_constraints();
+}
+
+void ExponentialModel::add_bidirected_constraints() {
+	for (auto p : problem_instance.artificial_arcs_pair) {
+		IloExpr one_bidirected(env);
+		one_bidirected = x[p.first] + x[p.second];
+		cplex_model.add(one_bidirected <= 1);
+		one_bidirected.end();
+	}
 }
 
 void ExponentialModel::add_objective_function() {
 	IloExpr minimize_jumps(env);
 	std::cout << problem_instance.num_edges << std::endl;
-	for (auto e : boost::make_iterator_range(
+	for (const auto& e : boost::make_iterator_range(
 			boost::edges(problem_instance.input_graph))) {
 		if (problem_instance.input_graph[e].type == my_graph::ARTIFICIAL) {
 			minimize_jumps += x[problem_instance.input_graph[e].id];

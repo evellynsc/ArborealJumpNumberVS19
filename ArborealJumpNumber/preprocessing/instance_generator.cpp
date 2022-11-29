@@ -39,7 +39,7 @@ instance instance_generator::create_instance(problem_data &data) {
 
 
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
-			covering_graph, input_graph, predecessors, sucessors);
+			covering_graph, input_graph, predecessors, sucessors, artificial_arcs_pair);
 	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();
