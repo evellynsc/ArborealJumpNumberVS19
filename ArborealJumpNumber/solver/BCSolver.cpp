@@ -17,7 +17,8 @@
 #include "callbacks/pi_sigma_inequality.h"
 #include "callbacks/precedence_inequality.h"
 #include "callbacks/reachability.h"
-#include "callbacks/add_min_cuts.h"
+#include "callbacks/add_min_cuts_lc.h"
+#include "callbacks/add_min_cuts_uc.h"
 
 namespace solver {
 //BCSolver::BCSolver(solver_params& config_, ExponentialModel& model_) {
@@ -63,7 +64,8 @@ void BCSolver::solve() {
 
 //			cplex_solver.use(separate_precedence_inequalities(env, x, problem_instance));
 //			cplex_solver.use(find_constraints_for_integral_solution(env, x, problem_instance));
-			cplex_solver.use(add_min_cuts(env, x, problem_instance));
+			cplex_solver.use(add_min_cuts_lc(env, x, problem_instance));
+			cplex_solver.use(add_min_cuts_uc(env, x, problem_instance));
 		}
 
 
@@ -100,7 +102,7 @@ void BCSolver::solve() {
 			boost::print_graph(problem_instance.covering_graph);
 			std::cout << "TESTE" << std::endl;
 			std::ofstream outFile;
-			auto name_file = "C:/Users/evellynsc/source/repos/ArborealJumpNumber/ArborealJumpNumber/" + problem_instance.id + "_output.dot";
+			auto name_file = problem_instance.id + "_output.dot";
 			outFile.open(name_file);
 			boost::write_graphviz(outFile, final_solution,
 							boost::make_label_writer(boost::get(&my_graph::vertex_info::id, final_solution)),

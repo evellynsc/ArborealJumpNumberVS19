@@ -36,7 +36,7 @@ namespace ajns {
 		my_graph::digraph create_covering_graph(my_graph::digraph &order_graph);
 		std::vector<std::pair<my_graph::vertex, my_graph::vertex>> find_incompatible_vertices(my_graph::digraph &order_graph);
 		void add_artificial_edges();
-		my_graph::digraph create_input_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph);
+		my_graph::digraph create_input_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph, std::vector<std::pair<int, int>>&);
 		my_graph::digraph transpose_order_graph(my_graph::digraph &order_graph);
 		std::vector<bool> find_ids_maximum_vertices(std::vector<std::vector<bool>> &adjacency_matrix);
 		void update_maximum_vertices(my_graph::digraph& graph, std::vector<bool> &ids);

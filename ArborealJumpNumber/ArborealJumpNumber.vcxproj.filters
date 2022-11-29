@@ -131,7 +131,10 @@
     <ClInclude Include="solver\callbacks\sigma_inequality.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="solver\callbacks\add_min_cuts.h">
+    <ClInclude Include="solver\callbacks\add_min_cuts_lc.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="solver\callbacks\add_min_cuts_uc.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,10 +23,12 @@ instance instance_generator::create_instance(problem_data &data) {
 	auto order_graph = create_order_graph(vertex_properties,
 			data.adjacency_matrix);
 	auto covering_graph = create_covering_graph(order_graph);
+	
 
 	set_vertices_to_remove(covering_graph);
 	set_edges_to_remove(covering_graph);
-	auto input_graph = create_input_graph(order_graph, covering_graph);
+	auto artificial_arcs_pair = std::vector<std::pair<int, int>>();
+	auto input_graph = create_input_graph(order_graph, covering_graph, artificial_arcs_pair);
 
 	fix_ids_order_graph(order_graph, covering_graph);
 	auto t_order_graph = transpose_order_graph(order_graph);
@@ -125,7 +127,7 @@ void instance_generator::set_edges_to_remove(my_graph::digraph& graph) {
 
 	my_graph::in_edge_itr ei, ei_end;
 
-	for (auto e : boost::make_iterator_range(boost::edges(graph))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(graph))) {
 		auto s = boost::source(e, graph);
 		auto t = boost::target(e, graph);
 
@@ -177,7 +179,7 @@ map_vertex_set instance_generator::get_predecessors(my_graph::digraph& graph) {
 
 
 void instance_generator::fix_ids_order_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph) {
-	for (auto e : boost::make_iterator_range(boost::edges(order_graph))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(order_graph))) {
 		if (order_graph[e].id == -1)
 			order_graph[e].id = current_edge_id++;
 	}
@@ -279,7 +281,7 @@ my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::v
 		order_graph[e.second] = adj_matrix_graph[e.first];
 
 //	to fix id later
-	for (auto e : boost::make_iterator_range(boost::edges(order_graph))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(order_graph))) {
 		auto head = boost::source(e, order_graph);
 		auto tail = boost::target(e, order_graph);
 		order_graph[e].source_id = order_graph[head].id;
@@ -304,7 +306,7 @@ my_graph::digraph instance_generator::create_covering_graph(my_graph::digraph &o
 		tr_to_g[e.second] = e.first;
 	}
 
-	for (auto e : boost::make_iterator_range((boost::edges(aux_graph)))) {
+	for (const auto& e : boost::make_iterator_range((boost::edges(aux_graph)))) {
 		aux_graph[e].id = current_edge_id++;
 		auto h = boost::source(e, aux_graph);
 		auto t = boost::target(e, aux_graph);
@@ -317,7 +319,7 @@ my_graph::digraph instance_generator::create_covering_graph(my_graph::digraph &o
 	auto covering_graph = my_graph::digraph();
 	boost::copy_graph(order_graph, covering_graph);
 
-	for (auto e : boost::make_iterator_range(boost::edges(order_graph))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(order_graph))) {
 		auto h = boost::source(e, order_graph);
 		auto t = boost::target(e, order_graph);
 		auto found = boost::edge(g_to_tr[h],g_to_tr[t], aux_graph);
@@ -360,7 +362,7 @@ std::vector<std::pair<my_graph::vertex, my_graph::vertex>> instance_generator::f
 }
 
 my_graph::digraph instance_generator::create_input_graph(my_graph::digraph &order_graph,
-		my_graph::digraph &covering_graph) {
+		my_graph::digraph &covering_graph, std::vector<std::pair<int, int>>& art_arcs_pair) {
 	auto incompatible_vertices = find_incompatible_vertices(order_graph);
 
 	auto input_graph = my_graph::digraph();
@@ -378,19 +380,20 @@ my_graph::digraph instance_generator::create_input_graph(my_graph::digraph &orde
 		boost::tie(e, inserted) = boost::add_edge(a.first, a.second,
 				my_graph::edge_info(current_edge_id++, a.first, a.second, my_graph::ARTIFICIAL, value_set, 0),
 				input_graph);
+		
 		if (not inserted)
 			exit(0);
 		boost::tie(e, inserted) = boost::add_edge(a.second, a.first,
 				my_graph::edge_info(current_edge_id++, a.second, a.first, my_graph::ARTIFICIAL, value_set, 0),
 				input_graph);
 		value_set = false;
+
+		art_arcs_pair.push_back({ input_graph[e].id - 1, input_graph[e].id });
 	}
 
-	assert(
-			boost::num_edges(input_graph)
-					== boost::num_edges(covering_graph)
-							+ 2 * incompatible_vertices.size());
+	assert(boost::num_edges(input_graph) == boost::num_edges(covering_graph) + 2 * incompatible_vertices.size());
 	assert(boost::num_edges(input_graph) == current_edge_id);
+	assert(boost::num_edges(input_graph) == art_arcs_pair.size());
 
 	return input_graph;
 }

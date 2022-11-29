@@ -54,7 +54,7 @@ flow::flow(my_graph::digraph network) {
 	this->network = network;
 	this->current_max_flow_value = -1.0;
 	//add_missing_reversed_edges();
-	fill_aux_maps();
+	//fill_aux_maps();
 }
 
 std::set<my_graph::vertex> flow::get_set_s() {
@@ -124,9 +124,7 @@ std::list<my_graph::edge> flow::get_min_cut() {
 			auto tail = boost::target(e, network);
 			if (vertex_coloring[head] == boost::default_color_type::black_color and 
 				vertex_coloring[tail] != boost::default_color_type::black_color) {
-			//if (vertex_coloring[head] != vertex_coloring[tail]) {
 				this->current_min_cut.emplace_back(e);
-				//std::cout << "(" << head << "," << tail << ")\n";
 			}
 		}
 	}
