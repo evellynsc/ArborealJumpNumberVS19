@@ -33,7 +33,7 @@ void ExponentialModel::add_constraints() {
 		add_number_of_edges_constraints();
 		add_limit_indegree_constraints();
 	}
-	//add_out_edges_constraints();
+	add_out_edges_constraints();
 	fix_arcs_value();
 	add_bidirected_constraints();
 }
