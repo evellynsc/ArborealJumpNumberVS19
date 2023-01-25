@@ -428,6 +428,11 @@ void minimal_extension::run() {
 
 	command = dot + name_file + " -o " + problem_instance.id + "_trextension.pdf";
 //	std::system(command.c_str());
+	this->solution = tr_extension;
+}
+
+my_graph::digraph minimal_extension::get_solution() {
+	return this->solution;
 }
 
 minimal_extension::~minimal_extension() {

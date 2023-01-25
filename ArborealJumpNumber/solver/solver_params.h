@@ -19,19 +19,22 @@ namespace solver {
 		double tree_memory;
 		solver_type solver;
 		std::set<user_cut> cuts;
+		bool add_initial_solution;
 
 		solver_params() {
 			time_limit = 18000;
 			tree_memory = 8000;
 			solver = PLAIN;
+			add_initial_solution = true;
 		}
 
 		solver_params(double time_limit, double memory_tree, solver_type solver,
-				std::set<user_cut> cuts) :
+				std::set<user_cut> cuts, bool add_initial_solution) :
 			time_limit(time_limit),
 			tree_memory(memory_tree),
 			solver(solver),
-			cuts(cuts) {}
+			cuts(cuts),
+			add_initial_solution(add_initial_solution) {}
 	};
 }
 

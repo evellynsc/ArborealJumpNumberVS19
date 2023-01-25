@@ -46,6 +46,7 @@ class minimal_extension {
 	my_graph::digraph t_order_extension;
 	my_graph::digraph order_extension;
 	my_graph::digraph extension;
+	my_graph::digraph solution;
 
 	void find_violations();
 	my_graph::vertex get_minimal_element(std::vector<my_graph::vertex> vertices, my_graph::digraph &graph);
@@ -69,11 +70,13 @@ class minimal_extension {
 	void update_extension(std::map<my_graph::vertex, std::list<my_graph::vertex>> &);
 	std::list<my_graph::vertex> get_min_z(std::list<my_graph::vertex>&);
 
+
 public:
 	minimal_extension(instance &problem_instance);
 	virtual ~minimal_extension();
 	void run();
 	void run(properties &p);
+	my_graph::digraph get_solution();
 };
 
 } /* namespace ajns */

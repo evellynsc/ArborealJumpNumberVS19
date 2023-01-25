@@ -20,6 +20,10 @@
 #include "callbacks/add_min_cuts_lc.h"
 #include "callbacks/add_min_cuts_uc.h"
 
+#include "../heuristic/minimal_extension.h"
+#include "../base/properties.h"
+
+
 namespace solver {
 //BCSolver::BCSolver(solver_params& config_, ExponentialModel& model_) {
 //	solver(config_, model_);
@@ -54,16 +58,42 @@ void BCSolver::solve() {
 		auto x = model.get_variables_x();
 		auto problem_instance = model.get_ajnp_instance();
 
+		if (this->config.add_initial_solution) {
+			auto prop = ajns::properties();
+			auto heuristic = ajns::minimal_extension(problem_instance);
+			heuristic.run(prop);
+			auto h_solution = heuristic.get_solution();
+			std::vector<int> x_vals(num_edges(problem_instance.input_graph),0);
+			
+			my_graph::edge_itr eit, eit_end;
+			for (boost::tie(eit, eit_end) = boost::edges(h_solution); eit != eit_end; ++eit) {
+				auto head = h_solution[*eit].source_id;
+				auto tail = h_solution[*eit].target_id;
 
+				auto p = boost::edge(head, tail, problem_instance.input_graph);
+
+				if (p.second) {
+					x_vals[problem_instance.input_graph[p.first].id] = 1;
+				}
+				else {
+					std::cerr << "==== EDGE ID NOT FOUND! ====\n";
+				}
+			}
+
+			IloNumVarArray startVar(env);
+			IloNumArray startVal(env);
+			for (int i = 0; i < x.getSize(); ++i) {
+				startVar.add(x[i]);
+				startVal.add(x_vals[i]);
+			}
+			cplex_solver.addMIPStart(startVar, startVal);
+			startVal.end();
+			startVar.end();
+		}
+
+		//exit(0);
 
 		if (model.get_type() == RELAXED_CUTSET) {
-/*APAGAR ACHO//			cplex.use(separate_pi_inequalities(env, x, problem_instance));
-//			cplex.use(separate_pi_sigma_inequalities(env, x, problem_instance));
-//			cplex.use(separate_sigma_inequalities(env, x, problem_instance));*/
-
-
-//			cplex_solver.use(separate_precedence_inequalities(env, x, problem_instance));
-//			cplex_solver.use(find_constraints_for_integral_solution(env, x, problem_instance));
 			cplex_solver.use(add_min_cuts_lc(env, x, problem_instance));
 			cplex_solver.use(add_min_cuts_uc(env, x, problem_instance));
 		}

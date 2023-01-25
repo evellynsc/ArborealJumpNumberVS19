@@ -111,9 +111,12 @@ namespace solver {
 //				std::cout << "removing edge\n";
 				boost::remove_edge(to_be_removed, candidate_graph);
 			}
-//			else {
-//				std::cout << "keeping edge\n";
-//			}
+			else {
+				candidate_graph[e].capacity = x_values[i];
+				if (candidate_graph[e].capacity <= 1e-6) {
+					candidate_graph[e].capacity = 0;
+				}
+			}
 		}
 
 		return candidate_graph;

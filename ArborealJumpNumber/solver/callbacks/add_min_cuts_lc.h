@@ -50,10 +50,21 @@ ILOLAZYCONSTRAINTCALLBACK2(add_min_cuts_lc, IloBoolVarArray, x, ajns::instance&,
 		}
 	}
 
+	//std::ofstream outFile("C:/Users/evellynsc/Desktop/user_cut_lazy.dot", std::ios_base::app);
+
+	//boost::write_graphviz(outFile, graph_x,
+	//	boost::make_label_writer(
+	//		boost::get(&my_graph::vertex_info::id, graph_x)),
+	//	boost::make_label_writer(
+	//		boost::get(&my_graph::edge_info::type, graph_x)));
+	//outFile.close();
+
 	for (const auto& e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto head = boost::source(e, problem_instance.covering_graph);
 		auto tail = boost::target(e, problem_instance.covering_graph);
-		if (not boost::edge(head, tail, tc_graph_x).second) {
+		if (not boost::edge(head, tail, tc_graph_x).second and
+			problem_instance.predecessors.at(head).size() != 0u and
+			problem_instance.predecessors.at(tail).size() != 0u) {
 			//std::cout << "(" << head << "," << tail << ") violated\n";
 
 			auto set_q = std::set<my_graph::vertex>();

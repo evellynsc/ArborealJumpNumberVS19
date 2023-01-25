@@ -24,7 +24,7 @@ instance instance_generator::create_instance(problem_data &data) {
 			data.adjacency_matrix);
 	auto covering_graph = create_covering_graph(order_graph);
 	
-
+	//Remove vértices que formam um caminho o-o-o-o, onde o último vértice é uma folha
 	set_vertices_to_remove(covering_graph);
 	set_edges_to_remove(covering_graph);
 	auto artificial_arcs_pair = std::vector<std::pair<int, int>>();

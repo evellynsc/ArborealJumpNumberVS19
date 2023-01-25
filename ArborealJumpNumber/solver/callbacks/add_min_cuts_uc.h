@@ -16,11 +16,14 @@ ILOSTLBEGIN
 #include "../../algorithms/flow.h"
 #include <numeric>
 
+#include <boost/graph/graphviz.hpp>
 #include <boost/graph/transitive_closure.hpp>
 
 #include <map>
+//#include <iostream>
 
 using namespace solver;
+
 
 ILOUSERCUTCALLBACK2(add_min_cuts_uc, IloBoolVarArray, x, ajns::instance&, problem_instance) {
 	if (!isAfterCutLoop())
@@ -28,7 +31,7 @@ ILOUSERCUTCALLBACK2(add_min_cuts_uc, IloBoolVarArray, x, ajns::instance&, proble
 
 
 
-	//std::cout << "find_constraints_for_integral_solution" << std::endl;
+	//std::cout << "find_constraints_for_relaxed_solution" << std::endl;
 	IloEnv env = getEnv();
 	IloNumArray x_values(env);
 	getValues(x_values, x);
@@ -67,11 +70,30 @@ ILOUSERCUTCALLBACK2(add_min_cuts_uc, IloBoolVarArray, x, ajns::instance&, proble
 	//		boost::get(&my_graph::vertex_info::id, complete_net_flow)),
 	//	boost::make_label_writer(
 	//		boost::get(&my_graph::edge_info::capacity, complete_net_flow)));
+	/*std::ofstream outFile1("C:/Users/evellynsc/Desktop/user_cut_relx_capacity.dot", std::ios_base::app);
+
+	boost::write_graphviz(outFile1, graph_x,
+		boost::make_label_writer(
+			boost::get(&my_graph::vertex_info::id, graph_x)),
+		boost::make_label_writer(
+			boost::get(&my_graph::edge_info::capacity, graph_x)));
+	outFile1.close();
+
+	std::ofstream outFile2("C:/Users/evellynsc/Desktop/user_cut_relx_type.dot", std::ios_base::app);
+
+	boost::write_graphviz(outFile2, graph_x,
+		boost::make_label_writer(
+			boost::get(&my_graph::vertex_info::id, graph_x)),
+		boost::make_label_writer(
+			boost::get(&my_graph::edge_info::type, graph_x)));
+	outFile2.close();*/
 
 	for (const auto& e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto head = boost::source(e, problem_instance.covering_graph);
 		auto tail = boost::target(e, problem_instance.covering_graph);
-		if (not boost::edge(head, tail, tc_graph_x).second) {
+		if (not boost::edge(head, tail, tc_graph_x).second and 
+			problem_instance.predecessors.at(head).size() != 0u and 
+			problem_instance.predecessors.at(tail).size() != 0u) {
 			//std::cout << "(" << head << "," << tail << ") violated\n";
 
 			auto set_q = std::set<my_graph::vertex>();
@@ -83,7 +105,7 @@ ILOUSERCUTCALLBACK2(add_min_cuts_uc, IloBoolVarArray, x, ajns::instance&, proble
 			boost::copy_graph(complete_net_flow, net_flow);
 
 			for (const auto& v : boost::make_iterator_range(boost::vertices(net_flow))) {
-				// remove v (actually, we delete adjacent arcs)
+				// remove v (actually, we delete arcs going out or coming into v)
 				if (set_q.find(v) != set_q.end()) {
 					boost::clear_vertex(v, net_flow);
 				}
