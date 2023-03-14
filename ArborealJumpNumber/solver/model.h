@@ -13,7 +13,7 @@
 ILOSTLBEGIN
 
 namespace solver {
-enum model_type { NOT_DEFINED, CUTSET_EXP, RELAXED_CUTSET, COMPACT };
+enum model_type { NOT_DEFINED, CUTSET_EXP, RELAXED_CUTSET, COMPACT, DDL};
 
 class Model {
 

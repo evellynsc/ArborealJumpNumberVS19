@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-enum algo_type { GREEDY, BRANCH_AND_CUT, MFLOW, HS, HH };
+enum algo_type { GREEDY, BRANCH_AND_CUT, MFLOW, HS, HH, DDL };
 
 namespace ajns {
 
@@ -29,7 +29,7 @@ struct properties {
 		num_violators = 0;
 		num_jumps = 0;
 		run_time = 0;
-		algo_t = algo_type::GREEDY;
+		algo_t = GREEDY;
 	}
 
 	properties (std::size_t n_nodes, std::size_t n_arcs, std::size_t n_violators, std::size_t n_jumps, double run_time, algo_type algo) :

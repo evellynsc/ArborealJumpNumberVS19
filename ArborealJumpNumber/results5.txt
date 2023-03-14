@@ -1,0 +1,2 @@
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc11.sop.ajn.txt 13 112 0 0 0.031118
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc12.sop.ajn.txt 14 128 0 0 0.002173

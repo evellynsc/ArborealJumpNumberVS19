@@ -26,7 +26,7 @@ void MultiFlowModel::add_variables() {
 	auto r = problem_instance.input_graph[problem_instance.root].id;
 	auto n = this->problem_instance.num_vertices;
 	
-	x = IloNumVarArray(env, n * n * n);;
+	x = IloNumVarArray(env, n * n * n);
 	for (auto i = 0u; i < n; i++) {
 		for (auto j = 0u; j < n; j++) {
 			for (auto k = 0u; k < n; k++) {
@@ -36,7 +36,7 @@ void MultiFlowModel::add_variables() {
 				}*/
 			}
 		}
-	 }
+	}
 
 	y = IloNumVarArray(env, n*n);
 	for (auto i = 0u; i < n; i++) {
