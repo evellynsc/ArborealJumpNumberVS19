@@ -18,6 +18,7 @@ enum model_type { NOT_DEFINED, CUTSET_EXP, RELAXED_CUTSET, COMPACT, DDL};
 class Model {
 
 protected:
+	bool linear_relaxation;
 	model_type type;
 	IloEnv env;
 	IloModel cplex_model;

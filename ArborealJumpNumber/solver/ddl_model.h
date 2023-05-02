@@ -16,13 +16,17 @@ namespace solver {
         void add_constraints();
 
 
+
     public:
         DDLModel();
         DDLModel(ajns::instance&);
-        IloBoolVarArray get_y_variables();
-        IloBoolVarArray get_x_variables();
-        IloBoolVarArray v; //transitive closure (order graph)
-        IloBoolVarArray x; //resulting graph
+        DDLModel(ajns::instance&, bool _linear_relaxation);
+        IloNumVarArray get_v_variables();
+        IloNumVarArray get_x_variables();
+        IloNumVarArray y; //transitive closure (order graph)
+        IloNumVarArray x; //resulting graph
+        IloNumVarArray u; //auxiliar variable
+        size_t t_max;
 
         virtual ~DDLModel() = default;
     };
