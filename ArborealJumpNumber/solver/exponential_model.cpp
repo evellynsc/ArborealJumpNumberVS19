@@ -129,8 +129,7 @@ void ExponentialModel::add_cutset_constraints() {
 
 void ExponentialModel::fix_arcs_value() {
 	auto count = 0u;
-	for (const auto &e : boost::make_iterator_range(
-		boost::edges(problem_instance.input_graph))) {
+	for (const auto &e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 		if (problem_instance.input_graph[e].value_set) {
 			auto id = problem_instance.input_graph[e].id;
 			//IloExpr exp(env);

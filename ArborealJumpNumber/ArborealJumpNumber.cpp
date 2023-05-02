@@ -15,8 +15,10 @@
 #include "solver/solver.h"
 #include "solver/BCSolver.h"
 #include "solver/MFSolver.h"
+#include "solver/DDLSolver.h"
 #include "solver/exponential_model.h"
 #include "solver/multi_flow_model.h"
+#include "solver/ddl_model.h"
 #include "heuristic/minimal_extension.h"
 #include "base/properties.h"
 
@@ -57,18 +59,28 @@ int main(int argc, char* argv[]) {
 				std::cout << "algo de errado não está certo\n";
 			}
 		}
-		else {
-			if (argv[2] == std::string("f")) {
-				prop.algo_t = algo_type::MFLOW;
-				auto solver_config = solver::solver_params();
-				auto exp_model = solver::MultiFlowModel(my_instance);
-				solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
-				try {
-					ajnp_solver->solve(prop);
-				}
-				catch (...) {
-					std::cout << "algo de errado não está certo\n";
-				}
+		else if (argv[2] == std::string("f")) {
+			prop.algo_t = algo_type::MFLOW;
+			auto solver_config = solver::solver_params();
+			auto exp_model = solver::MultiFlowModel(my_instance, true);
+			solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
+			try {
+				ajnp_solver->solve(prop);
+			}
+			catch (...) {
+				std::cout << "algo de errado não está certo\n";
+			}			
+		}
+		else if (argv[2] == std::string("d")) {
+			prop.algo_t = algo_type::DDL;
+			auto solver_config = solver::solver_params();
+			auto model = solver::DDLModel(my_instance, true);
+			solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
+			try {
+				ajnp_solver->solve(prop);
+			}
+			catch (...) {
+				std::cout << "algo de errado não está certo\n";
 			}
 		}
 	}

@@ -31,6 +31,7 @@ class MultiFlowModel : public Model {
 public:
 	MultiFlowModel();
 	MultiFlowModel(ajns::instance&);
+	MultiFlowModel(ajns::instance&, bool);
 	IloNumVarArray get_y_variables();
 	IloNumVarArray y;
 	IloNumVarArray x;

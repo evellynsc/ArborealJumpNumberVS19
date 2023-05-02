@@ -17,7 +17,8 @@ using map_vertex_set = std::unordered_map<my_graph::vertex, std::set<my_graph::v
 
 
 namespace ajns {
-	struct instance {
+	class instance {
+	public:
 		std::string id;
 		my_graph::vertex root;
 		size_t num_vertices;
@@ -58,7 +59,7 @@ namespace ajns {
 					artificial_arcs_pair), order_graph(order_graph), t_order_graph(
 						t_order_graph), covering_graph(covering_graph), input_graph(
 							input_graph), predecessors(predecessors), sucessors(sucessors) {
-
+			construct_adj_matrices();
 			//for (auto v : predecessors) {
 			//	std::cout << v.first << ": ";
 			//	for (auto u : v.second) {
@@ -83,7 +84,7 @@ namespace ajns {
 				boost::num_edges(input_graph)), order_graph(order_graph), t_order_graph(
 					t_order_graph), covering_graph(covering_graph), input_graph(
 						input_graph), predecessors(predecessors), sucessors(sucessors) {
-
+			construct_adj_matrices();
 			//for (auto v : predecessors) {
 			//	std::cout << v.first << ": ";
 			//	for (auto u : v.second) {
@@ -109,7 +110,7 @@ namespace ajns {
 					t_order_graph), covering_graph(covering_graph), input_graph(
 						input_graph), predecessors(predecessors), sucessors(sucessors),
 			artificial_arcs_pair(artificial_arcs_pair) {
-
+			construct_adj_matrices();
 			//for (auto v : predecessors) {
 			//	std::cout << v.first << ": ";
 			//	for (auto u : v.second) {
@@ -125,6 +126,41 @@ namespace ajns {
 			//	}
 			//	std::cout << std::endl;
 			//}
+		}
+
+		bool exist_edge_in_input_graph(size_t from, size_t to) {
+			return adj_matrix_input_graph[from][to];
+		}
+
+		bool exist_edge_in_order_graph(size_t from, size_t to) {
+			return adj_matrix_order_graph[from][to];
+		}
+
+	private:
+		std::vector<std::vector<bool>> adj_matrix_input_graph;
+		std::vector<std::vector<bool>> adj_matrix_order_graph;
+
+		void construct_adj_matrices() {
+			auto n = num_vertices;
+
+			auto get_row_of_neighboors = [n](const my_graph::digraph& graph, const my_graph::vertex from) {
+				auto row = std::vector<bool>(n, false);
+				for (const auto &e : boost::make_iterator_range(boost::out_edges(from, graph))) {
+					auto to = boost::target(e, graph);
+					row[to] = true;
+				}
+				return row;
+			};
+
+			for (auto from : boost::make_iterator_range(boost::vertices(input_graph))) {
+				auto row = get_row_of_neighboors(input_graph, from);
+				adj_matrix_input_graph.push_back(row);
+			}
+
+			for (auto from : boost::make_iterator_range(boost::vertices(order_graph))) {
+				auto row = get_row_of_neighboors(order_graph, from);
+				adj_matrix_order_graph.push_back(row);
+			}
 		}
 	};
 

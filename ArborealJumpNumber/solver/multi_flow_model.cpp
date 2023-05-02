@@ -18,6 +18,12 @@ MultiFlowModel::MultiFlowModel(ajns::instance& problem_instance_) {
 	this->problem_instance = problem_instance_;
 }
 
+MultiFlowModel::MultiFlowModel(ajns::instance& problem_instance_, bool linear_relaxation_) {
+	this->type = solver::COMPACT;
+	this->problem_instance = problem_instance_;
+	this->linear_relaxation = linear_relaxation_;
+}
+
 IloNumVarArray MultiFlowModel::get_y_variables() {
 	return y;
 }
@@ -26,7 +32,7 @@ void MultiFlowModel::add_variables() {
 	auto r = problem_instance.input_graph[problem_instance.root].id;
 	auto n = this->problem_instance.num_vertices;
 	
-	x = IloNumVarArray(env, n * n * n);;
+	x = IloNumVarArray(env, n * n * n);
 	for (auto i = 0u; i < n; i++) {
 		for (auto j = 0u; j < n; j++) {
 			for (auto k = 0u; k < n; k++) {
@@ -36,12 +42,17 @@ void MultiFlowModel::add_variables() {
 				}*/
 			}
 		}
-	 }
+	}
 
 	y = IloNumVarArray(env, n*n);
 	for (auto i = 0u; i < n; i++) {
 		for (auto j = 0u; j < n; j++) {
-			y[n*i+j] = IloNumVar(env, 0, 1, ILOBOOL);
+			if (this->linear_relaxation) {
+				y[n * i + j] = IloNumVar(env, 0, 1, ILOFLOAT);
+			}
+			else {
+				y[n * i + j] = IloNumVar(env, 0, 1, ILOBOOL);
+			}
 		}
 	}
 }
