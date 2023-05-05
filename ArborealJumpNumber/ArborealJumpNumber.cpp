@@ -101,8 +101,8 @@ int main(int argc, char* argv[]) {
 	auto name_file = "results" + std::to_string(prop.algo_t) + ".txt";
 	outFile.open(name_file, std::ofstream::out | std::ofstream::app);
 
-	outFile << my_instance.id << " " << prop.num_nodes << " " << prop.num_arcs << " " <<
-		prop.num_violators << " " << prop.num_jumps << " " << fixed << prop.run_time << setprecision(9) << std::endl; // @suppress("Invalid overload")
+	outFile << my_instance.id << "," << prop.num_nodes << "," << prop.num_arcs << "," <<
+		prop.num_violators << "," << prop.num_jumps << "," << fixed << prop.run_time << setprecision(9) << std::endl; // @suppress("Invalid overload")
 
 	std::cout << "time === " << fixed << run_time << setprecision(9) << " ===\n";
 	return 0;
