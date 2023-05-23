@@ -6,6 +6,7 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+#define _HAS_STD_BYTE 0
 #include <iostream>
 #include <chrono>
 #include <cstring>
@@ -23,22 +24,45 @@
 #include "base/properties.h"
 
 
+#include "windows.h"
+#include "psapi.h"
+
+
+
+
+
+
 int main(int argc, char* argv[]) {
 	if (argc < 3) {
 		std::cout << "FALTANDO ARGUMENTOS\n" << std::endl;
 		return 1;
 	}
 
+
 	auto input_file = ajns::reader(argv[1]);
 	auto problem_data = input_file.read();
 	auto generator = ajns::instance_generator();
 	auto my_instance = generator.create_instance(problem_data);
+
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+	SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+	SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
+
+	std::cout << "virtual memory " << virtualMemUsedByMe << std::endl;
+	std::cout << "physical memory " << physMemUsedByMe << std::endl;
+
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto prop = ajns::properties();
 
 	prop.num_arcs = my_instance.num_edges;
 	prop.num_nodes = my_instance.num_vertices;
+	int a;
+	std::cin >> a;
+
+	//exit(1);
+
 
 	if (argv[2] == std::string("h")) {
 		prop.algo_t = algo_type::HH;

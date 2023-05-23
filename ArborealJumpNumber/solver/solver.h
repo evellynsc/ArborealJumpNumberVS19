@@ -21,7 +21,7 @@ class solver {
 protected:
 	solver_params config;
 	IloCplex cplex_solver;
-	std::size_t num_jumps;
+	std::size_t num_jumps; // mudar aqui pra double
 
 public:
 	solver();

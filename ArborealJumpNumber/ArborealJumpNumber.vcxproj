@@ -188,6 +188,7 @@
     <ClInclude Include="solver\solver.h" />
     <ClInclude Include="solver\solver_params.h" />
     <ClInclude Include="utils\callbacks.h" />
+    <ClInclude Include="utils\nadeau.h" />
     <ClInclude Include="utils\preprocessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -72,7 +72,7 @@ void MultiFlowModel::add_constraints() {
 	auto r = problem_instance.input_graph[problem_instance.root].id;
 	auto n = this->problem_instance.num_vertices;
 	
-	//	constraints #1
+	//	constraints #2
 	for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
 		if (not problem_instance.input_graph[v].is_root) {
 			IloExpr in_flow_sum_j(env);
@@ -88,8 +88,25 @@ void MultiFlowModel::add_constraints() {
 		}
 	}
 	
+	//	constraints #2.5
+	for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
+		if (not problem_instance.input_graph[v].is_root) {
+			IloExpr out_flow_sum_j(env);
+			auto j = problem_instance.input_graph[v].id;
+			my_graph::digraph::out_edge_iterator in_begin, in_end;
+			for (boost::tie(in_begin, in_end) = boost::out_edges(v, problem_instance.input_graph);
+				in_begin != in_end; ++in_begin) {
+				auto u = boost::target(*in_begin, problem_instance.input_graph);
+				auto i = problem_instance.input_graph[u].id;
+				out_flow_sum_j += x[j + n * i + j * n * n];
+			}
+			cplex_model.add(out_flow_sum_j == 0);
+		}
+	}
 
-	//	constraints #2
+
+
+	//	constraints #3
 	for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
 		auto j = problem_instance.input_graph[v].id;
 		for (auto k = 0u; k < n; k++) {
@@ -120,23 +137,7 @@ void MultiFlowModel::add_constraints() {
 	}
 	
 
-	//	constraints #3
-	
-	/*my_graph::digraph::out_edge_iterator out_begin, out_end;
-	for (auto k = 0u; k < n; k++) {
-		if (k != r) {
-			iloexpr flow_out_root(env);
-			for (boost::tie(out_begin, out_end) = boost::out_edges(problem_instance.root, problem_instance.input_graph);
-				out_begin != out_end; ++out_begin) {
-				auto u = boost::target(*out_begin, problem_instance.input_graph);
-				auto j = problem_instance.input_graph[u].id;
-				flow_out_root += x[r][j][k];
-			}
-			cplex_model.add(flow_out_root == 1);
-		}
-	}*/
-
-	//	constraints #4
+	//	constraints #6
 	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 		auto i = problem_instance.input_graph[e].source_id;
 		auto j = problem_instance.input_graph[e].target_id;
@@ -146,7 +147,7 @@ void MultiFlowModel::add_constraints() {
 		}
 	}
 
-	//	constraints #5
+	//	constraints #4
 	for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
 		if (not problem_instance.input_graph[v].is_root) {
 			IloExpr source_vertices_sum(env);
@@ -162,7 +163,7 @@ void MultiFlowModel::add_constraints() {
 		}
 	}
 
-	//	constraints #6
+	//	constraints #5
 	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto v = boost::source(e, problem_instance.input_graph);
 		auto j = problem_instance.input_graph[v].id;

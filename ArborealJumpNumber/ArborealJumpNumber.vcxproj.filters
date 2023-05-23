@@ -149,5 +149,8 @@
     <ClInclude Include="solver\DDLSolver.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="utils\nadeau.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
