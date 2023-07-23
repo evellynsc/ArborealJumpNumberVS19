@@ -14,8 +14,8 @@
 #include <boost/graph/transpose_graph.hpp>
 #include <boost/graph/graphviz.hpp>
 
-namespace ajns {
-instance instance_generator::create_instance(problem_data &data) {
+
+Instance instance_generator::create_instance(problem_data &data) {
 	current_edge_id = 0u;
 	size_t root_id = 0u;
 	add_root(data.adjacency_matrix, data.vertex_labels, root_id);
@@ -37,9 +37,12 @@ instance instance_generator::create_instance(problem_data &data) {
 	map_vertex_set sucessors = get_successors(order_graph);
 	map_vertex_set predecessors = get_predecessors(order_graph);
 
+	map_vertex_set covering_sucessors = get_successors(covering_graph);
+	map_vertex_set covering_predecessors = get_predecessors(covering_graph);
 
-	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
-			covering_graph, input_graph, predecessors, sucessors, artificial_arcs_pair);
+
+	auto ajnp = Instance(data.id, root, order_graph, t_order_graph,
+			covering_graph, input_graph, predecessors, sucessors, covering_predecessors, covering_sucessors, artificial_arcs_pair);
 	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();
@@ -48,9 +51,9 @@ instance instance_generator::create_instance(problem_data &data) {
 	outFile.open(name_file);
 	boost::write_graphviz(outFile, order_graph,
 			boost::make_label_writer(
-					boost::get(&my_graph::vertex_info::id, order_graph)),
+					boost::get(&vertex_info::id, order_graph)),
 			boost::make_label_writer(
-					boost::get(&my_graph::edge_info::type, order_graph)));
+					boost::get(&edge_info::type, order_graph)));
 	outFile.close();
 	command = dot + name_file + " -o " + data.id + "_order.pdf";
 //	std::system(command.c_str());
@@ -58,9 +61,9 @@ instance instance_generator::create_instance(problem_data &data) {
 	outFile.open(name_file);
 	boost::write_graphviz(outFile, covering_graph,
 			boost::make_label_writer(
-					boost::get(&my_graph::vertex_info::id, covering_graph)),
+					boost::get(&vertex_info::id, covering_graph)),
 			boost::make_label_writer(
-					boost::get(&my_graph::edge_info::type, covering_graph)));
+					boost::get(&edge_info::type, covering_graph)));
 	outFile.close();
 	command = dot + name_file + " -o " + data.id + "_covering.pdf";
 //	std::system(command.c_str());
@@ -68,9 +71,9 @@ instance instance_generator::create_instance(problem_data &data) {
 	outFile.open(name_file);
 	boost::write_graphviz(outFile, input_graph,
 			boost::make_label_writer(
-					boost::get(&my_graph::vertex_info::id, input_graph)),
+					boost::get(&vertex_info::id, input_graph)),
 			boost::make_label_writer(
-					boost::get(&my_graph::edge_info::type, input_graph)));
+					boost::get(&edge_info::type, input_graph)));
 	outFile.close();
 
 	
@@ -80,11 +83,11 @@ instance instance_generator::create_instance(problem_data &data) {
 	return ajnp;
 }
 
-void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
-	std::unordered_map<my_graph::vertex, size_t> out_dg;
-	std::list<my_graph::vertex> vertices_to_remove;
+void instance_generator::set_vertices_to_remove(digraph& graph) {
+	std::unordered_map<vertex, size_t> out_dg;
+	std::list<vertex> vertices_to_remove;
 
-	my_graph::in_edge_itr ei, ei_end;
+	in_edge_itr ei, ei_end;
 
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
 		auto iv = boost::in_degree(v, graph);
@@ -99,7 +102,7 @@ void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
 	}
 
 	while (not vertices_to_remove.empty()) {
-		my_graph::vertex v = vertices_to_remove.front();
+		vertex v = vertices_to_remove.front();
 		vertices_to_remove.pop_front();
 		for (boost::tie(ei, ei_end) = in_edges(v, graph); ei != ei_end; ++ei) {
 			auto s = boost::source(*ei, graph);
@@ -121,11 +124,11 @@ void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
 	}
 }
 
-void instance_generator::set_edges_to_remove(my_graph::digraph& graph) {
-	std::unordered_map<my_graph::vertex, size_t> out_dg;
-	std::list<my_graph::vertex> vertices_to_remove;
+void instance_generator::set_edges_to_remove(digraph& graph) {
+	std::unordered_map<vertex, size_t> out_dg;
+	std::list<vertex> vertices_to_remove;
 
-	my_graph::in_edge_itr ei, ei_end;
+	in_edge_itr ei, ei_end;
 
 	for (const auto& e : boost::make_iterator_range(boost::edges(graph))) {
 		auto s = boost::source(e, graph);
@@ -139,12 +142,12 @@ void instance_generator::set_edges_to_remove(my_graph::digraph& graph) {
 }
 
 
-map_vertex_set instance_generator::get_successors(my_graph::digraph& graph) {
+map_vertex_set instance_generator::get_successors(digraph& graph) {
 	map_vertex_set successors;
-	my_graph::out_edge_itr ei, ei_end;
+	out_edge_itr ei, ei_end;
 
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
-		auto vertex_set = std::set<my_graph::vertex>();
+		auto vertex_set = std::set<vertex>();
 		for (boost::tie(ei, ei_end) = out_edges(v, graph); ei != ei_end; ++ei) {
 			auto target = boost::target(*ei, graph);
 			vertex_set.insert(target);
@@ -155,15 +158,15 @@ map_vertex_set instance_generator::get_successors(my_graph::digraph& graph) {
 
 	return successors;
 }
-map_vertex_set instance_generator::get_predecessors(my_graph::digraph& graph) {
+map_vertex_set instance_generator::get_predecessors(digraph& graph) {
 	map_vertex_set predecessors;
 
-	my_graph::in_edge_itr ei, ei_end;
+	in_edge_itr ei, ei_end;
 
 
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
 		std::cout << graph[v].id << ": ";
-		auto vertex_set = std::set<my_graph::vertex>();
+		auto vertex_set = std::set<vertex>();
 		for (boost::tie(ei, ei_end) = in_edges(v, graph); ei != ei_end; ++ei) {
 			auto source = boost::source(*ei, graph);
 			vertex_set.insert(source);
@@ -178,7 +181,7 @@ map_vertex_set instance_generator::get_predecessors(my_graph::digraph& graph) {
 }
 
 
-void instance_generator::fix_ids_order_graph(my_graph::digraph &order_graph, my_graph::digraph &covering_graph) {
+void instance_generator::fix_ids_order_graph(digraph &order_graph, digraph &covering_graph) {
 	for (const auto& e : boost::make_iterator_range(boost::edges(order_graph))) {
 		if (order_graph[e].id == -1)
 			order_graph[e].id = current_edge_id++;
@@ -186,12 +189,12 @@ void instance_generator::fix_ids_order_graph(my_graph::digraph &order_graph, my_
 }
 
 /* GET ROOT */
-my_graph::vertex instance_generator::get_root(my_graph::digraph &graph) {
+vertex instance_generator::get_root(digraph &graph) {
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
 		if (graph[v].is_root)
 			return v;
 	}
-	return my_graph::vertex();
+	return vertex();
 }
 
 /* ADD ROOT */
@@ -218,13 +221,13 @@ void instance_generator::add_root(
 }
 
 /* CREATE VERTEX PROPERTIES */
-std::vector<my_graph::vertex_info> instance_generator::create_vertex_properties(
+std::vector<vertex_info> instance_generator::create_vertex_properties(
 		std::vector<std::string> &vertex_labels) {
-	auto vertices = std::vector<my_graph::vertex_info>();
+	auto vertices = std::vector<vertex_info>();
 	auto n = vertex_labels.size();
 
 	for (auto i = 0u; i < n; i++) {
-		vertices.push_back(my_graph::vertex_info(vertex_labels[i], i));
+		vertices.push_back(vertex_info(vertex_labels[i], i));
 		if (vertex_labels[i].compare("root") == 0) {
 			vertices[i].is_root = true;
 		}
@@ -234,11 +237,11 @@ std::vector<my_graph::vertex_info> instance_generator::create_vertex_properties(
 }
 
 /* CREATE ORDER GRAPH */
-my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::vertex_info> &v_info,
+digraph instance_generator::create_order_graph(std::vector<vertex_info> &v_info,
 		std::vector<std::vector<bool>> &adjacency_matrix) {
 	auto n = v_info.size();
-	auto adj_matrix_graph = my_graph::digraph();
-	auto vertices = std::vector<my_graph::vertex>();
+	auto adj_matrix_graph = digraph();
+	auto vertices = std::vector<vertex>();
 
 //		add vertices
 	for (auto i : v_info) {
@@ -248,14 +251,14 @@ my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::v
 
 	std::cout << std::endl;
 //		add edges
-	my_graph::edge e;
+	edge e;
 	auto inserted = false;
 
 	for (auto i = 0u; i < n; i++) {
 		for (auto j = 0u; j < n; j++) {
 			if (adjacency_matrix[i][j]) {
 				boost::tie(e, inserted) = boost::add_edge(vertices[i],
-						vertices[j], my_graph::edge_info(i, j, my_graph::ORIGINAL),
+						vertices[j], edge_info(i, j, ORIGINAL),
 						adj_matrix_graph);
 				if (inserted) {
 					inserted = false;
@@ -269,8 +272,8 @@ my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::v
 	}
 
 //		find transitive closure
-	auto order_graph = my_graph::digraph();
-	std::map<my_graph::vertex, my_graph::vertex> g_to_tc;
+	auto order_graph = digraph();
+	std::map<vertex, vertex> g_to_tc;
 	std::vector<size_t> id_map(boost::num_vertices(adj_matrix_graph));
 	std::iota(id_map.begin(), id_map.end(), 0u);
 
@@ -292,15 +295,15 @@ my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::v
 }
 
 // TODO: review
-my_graph::digraph instance_generator::create_covering_graph(my_graph::digraph &order_graph) {
-	auto aux_graph = my_graph::digraph();
+digraph instance_generator::create_covering_graph(digraph &order_graph) {
+	auto aux_graph = digraph();
 
-	auto g_to_tr = std::map<my_graph::vertex, my_graph::vertex>();
+	auto g_to_tr = std::map<vertex, vertex>();
 
 	boost::transitive_reduction(order_graph, aux_graph,
-			boost::make_assoc_property_map(g_to_tr), boost::get(&my_graph::vertex_info::index, order_graph));
+			boost::make_assoc_property_map(g_to_tr), boost::get(&vertex_info::index, order_graph));
 
-	auto tr_to_g = std::map<my_graph::vertex, my_graph::vertex>();
+	auto tr_to_g = std::map<vertex, vertex>();
 	for (auto &e : g_to_tr) {
 		aux_graph[e.second] = order_graph[e.first];
 		tr_to_g[e.second] = e.first;
@@ -316,7 +319,7 @@ my_graph::digraph instance_generator::create_covering_graph(my_graph::digraph &o
 		}
 	}
 
-	auto covering_graph = my_graph::digraph();
+	auto covering_graph = digraph();
 	boost::copy_graph(order_graph, covering_graph);
 
 	for (const auto& e : boost::make_iterator_range(boost::edges(order_graph))) {
@@ -331,10 +334,10 @@ my_graph::digraph instance_generator::create_covering_graph(my_graph::digraph &o
 	return covering_graph;
 }
 
-std::vector<std::pair<my_graph::vertex, my_graph::vertex>> instance_generator::find_incompatible_vertices(
-		my_graph::digraph &order_graph) {
-	auto incompatible_vertices = std::vector<std::pair<my_graph::vertex, my_graph::vertex>>();
-	auto inserted = std::set<std::pair<my_graph::vertex, my_graph::vertex>>();
+std::vector<std::pair<vertex, vertex>> instance_generator::find_incompatible_vertices(
+		digraph &order_graph) {
+	auto incompatible_vertices = std::vector<std::pair<vertex, vertex>>();
+	auto inserted = std::set<std::pair<vertex, vertex>>();
 
 	for (auto h : boost::make_iterator_range(boost::vertices(order_graph))) {
 		for (auto t : boost::make_iterator_range(boost::vertices(order_graph))) {
@@ -361,16 +364,16 @@ std::vector<std::pair<my_graph::vertex, my_graph::vertex>> instance_generator::f
 	return incompatible_vertices;
 }
 
-my_graph::digraph instance_generator::create_input_graph(my_graph::digraph &order_graph,
-		my_graph::digraph &covering_graph, std::vector<std::pair<int, int>>& art_arcs_pair) {
+digraph instance_generator::create_input_graph(digraph &order_graph,
+		digraph &covering_graph, std::vector<std::pair<int, int>>& art_arcs_pair) {
 	auto incompatible_vertices = find_incompatible_vertices(order_graph);
 
-	auto input_graph = my_graph::digraph();
+	auto input_graph = digraph();
 	boost::copy_graph(covering_graph, input_graph);
 
 	assert(boost::num_edges(input_graph) == boost::num_edges(covering_graph));
 
-	my_graph::edge e;
+	edge e;
 	auto inserted = false;
 
 	auto value_set = false;
@@ -378,13 +381,13 @@ my_graph::digraph instance_generator::create_input_graph(my_graph::digraph &orde
 		if (covering_graph[a.first].remove or covering_graph[a.second].remove)
 			value_set = true;
 		boost::tie(e, inserted) = boost::add_edge(a.first, a.second,
-				my_graph::edge_info(current_edge_id++, a.first, a.second, my_graph::ARTIFICIAL, value_set, 0),
+				edge_info(current_edge_id++, a.first, a.second, ARTIFICIAL, value_set, 0),
 				input_graph);
 		
 		if (not inserted)
 			exit(0);
 		boost::tie(e, inserted) = boost::add_edge(a.second, a.first,
-				my_graph::edge_info(current_edge_id++, a.second, a.first, my_graph::ARTIFICIAL, value_set, 0),
+				edge_info(current_edge_id++, a.second, a.first, ARTIFICIAL, value_set, 0),
 				input_graph);
 		value_set = false;
 
@@ -416,7 +419,7 @@ std::vector<bool> instance_generator::find_ids_maximum_vertices(
 	return maximum_vertices;
 }
 
-void instance_generator::update_maximum_vertices(my_graph::digraph &graph,
+void instance_generator::update_maximum_vertices(digraph &graph,
 		std::vector<bool> &ids) {
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
 		if (ids[graph[v].id])
@@ -424,10 +427,10 @@ void instance_generator::update_maximum_vertices(my_graph::digraph &graph,
 	}
 }
 
-my_graph::digraph instance_generator::transpose_order_graph(my_graph::digraph &order_graph) {
-	auto t_order_graph = my_graph::digraph();
+digraph instance_generator::transpose_order_graph(digraph &order_graph) {
+	auto t_order_graph = digraph();
 	boost::transpose_graph(order_graph, t_order_graph);
 	return t_order_graph;
 }
-}
+
 

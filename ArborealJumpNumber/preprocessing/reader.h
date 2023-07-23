@@ -17,19 +17,19 @@
 
 
 
-namespace ajns {
-	class reader {
-		problem_data mtx_format_reader(std::ifstream&);
-	public:
-		std::string path_file_name;
-		std::string file_name;
-		size_t num_elements;
-		std::vector<std::vector<bool>> adjacency_matrix;
 
-		reader(std::string path_file_name);
-		problem_data read();
-		virtual ~reader();
-	};
-}
+class reader {
+	problem_data mtx_format_reader(std::ifstream&);
+public:
+	std::string path_file_name;
+	std::string file_name;
+	size_t num_elements;
+	std::vector<std::vector<bool>> adjacency_matrix;
+
+	reader(std::string path_file_name);
+	problem_data read();
+	virtual ~reader();
+};
+
 
 #endif /* PREPROCESSING_READER_H_ */

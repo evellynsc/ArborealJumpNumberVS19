@@ -12,7 +12,6 @@
 #include <boost/config.hpp>
 #include <boost/graph/graph_utility.hpp>
 
-namespace my_graph {
 enum edge_type {
 	ORIGINAL, ARTIFICIAL, FLOW, USINK
 };
@@ -103,5 +102,5 @@ struct edge_info {
 	    return os;
 	}
 };
-}
+
 #endif /* BASE_ELEMENTARY_H_ */

@@ -12,16 +12,11 @@
 #include <cstring>
 #include "preprocessing/reader.h"
 #include "preprocessing/instance_generator.h"
-#include "base/instance.h"
-#include "solver/solver.h"
-#include "solver/BCSolver.h"
-#include "solver/MFSolver.h"
-#include "solver/DDLSolver.h"
-#include "solver/exponential_model.h"
-#include "solver/multi_flow_model.h"
-#include "solver/ddl_model.h"
-#include "heuristic/minimal_extension.h"
-#include "base/properties.h"
+#include "headers/instance.h"
+
+#include "headers/properties.h"
+
+#include "headers/instance_solver.h"
 
 
 #include "windows.h"
@@ -39,19 +34,10 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	auto input_file = ajns::reader(argv[1]);
+	auto input_file = reader(argv[1]);
 	auto problem_data = input_file.read();
-	auto generator = ajns::instance_generator();
+	auto generator = instance_generator();
 	auto my_instance = generator.create_instance(problem_data);
-
-	PROCESS_MEMORY_COUNTERS_EX pmc;
-	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
-	SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
-	SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
-
-	std::cout << "virtual memory " << virtualMemUsedByMe << std::endl;
-	std::cout << "physical memory " << physMemUsedByMe << std::endl;
-
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto prop = ajns::properties();
@@ -63,50 +49,9 @@ int main(int argc, char* argv[]) {
 
 	//exit(1);
 
-
-	if (argv[2] == std::string("h")) {
-		prop.algo_t = algo_type::HH;
-		auto extension = ajns::minimal_extension(my_instance);
-		extension.run(prop);
-	}
-	else {
-		if (argv[2] == std::string("b")) {
-			prop.algo_t = algo_type::BRANCH_AND_CUT;
-			auto solver_config = solver::solver_params();
-			auto exp_model = solver::ExponentialModel(my_instance, solver::RELAXED_CUTSET);
-			solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
-			try {
-				std::cout << "entrando solver\n";
-				ajnp_solver->solve(prop);
-			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}
-		}
-		else if (argv[2] == std::string("f")) {
-			prop.algo_t = algo_type::MFLOW;
-			auto solver_config = solver::solver_params();
-			auto exp_model = solver::MultiFlowModel(my_instance, true);
-			solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
-			try {
-				ajnp_solver->solve(prop);
-			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}			
-		}
-		else if (argv[2] == std::string("d")) {
-			prop.algo_t = algo_type::DDL;
-			auto solver_config = solver::solver_params();
-			auto model = solver::DDLModel(my_instance, true);
-			solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
-			try {
-				ajnp_solver->solve(prop);
-			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}
-		}
+	if (argv[2] == std::string("c")) {
+		InstanceSolver solver = InstanceSolver::GetInstance(argv[1], "characterizationbased", int(argv[3]));
+		solver.Solve("teste.out", 2, 2);
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();

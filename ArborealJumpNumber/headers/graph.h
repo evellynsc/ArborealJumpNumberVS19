@@ -11,7 +11,10 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include "elementary.h"
-namespace my_graph {
+
+//TODO: change digraph to matrix
+//https://stackoverflow.com/questions/28995708/boost-graph-test-if-two-vertices-are-adjacent
+
 using matrix = boost::adjacency_matrix<boost::directedS, vertex_info, edge_info>;
 using digraph = boost::adjacency_list<boost::listS, boost::vecS, boost::bidirectionalS, vertex_info, edge_info>;
 
@@ -29,7 +32,7 @@ using in_edge_itr = digraph::in_edge_iterator;
 using color_map = std::map<vertex, boost::default_color_type>;
 
 using edge_map = std::map<edge, double>;
-}
+
 
 //edge_itr eit, eit_end;
 //vertex_itr vit, vit_end;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -143,52 +143,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="algorithms\flow.cpp" />
     <ClCompile Include="ArborealJumpNumber.cpp" />
-    <ClCompile Include="base\solution.cpp" />
-    <ClCompile Include="solver\DDLSolver.cpp" />
-    <ClCompile Include="solver\ddl_model.cpp" />
-    <ClCompile Include="heuristic\minimal_extension.cpp" />
-    <ClCompile Include="output\writer.cpp" />
+    <ClCompile Include="solver\formulations.cpp" />
+    <ClCompile Include="solver\characterization_based_formulation.cpp" />
     <ClCompile Include="preprocessing\instance_generator.cpp" />
     <ClCompile Include="preprocessing\reader.cpp" />
-    <ClCompile Include="solver\BCSolver.cpp" />
-    <ClCompile Include="solver\exponential_model.cpp" />
-    <ClCompile Include="solver\MFSolver.cpp" />
-    <ClCompile Include="solver\model.cpp" />
-    <ClCompile Include="solver\multi_flow_model.cpp" />
-    <ClCompile Include="solver\solver.cpp" />
+    <ClCompile Include="solver\answer.cpp" />
+    <ClCompile Include="solver\exact_solver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="algorithms\flow.h" />
-    <ClInclude Include="base\elementary.h" />
-    <ClInclude Include="base\graph.h" />
-    <ClInclude Include="base\instance.h" />
-    <ClInclude Include="base\properties.h" />
-    <ClInclude Include="base\solution.h" />
-    <ClInclude Include="solver\DDLSolver.h" />
-    <ClInclude Include="solver\ddl_model.h" />
-    <ClInclude Include="heuristic\minimal_extension.h" />
-    <ClInclude Include="output\writer.h" />
+    <ClInclude Include="headers\answer.h" />
+    <ClInclude Include="headers\formulations.h" />
+    <ClInclude Include="headers\characterization_based_formulation.h" />
+    <ClInclude Include="headers\instance.h" />
+    <ClInclude Include="headers\instance_solver.h" />
     <ClInclude Include="preprocessing\instance_generator.h" />
     <ClInclude Include="preprocessing\problem_data.h" />
     <ClInclude Include="preprocessing\reader.h" />
-    <ClInclude Include="solver\BCSolver.h" />
-    <ClInclude Include="solver\callbacks\add_min_cuts_lc.h" />
-    <ClInclude Include="solver\callbacks\add_min_cuts_uc.h" />
-    <ClInclude Include="solver\callbacks\pi_inequality.h" />
-    <ClInclude Include="solver\callbacks\pi_sigma_inequality.h" />
-    <ClInclude Include="solver\callbacks\precedence_inequality.h" />
-    <ClInclude Include="solver\callbacks\reachability.h" />
-    <ClInclude Include="solver\callbacks\sigma_inequality.h" />
-    <ClInclude Include="solver\exponential_model.h" />
-    <ClInclude Include="solver\MFSolver.h" />
-    <ClInclude Include="solver\model.h" />
-    <ClInclude Include="solver\multi_flow_model.h" />
-    <ClInclude Include="solver\solver.h" />
+    <ClInclude Include="solver\instance_solver.cpp" />
+    <ClInclude Include="headers\exact_solver.h" />
     <ClInclude Include="solver\solver_params.h" />
     <ClInclude Include="utils\callbacks.h" />
-    <ClInclude Include="utils\nadeau.h" />
     <ClInclude Include="utils\preprocessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
