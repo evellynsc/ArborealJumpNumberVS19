@@ -359,12 +359,12 @@ namespace solver {
 				}
 			}
 		}
-// as restrições abaixo não estão na implementação do ortools
+
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
 			auto idx_i0 = index_parser_ns[i][0];
 			cplex_model.add(g[idx_i0] == 0);
 		}
-
+// as restrições abaixo não estão na implementação do ortools
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
 			for (int t = 1; t <= s; t++) {
 				auto idx_it = index_parser_ns[i][t];
