@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-enum algo_type { GREEDY, BRANCH_AND_CUT, MFLOW, HS, HH, DDL };
+enum algo_type { GREEDY, BRANCH_AND_CUT, MFLOW, HS, HH, DDL, CHARACTERIZATION };
 
 namespace ajns {
 

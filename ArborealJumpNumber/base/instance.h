@@ -21,8 +21,9 @@ namespace ajns {
 	public:
 		std::string id;
 		my_graph::vertex root;
-		size_t num_vertices;
-		size_t num_edges;
+		int num_vertices;
+		int num_edges;
+
 		std::vector<std::pair<int, int>> artificial_arcs_pair;
 		std::vector<my_graph::vertex_info> vertex_properties;
 		std::vector<my_graph::edge_info> edge_properties;
@@ -33,6 +34,10 @@ namespace ajns {
 
 		map_vertex_set sucessors;
 		map_vertex_set predecessors;
+
+
+		map_vertex_set covering_sucessors;
+		map_vertex_set covering_predecessors;
 
 
 		//	TODO: make a vector to represent edge ids
@@ -60,21 +65,6 @@ namespace ajns {
 						t_order_graph), covering_graph(covering_graph), input_graph(
 							input_graph), predecessors(predecessors), sucessors(sucessors) {
 			construct_adj_matrices();
-			//for (auto v : predecessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
-			//std::cout << std::endl;
-			//for (auto v : sucessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
 		}
 
 		instance(std::string id, my_graph::vertex root, my_graph::digraph& order_graph, const my_graph::digraph& t_order_graph,
@@ -85,21 +75,6 @@ namespace ajns {
 					t_order_graph), covering_graph(covering_graph), input_graph(
 						input_graph), predecessors(predecessors), sucessors(sucessors) {
 			construct_adj_matrices();
-			//for (auto v : predecessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
-			//std::cout << std::endl;
-			//for (auto v : sucessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
 		}
 
 		instance(std::string id, my_graph::vertex root, my_graph::digraph& order_graph, const my_graph::digraph& t_order_graph,
@@ -111,21 +86,19 @@ namespace ajns {
 						input_graph), predecessors(predecessors), sucessors(sucessors),
 			artificial_arcs_pair(artificial_arcs_pair) {
 			construct_adj_matrices();
-			//for (auto v : predecessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
-			//std::cout << std::endl;
-			//for (auto v : sucessors) {
-			//	std::cout << v.first << ": ";
-			//	for (auto u : v.second) {
-			//		std::cout << u << " ";
-			//	}
-			//	std::cout << std::endl;
-			//}
+		}
+
+		instance(std::string id, my_graph::vertex root, my_graph::digraph& order_graph, const my_graph::digraph& t_order_graph,
+			const my_graph::digraph& covering_graph, const my_graph::digraph& input_graph, map_vertex_set predecessors,
+			map_vertex_set sucessors, map_vertex_set covering_predecessors,
+			map_vertex_set covering_sucessors, std::vector<std::pair<int, int>> artificial_arcs_pair) :
+			id(id), root(root), num_vertices(boost::num_vertices(input_graph)), num_edges(
+				boost::num_edges(input_graph)), order_graph(order_graph), t_order_graph(
+					t_order_graph), covering_graph(covering_graph), input_graph(
+						input_graph), predecessors(predecessors), sucessors(sucessors),
+							covering_predecessors(covering_predecessors), covering_sucessors(covering_sucessors),
+								artificial_arcs_pair(artificial_arcs_pair) {
+			construct_adj_matrices();
 		}
 
 		bool exist_edge_in_input_graph(size_t from, size_t to) {
@@ -136,9 +109,14 @@ namespace ajns {
 			return adj_matrix_order_graph[from][to];
 		}
 
+		bool exist_edge_in_covering_graph(size_t from, size_t to) {
+			return adj_matrix_covering_graph[from][to];
+		}
+
 	private:
 		std::vector<std::vector<bool>> adj_matrix_input_graph;
 		std::vector<std::vector<bool>> adj_matrix_order_graph;
+		std::vector<std::vector<bool>> adj_matrix_covering_graph;
 
 		void construct_adj_matrices() {
 			auto n = num_vertices;
@@ -160,6 +138,11 @@ namespace ajns {
 			for (auto from : boost::make_iterator_range(boost::vertices(order_graph))) {
 				auto row = get_row_of_neighboors(order_graph, from);
 				adj_matrix_order_graph.push_back(row);
+			}
+
+			for (auto from : boost::make_iterator_range(boost::vertices(covering_graph))) {
+				auto row = get_row_of_neighboors(covering_graph, from);
+				adj_matrix_covering_graph.push_back(row);
 			}
 		}
 	};

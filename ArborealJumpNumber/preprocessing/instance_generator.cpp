@@ -37,9 +37,12 @@ instance instance_generator::create_instance(problem_data &data) {
 	map_vertex_set sucessors = get_successors(order_graph);
 	map_vertex_set predecessors = get_predecessors(order_graph);
 
+	map_vertex_set covering_sucessors = get_successors(covering_graph);
+	map_vertex_set covering_predecessors = get_predecessors(covering_graph);
+
 
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
-			covering_graph, input_graph, predecessors, sucessors, artificial_arcs_pair);
+			covering_graph, input_graph, predecessors, sucessors, covering_predecessors, covering_sucessors, artificial_arcs_pair);
 	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();

@@ -10,6 +10,8 @@
 #include <iostream>
 #include <chrono>
 #include <cstring>
+#include <cstdlib>
+
 #include "preprocessing/reader.h"
 #include "preprocessing/instance_generator.h"
 #include "base/instance.h"
@@ -23,7 +25,8 @@
 #include "heuristic/minimal_extension.h"
 #include "base/properties.h"
 
-
+#include "solver/CharacterizationBasedFormulation.h"
+#include "solver/CharacterizationBasedSolver.h"
 #include "windows.h"
 #include "psapi.h"
 
@@ -44,22 +47,14 @@ int main(int argc, char* argv[]) {
 	auto generator = ajns::instance_generator();
 	auto my_instance = generator.create_instance(problem_data);
 
-	PROCESS_MEMORY_COUNTERS_EX pmc;
-	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
-	SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
-	SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
-
-	std::cout << "virtual memory " << virtualMemUsedByMe << std::endl;
-	std::cout << "physical memory " << physMemUsedByMe << std::endl;
-
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto prop = ajns::properties();
 
 	prop.num_arcs = my_instance.num_edges;
 	prop.num_nodes = my_instance.num_vertices;
-	int a;
-	std::cin >> a;
+	//int a;
+	//std::cin >> a;
 
 	//exit(1);
 
@@ -100,6 +95,19 @@ int main(int argc, char* argv[]) {
 			auto solver_config = solver::solver_params();
 			auto model = solver::DDLModel(my_instance, true);
 			solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
+			try {
+				ajnp_solver->solve(prop);
+			}
+			catch (...) {
+				std::cout << "algo de errado não está certo\n";
+			}
+		}
+		else if (argv[2] == std::string("c")) {
+			prop.algo_t = algo_type::CHARACTERIZATION;
+			auto solver_config = solver::solver_params();
+			std::cout << "CHARACTERIZATION\n";
+			auto model = solver::CharacterizationBasedFormulation(my_instance, atoi(argv[3]), false);
+			solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
 			try {
 				ajnp_solver->solve(prop);
 			}
