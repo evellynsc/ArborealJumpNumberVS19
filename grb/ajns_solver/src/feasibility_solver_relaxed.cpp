@@ -304,31 +304,31 @@ void operations_research::FeasibilitySolverRelaxed::solve_model()
     std::cout << std::endl;
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned t = 0; t < nparts; ++t)
-            if (x[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
+            if (x[get_index_d2({i, data->n},{t, nparts})]->solution_value() >= 0.000000001)
                 std::cout << "x(" << i << "," << t << ")" << std::endl;
 
     std::cout << std::endl;
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             for (long unsigned t = 0; t < nparts; ++t)
-                if (a[get_index_d3({i, data->n},{j, data->n},{t, nparts})]->solution_value() == 1)
+                if (a[get_index_d3({i, data->n},{j, data->n},{t, nparts})]->solution_value() >= 0.000000001)
                     std::cout << "a(" << i << "," << j << "," << t << ")" << std::endl;
 
     std::cout << std::endl;
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned t = 0; t < nparts; ++t)
-            if (f[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
+            if (f[get_index_d2({i, data->n},{t, nparts})]->solution_value() >= 0.000000001)
                 std::cout << "f(" << i << "," << t << ")" << std::endl;
 
     std::cout << std::endl;
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned t = 0; t < nparts; ++t)
-            if (r[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
+            if (r[get_index_d2({i, data->n},{t, nparts})]->solution_value() >= 0.000000001)
                 std::cout << "r(" << i << "," << t << ")" << std::endl;
 
     std::cout << std::endl;
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned t = 0; t < nparts; ++t)
-            if (g[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
+            if (g[get_index_d2({i, data->n},{t, nparts})]->solution_value() >= 0.000000001)
                 std::cout << "g(" << i << "," << t << ")" << std::endl;
 }
