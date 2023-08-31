@@ -121,7 +121,7 @@ void BCSolver::solve() {
 				if (x_values[i] > 1e-6) edges.push_back(true);
 				else edges.push_back(false);
 			}
-			auto final_solution = ajns::solution::construct_from_edges(problem_instance.input_graph, edges);
+			/*auto final_solution = ajns::solution::construct_from_edges(problem_instance.input_graph, edges);
 			for (auto e : boost::make_iterator_range(boost::edges(final_solution))) {
 				auto head = final_solution[e].source_id;
 				auto tail = final_solution[e].target_id;
@@ -137,7 +137,7 @@ void BCSolver::solve() {
 			boost::write_graphviz(outFile, final_solution,
 							boost::make_label_writer(boost::get(&my_graph::vertex_info::id, final_solution)),
 							boost::make_label_writer(boost::get(&my_graph::edge_info::type, final_solution)));
-			outFile.close();
+			outFile.close();*/
 //			auto command = "dot -Tps " + name_file + " -o " + problem_instance.id + "_output.ps";
 //			std::system(command.c_str());
 		} else {

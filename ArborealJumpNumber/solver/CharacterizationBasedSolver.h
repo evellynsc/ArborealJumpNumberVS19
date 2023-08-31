@@ -3,6 +3,7 @@
 #include "solver.h"
 #include "CharacterizationBasedFormulation.h"
 #include <ilcplex/ilocplex.h>
+
 ILOSTLBEGIN
 
 namespace solver {

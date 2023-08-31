@@ -102,18 +102,28 @@ int main(int argc, char* argv[]) {
 				std::cout << "algo de errado não está certo\n";
 			}
 		}
+		// TODO: verificar se funciona quando s = 0, se não funcionar, identificar o porquê.
 		else if (argv[2] == std::string("c")) {
 			prop.algo_t = algo_type::CHARACTERIZATION;
 			auto solver_config = solver::solver_params();
 			std::cout << "CHARACTERIZATION\n";
-			auto model = solver::CharacterizationBasedFormulation(my_instance, atoi(argv[3]), false);
-			solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
-			try {
-				ajnp_solver->solve(prop);
+			//auto s = atoi(argv[3]);
+			auto s = 1;
+			auto run_next = true;
+			while (run_next) {
+				auto model = solver::CharacterizationBasedFormulation(my_instance, s, false);
+				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
+				try {
+					ajnp_solver->solve(prop);
+				}
+				catch (...) {
+					std::cout << "algo de errado não está certo\n";
+				}
+				std::cout << ajnp_solver->get_status() << std::endl;
+				run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false:true;
+				s++;
 			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}
+			
 		}
 	}
 

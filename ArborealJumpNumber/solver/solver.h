@@ -15,6 +15,7 @@ ILOSTLBEGIN
 #include "model.h"
 #include "solver_params.h"
 #include "../base/properties.h"
+#include "../base/solution.h"
 
 namespace solver {
 class solver {
@@ -22,6 +23,8 @@ protected:
 	solver_params config;
 	IloCplex cplex_solver;
 	std::size_t num_jumps; // mudar aqui pra double
+	Solution* solution;
+	int status;
 
 public:
 	solver();
@@ -29,6 +32,7 @@ public:
 /* 	solver(solver_params&, Model&); */
 	void setup_cplex();
 	void solve(ajns::properties &p);
+	int get_status();
 	virtual void solve() = 0;
 	virtual ~solver();
 };

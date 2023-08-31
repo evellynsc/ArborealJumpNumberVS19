@@ -13,7 +13,6 @@ namespace solver {
 		this->type = CHARACTERIZATION;
 		this->problem_instance = problem_instance;
 		this->s = s;
-		std::cout << s << endl;
 	}
 
 	CharacterizationBasedFormulation::CharacterizationBasedFormulation(ajns::instance& problem_instance, int s, bool _linear_relaxation) {
@@ -27,15 +26,15 @@ namespace solver {
 	//	return y;
 	//}
 
-	IloBoolVarArray CharacterizationBasedFormulation::get_x_variables() {
+	IloNumVarArray CharacterizationBasedFormulation::get_x_variables() {
 		return x;
 	}
 
-	IloArray<IloBoolVarArray> CharacterizationBasedFormulation::get_a_variables() {
+	IloArray<IloNumVarArray> CharacterizationBasedFormulation::get_a_variables() {
 		return a;
 	}
 
-	IloBoolVarArray CharacterizationBasedFormulation::get_r_variables() {
+	IloNumVarArray CharacterizationBasedFormulation::get_r_variables() {
 		return r;
 	}
 
@@ -43,16 +42,15 @@ namespace solver {
 		return s;
 	}
 
-	IloBoolVarArray CharacterizationBasedFormulation::get_f_variables() {
+	IloNumVarArray CharacterizationBasedFormulation::get_f_variables() {
 		return f;
 	}
 
-	IloBoolVarArray CharacterizationBasedFormulation::get_g_variables() {
+	IloNumVarArray CharacterizationBasedFormulation::get_g_variables() {
 		return g;
 	}
 
 	void CharacterizationBasedFormulation::add_variables() {
-		std::cout << "Start creating variables 0 \n" << std::endl;
 		auto m = problem_instance.num_vertices * problem_instance.num_vertices;
 		
 		auto s1 = s + 1u;
@@ -84,25 +82,47 @@ namespace solver {
 				index_parser_s2[u][t] = t * s1 + u;
 			}
 		}
+		if (linear_relaxation) {
+			x = IloNumVarArray(env, ns, 0.0, 1.0, ILOFLOAT);
+			r = IloNumVarArray(env, ns, 0.0, 1.0, ILOFLOAT);
+			f = IloNumVarArray(env, ns, 0.0, 1.0, ILOFLOAT);
+			g = IloNumVarArray(env, ns, 0.0, 1.0, ILOFLOAT);
 
-		x = IloBoolVarArray(env, ns);
-		r = IloBoolVarArray(env, ns);
-		f = IloBoolVarArray(env, ns);
-		g = IloBoolVarArray(env, ns);
+			a = IloArray<IloNumVarArray>(env, m);
+			for (int i = 0; i < m; i++) {
+				a[i] = IloNumVarArray(env, s1, 0.0, 1.0, ILOFLOAT);
+			}
 
-		a = IloArray<IloBoolVarArray>(env, m);
-		for (int i = 0; i < m; i++) {
-			a[i] = IloBoolVarArray(env, s1);
+			h = IloArray<IloNumVarArray>(env, m);
+			for (int i = 0; i < m; i++) {
+				h[i] = IloNumVarArray(env, s2, 0.0, 1.0, ILOFLOAT);
+			}
+
+			w = IloArray<IloNumVarArray>(env, ns);
+			for (int i = 0; i < ns; i++) {
+				w[i] = IloNumVarArray(env, s1, 0.0, 1.0, ILOFLOAT);
+			}
 		}
+		else {
+			x = IloNumVarArray(env, ns, 0.0, 1.0, ILOBOOL);
+			r = IloNumVarArray(env, ns, 0.0, 1.0, ILOBOOL);
+			f = IloNumVarArray(env, ns, 0.0, 1.0, ILOBOOL);
+			g = IloNumVarArray(env, ns, 0.0, 1.0, ILOBOOL);
 
-		h = IloArray<IloBoolVarArray>(env, m);
-		for (int i = 0; i < m; i++) {
-			h[i] = IloBoolVarArray(env, s2);
-		}
+			a = IloArray<IloNumVarArray>(env, m);
+			for (int i = 0; i < m; i++) {
+				a[i] = IloNumVarArray(env, s1, 0.0, 1.0, ILOBOOL);
+			}
 
-		w = IloArray<IloBoolVarArray>(env, ns);
-		for (int i = 0; i < ns; i++) {			
-			w[i] = IloBoolVarArray(env, s1);
+			h = IloArray<IloNumVarArray>(env, m);
+			for (int i = 0; i < m; i++) {
+				h[i] = IloNumVarArray(env, s2, 0.0, 1.0, ILOBOOL);
+			}
+
+			w = IloArray<IloNumVarArray>(env, ns);
+			for (int i = 0; i < ns; i++) {
+				w[i] = IloNumVarArray(env, s1, 0.0, 1.0, ILOBOOL);
+			}
 		}
 
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
@@ -153,13 +173,9 @@ namespace solver {
 				}
 			}
 		}
-
-		std::cout << "Finish creating variables\n" << std::endl;
 	}
 
 	void CharacterizationBasedFormulation::add_constraints() {
-
-		std::cout << "==== " << s << std::endl;
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
 			if (i == problem_instance.root) {
 				cplex_model.add(r[index_parser_ns[i][0]] == 1);
@@ -232,7 +248,6 @@ namespace solver {
 						auto idx_m = index_parser_m[i][j];
 						sum_a += a[idx_m][t];
 					}
-					std::cout << std::endl;
 				}
 				cplex_model.add(sum_a <= 1);
 			}
@@ -363,7 +378,19 @@ namespace solver {
 			}
 		}
 
-		std::cout << "Finish adding sum_a\n" << std::endl;
+		
+		for (int t = 1; t <= s; t++) {
+			IloExpr sum_x_l(env), sum_x_r(env);
+			for (int i = 0; i < problem_instance.num_vertices; i++) {
+				auto idx_it = index_parser_ns[i][t];
+				sum_x_l += x[idx_it];
+			}	
+			for (int i = 0; i < problem_instance.num_vertices; i++) {
+				auto idx_it = index_parser_ns[i][t-1];
+				sum_x_r += x[idx_it];
+			}
+			cplex_model.add(sum_x_l - sum_x_r <= 0);
+		}
 	}
 
 	void CharacterizationBasedFormulation::add_objective_function() {

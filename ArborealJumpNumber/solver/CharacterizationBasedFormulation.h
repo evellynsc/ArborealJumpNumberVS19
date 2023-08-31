@@ -13,14 +13,14 @@ namespace solver {
         void add_objective_function();
         void add_constraints();
 
-        IloBoolVarArray x;
-        IloBoolVarArray r;
-        IloBoolVarArray f;
-        IloBoolVarArray g;
+        IloNumVarArray x;
+        IloNumVarArray r;
+        IloNumVarArray f;
+        IloNumVarArray g;
 
-        IloArray<IloBoolVarArray> a;
-        IloArray<IloBoolVarArray> h;
-        IloArray<IloBoolVarArray> w;
+        IloArray<IloNumVarArray> a;
+        IloArray<IloNumVarArray> h;
+        IloArray<IloNumVarArray> w;
 
         vector<vector<int>> index_parser_ns;
         vector<vector<int>> index_parser_m;
@@ -34,11 +34,11 @@ namespace solver {
         CharacterizationBasedFormulation(ajns::instance&, int s);
         CharacterizationBasedFormulation(ajns::instance&, int s, bool _linear_relaxation);
    /*     IloNumVarArray get_v_variables();*/
-        IloBoolVarArray get_x_variables();
-        IloBoolVarArray get_r_variables();
-        IloBoolVarArray get_f_variables();
-        IloBoolVarArray get_g_variables();
-        IloArray<IloBoolVarArray> get_a_variables();
+        IloNumVarArray get_x_variables();
+        IloNumVarArray get_r_variables();
+        IloNumVarArray get_f_variables();
+        IloNumVarArray get_g_variables();
+        IloArray<IloNumVarArray> get_a_variables();
         int get_s();
         int idx_ns(int i, int j);
 

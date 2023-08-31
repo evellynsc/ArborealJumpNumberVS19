@@ -43,7 +43,7 @@ instance instance_generator::create_instance(problem_data &data) {
 
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
 			covering_graph, input_graph, predecessors, sucessors, covering_predecessors, covering_sucessors, artificial_arcs_pair);
-	std::cout << "ROOT ======= " << order_graph[root].label << std::endl;
+
 	auto dot = "dot -Tpdf ";
 	auto command = std::string();
 	std::ofstream outFile;
@@ -75,11 +75,6 @@ instance instance_generator::create_instance(problem_data &data) {
 			boost::make_label_writer(
 					boost::get(&my_graph::edge_info::type, input_graph)));
 	outFile.close();
-
-	
-
-	std::cout << "finish creating instance" << std::endl;
-
 	return ajnp;
 }
 
@@ -97,7 +92,6 @@ void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
 			out_dg.insert({v, 0});
 			vertices_to_remove.push_back(v);
 			graph[v].remove = true;
-			std::cout << graph[v].id << std::endl;
 		}
 	}
 
@@ -116,7 +110,6 @@ void instance_generator::set_vertices_to_remove(my_graph::digraph& graph) {
 
 				if (out_dg[s] == 0) {
 					vertices_to_remove.push_back(s);
-					std::cout << graph[s].id << std::endl;
 					graph[v].remove = true;
 				}
 			}
@@ -165,16 +158,13 @@ map_vertex_set instance_generator::get_predecessors(my_graph::digraph& graph) {
 
 
 	for (auto v : boost::make_iterator_range(boost::vertices(graph))) {
-		std::cout << graph[v].id << ": ";
 		auto vertex_set = std::set<my_graph::vertex>();
 		for (boost::tie(ei, ei_end) = in_edges(v, graph); ei != ei_end; ++ei) {
 			auto source = boost::source(*ei, graph);
 			vertex_set.insert(source);
-			std::cout << graph[source].id << ", ";
 		}
 
 		predecessors.insert({ v, vertex_set });
-		std::cout << std::endl;
 	}
 
 	return predecessors;
@@ -248,8 +238,6 @@ my_graph::digraph instance_generator::create_order_graph(std::vector<my_graph::v
 		auto v = boost::add_vertex(i, adj_matrix_graph);
 		vertices.push_back(v);
 	}
-
-	std::cout << std::endl;
 //		add edges
 	my_graph::edge e;
 	auto inserted = false;
