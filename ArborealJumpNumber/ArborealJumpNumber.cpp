@@ -28,11 +28,6 @@
 #include "solver/CharacterizationBasedFormulation.h"
 #include "solver/CharacterizationBasedSolver.h"
 #include "windows.h"
-#include "psapi.h"
-
-
-
-
 
 
 int main(int argc, char* argv[]) {
@@ -57,74 +52,78 @@ int main(int argc, char* argv[]) {
 	//std::cin >> a;
 
 	//exit(1);
-
-
-	if (argv[2] == std::string("h")) {
+	int opt = std::atoi(argv[2]);
+	switch (opt) {
+	case 1:
+	{
 		prop.algo_t = algo_type::HH;
 		auto extension = ajns::minimal_extension(my_instance);
 		extension.run(prop);
+		break;
 	}
-	else {
-		if (argv[2] == std::string("b")) {
-			prop.algo_t = algo_type::BRANCH_AND_CUT;
-			auto solver_config = solver::solver_params();
-			auto exp_model = solver::ExponentialModel(my_instance, solver::RELAXED_CUTSET);
-			solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
+	case 2:
+	{
+		prop.algo_t = algo_type::BRANCH_AND_CUT;
+		auto solver_config = solver::solver_params();
+		auto exp_model = solver::ExponentialModel(my_instance, solver::RELAXED_CUTSET);
+		solver::solver* ajnp_solver = new solver::BCSolver(solver_config, exp_model);
+		try {
+			std::cout << "entrando solver\n";
+			ajnp_solver->solve(prop);
+		}
+		catch (...) {
+			std::cout << "algo de errado não está certo\n";
+		}
+		break;
+	}
+	case 3:
+	{
+		prop.algo_t = algo_type::MFLOW;
+		auto solver_config = solver::solver_params();
+		auto exp_model = solver::MultiFlowModel(my_instance, true);
+		solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
+		try {
+			ajnp_solver->solve(prop);
+		}
+		catch (...) {
+			std::cout << "algo de errado não está certo\n";
+		}
+	}
+	case 4:
+	{
+		prop.algo_t = algo_type::DDL;
+		auto solver_config = solver::solver_params();
+		auto model = solver::DDLModel(my_instance, true);
+		solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
+		try {
+			ajnp_solver->solve(prop);
+		}
+		catch (...) {
+			std::cout << "algo de errado não está certo\n";
+		}
+	}
+	case 5:
+	{
+		prop.algo_t = algo_type::CHARACTERIZATION;
+		auto solver_config = solver::solver_params();
+		std::cout << "CHARACTERIZATION\n";
+		//auto s = atoi(argv[3]);
+		auto s = 1;
+		auto run_next = true;
+		while (run_next) {
+			auto model = solver::CharacterizationBasedFormulation(my_instance, s, false);
+			solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
 			try {
-				std::cout << "entrando solver\n";
 				ajnp_solver->solve(prop);
 			}
 			catch (...) {
 				std::cout << "algo de errado não está certo\n";
 			}
+			std::cout << ajnp_solver->get_status() << std::endl;
+			run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
+			s++;
 		}
-		else if (argv[2] == std::string("f")) {
-			prop.algo_t = algo_type::MFLOW;
-			auto solver_config = solver::solver_params();
-			auto exp_model = solver::MultiFlowModel(my_instance, true);
-			solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
-			try {
-				ajnp_solver->solve(prop);
-			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}			
-		}
-		else if (argv[2] == std::string("d")) {
-			prop.algo_t = algo_type::DDL;
-			auto solver_config = solver::solver_params();
-			auto model = solver::DDLModel(my_instance, true);
-			solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
-			try {
-				ajnp_solver->solve(prop);
-			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
-			}
-		}
-		// TODO: verificar se funciona quando s = 0, se não funcionar, identificar o porquê.
-		else if (argv[2] == std::string("c")) {
-			prop.algo_t = algo_type::CHARACTERIZATION;
-			auto solver_config = solver::solver_params();
-			std::cout << "CHARACTERIZATION\n";
-			//auto s = atoi(argv[3]);
-			auto s = 1;
-			auto run_next = true;
-			while (run_next) {
-				auto model = solver::CharacterizationBasedFormulation(my_instance, s, false);
-				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
-				try {
-					ajnp_solver->solve(prop);
-				}
-				catch (...) {
-					std::cout << "algo de errado não está certo\n";
-				}
-				std::cout << ajnp_solver->get_status() << std::endl;
-				run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false:true;
-				s++;
-			}
-			
-		}
+	}
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();
