@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
 		catch (...) {
 			std::cout << "algo de errado não está certo\n";
 		}
+		break;
 	}
 	case 4:
 	{
@@ -101,6 +102,7 @@ int main(int argc, char* argv[]) {
 		catch (...) {
 			std::cout << "algo de errado não está certo\n";
 		}
+		break;
 	}
 	case 5:
 	{
@@ -123,6 +125,7 @@ int main(int argc, char* argv[]) {
 			run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
 			s++;
 		}
+		break;
 	}
 	}
 
