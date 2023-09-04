@@ -35,7 +35,7 @@ public:
 	IloNumVarArray get_y_variables();
 	IloNumVarArray y;
 	IloNumVarArray x;
-
+	
 	virtual ~MultiFlowModel() = default;
 };
 

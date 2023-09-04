@@ -17,12 +17,22 @@ Kernel::~Kernel() {
 
 void Kernel::run() {
 	try {
+		//Init kernel
 		cpx->solve();
+		auto var_values = cpx->get_values_main_variables();
+		auto v_size = var_values.size();
+		auto kernel = std::vector<bool>(v_size, false);
+		auto kernel_out = std::vector<bool>(v_size, true);
+
+		for (int i = 0; i < v_size; i++) {
+			if (var_values[i] > 0) {
+				kernel[i] = true;
+				kernel_out[i] = false;
+			}
+		}
 	}
 	catch (std::exception const& e)
 	{
 		cout << "[solveByKernel] Error: " << e.what() << endl;
-	}
-
-	
+	}	
 }

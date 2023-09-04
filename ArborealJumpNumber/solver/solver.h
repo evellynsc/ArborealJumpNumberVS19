@@ -34,6 +34,7 @@ public:
 	void solve(ajns::properties &p);
 	int get_status();
 	virtual void solve() = 0;
+	virtual vector<double> get_values_main_variables();
 	virtual ~solver();
 };
 

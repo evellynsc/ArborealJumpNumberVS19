@@ -46,6 +46,11 @@ void solver::solve(ajns::properties &p) {
 	p.num_jumps = num_jumps;
 }
 
+vector<double> solver::get_values_main_variables() {
+	std::cout << "solver::get_values_main_variables\n";
+	return vector<double>(0);
+}
+
 int solver::get_status() {
 	return status;
 }

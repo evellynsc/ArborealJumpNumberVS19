@@ -28,6 +28,7 @@ public:
 	MFSolver(solver_params& solver_config, MultiFlowModel& ajnp_model) :
 		solver(solver_config, &ajnp_model) {model = ajnp_model;}
 	void solve();
+	vector<double> get_values_main_variables();
 	virtual ~MFSolver() = default;
 };
 

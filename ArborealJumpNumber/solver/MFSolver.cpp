@@ -23,6 +23,23 @@ namespace solver {
 //MFSolver::MFSolver(solver_params& solver_config, MultiFlowModel& ajnp_model) :
 //		solver(solver_config, &ajnp_model) {model = ajnp_model;}
 
+std::vector<double> MFSolver::get_values_main_variables() {
+	auto problem_instance = model.get_ajnp_instance();
+	int n = problem_instance.num_vertices;
+	std::vector<double> values = std::vector<double>(n * n, 0);
+	
+	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
+		auto i = problem_instance.input_graph[e].source_id;
+		auto j = problem_instance.input_graph[e].target_id;
+		if (cplex_solver.getValue(model.y[n * i + j]) > 1e-6) {
+			int idx = n * i + j;
+			values[idx] = cplex_solver.getValue(model.y[idx]);
+		}
+	}
+
+	return values;
+}
+
 void MFSolver::solve() {
 	try {
 		std::cout << "mfsolver.cpp\n";
