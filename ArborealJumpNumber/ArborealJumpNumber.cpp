@@ -16,6 +16,7 @@
 #include "preprocessing/instance_generator.h"
 #include "base/instance.h"
 #include "solver/solver.h"
+#include "solver/Kernel.h"
 #include "solver/BCSolver.h"
 #include "solver/MFSolver.h"
 #include "solver/DDLSolver.h"
@@ -125,6 +126,12 @@ int main(int argc, char* argv[]) {
 			run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
 			s++;
 		}
+		break;
+	}
+	case 6:
+	{
+		Kernel* search = new Kernel(my_instance, "flow", 4);
+		search->run();
 		break;
 	}
 	}

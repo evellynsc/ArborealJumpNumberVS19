@@ -146,6 +146,7 @@
     <ClCompile Include="algorithms\flow.cpp" />
     <ClCompile Include="ArborealJumpNumber.cpp" />
     <ClCompile Include="base\solution.cpp" />
+    <ClCompile Include="solver\Kernel.cpp" />
     <ClCompile Include="solver\CharacterizationBasedSolver.cpp" />
     <ClCompile Include="solver\CharacterizationBasedFormulation.cpp" />
     <ClCompile Include="solver\DDLSolver.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="base\instance.h" />
     <ClInclude Include="base\properties.h" />
     <ClInclude Include="base\solution.h" />
+    <ClInclude Include="solver\Kernel.h" />
     <ClInclude Include="solver\CharacterizationBasedSolver.h" />
     <ClInclude Include="solver\CharacterizationBasedFormulation.h" />
     <ClInclude Include="solver\DDLSolver.h" />
