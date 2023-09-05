@@ -19,7 +19,7 @@ namespace solver {
 			model = ajnp_model;
 		}
 		void solve();
-		virtual ~CharacterizationBasedSolver() = default;
+		~CharacterizationBasedSolver();
 	};
 }
 

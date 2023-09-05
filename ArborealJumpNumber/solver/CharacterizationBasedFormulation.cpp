@@ -9,9 +9,6 @@ namespace solver {
 		this->s = 0;
 	}
 
-	CharacterizationBasedFormulation::~CharacterizationBasedFormulation() {
-	}
-
 	CharacterizationBasedFormulation::CharacterizationBasedFormulation(ajns::instance& problem_instance, int s) {
 		this->type = CHARACTERIZATION;
 		this->problem_instance = problem_instance;
@@ -403,6 +400,8 @@ namespace solver {
 	int CharacterizationBasedFormulation::idx_ns(int i, int j) {
 		return index_parser_ns[i][j];
 	}
+
+	CharacterizationBasedFormulation::~CharacterizationBasedFormulation() {}
 
 	//void DDLModel::
 };

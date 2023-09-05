@@ -255,6 +255,6 @@ namespace solver {
 	}
 
 
-	//void DDLModel::
+	DDLModel::~DDLModel() {}
 };
 

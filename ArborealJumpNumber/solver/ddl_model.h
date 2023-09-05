@@ -28,7 +28,7 @@ namespace solver {
         IloNumVarArray u; //auxiliar variable
         size_t t_max;
 
-        virtual ~DDLModel() = default;
+        ~DDLModel();
     };
 } /* namespace solver */
 

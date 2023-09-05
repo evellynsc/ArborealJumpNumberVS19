@@ -3,8 +3,8 @@
 
 #include <boost/graph/graphviz.hpp>
 
-
-void solver::CharacterizationBasedSolver::solve()
+namespace solver {
+void CharacterizationBasedSolver::solve()
 {
 	try {
 		
@@ -172,3 +172,7 @@ void solver::CharacterizationBasedSolver::solve()
 		std::cerr << "Error" << std::endl;
 	}*/
 }
+
+CharacterizationBasedSolver::~CharacterizationBasedSolver() {}
+};
+

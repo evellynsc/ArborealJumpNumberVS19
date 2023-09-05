@@ -39,7 +39,7 @@ public:
 
 	virtual void set_model(std::vector<bool>);
 	virtual vector<double> get_values_main_variables();
-	virtual ~solver();
+	virtual ~solver() = 0;
 };
 
 } /* namespace solver */
