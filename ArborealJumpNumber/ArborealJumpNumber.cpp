@@ -28,7 +28,6 @@
 
 #include "solver/CharacterizationBasedFormulation.h"
 #include "solver/CharacterizationBasedSolver.h"
-#include "windows.h"
 
 
 int main(int argc, char* argv[]) {
