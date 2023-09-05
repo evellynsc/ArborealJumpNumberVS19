@@ -9,6 +9,9 @@ namespace solver {
 		this->s = 0;
 	}
 
+	CharacterizationBasedFormulation::~CharacterizationBasedFormulation() {
+	}
+
 	CharacterizationBasedFormulation::CharacterizationBasedFormulation(ajns::instance& problem_instance, int s) {
 		this->type = CHARACTERIZATION;
 		this->problem_instance = problem_instance;

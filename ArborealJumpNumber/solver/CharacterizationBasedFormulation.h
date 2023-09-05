@@ -42,6 +42,6 @@ namespace solver {
         int get_s();
         int idx_ns(int i, int j);
 
-        virtual ~CharacterizationBasedFormulation() = default;
+        ~CharacterizationBasedFormulation();
     };
 } /* namespace solver */
