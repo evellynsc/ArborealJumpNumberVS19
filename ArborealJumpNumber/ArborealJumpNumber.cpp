@@ -14,21 +14,20 @@
 
 #include "preprocessing/reader.h"
 #include "preprocessing/instance_generator.h"
-#include "base/instance.h"
-#include "solver/solver.h"
-#include "solver/Kernel.h"
-#include "solver/BCSolver.h"
-#include "solver/MFSolver.h"
-#include "solver/DDLSolver.h"
-#include "solver/exponential_model.h"
-#include "solver/multi_flow_model.h"
-#include "solver/ddl_model.h"
-#include "heuristic/minimal_extension.h"
 #include "base/properties.h"
-
+#include "base/instance.h"
+#include "heuristic/minimal_extension.h"
+#include "solver/solver.h"
+#include "solver/exponential_model.h"
+#include "solver/BCSolver.h"
+#include "solver/ddl_model.h"
+#include "solver/DDLSolver.h"
+#include "solver/multi_flow_model.h"
+#include "solver/MFSolver.h"
 #include "solver/CharacterizationBasedFormulation.h"
 #include "solver/CharacterizationBasedSolver.h"
 
+#include "solver/Kernel.h"
 
 int main(int argc, char* argv[]) {
 	if (argc < 3) {

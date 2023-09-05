@@ -74,9 +74,6 @@ namespace solver {
 			}
 		}
 
-
-
-
 		for (auto i = 0; i < n; i++) {
 			for (auto j = 0; j < n; j++) {
 				auto edge_in_input_graph = problem_instance.exist_edge_in_input_graph(i, j);
