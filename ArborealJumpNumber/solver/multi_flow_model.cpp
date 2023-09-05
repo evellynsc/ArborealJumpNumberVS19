@@ -28,6 +28,18 @@ IloNumVarArray MultiFlowModel::get_y_variables() {
 	return y;
 }
 
+void MultiFlowModel::reset_upper_bounds(std::vector<bool> zero_variables) {
+	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
+		int i = problem_instance.input_graph[e].source_id;
+		int j = problem_instance.input_graph[e].target_id;
+		int n = problem_instance.num_vertices;
+		int idx = n * i + j;
+		if (zero_variables[idx]) {
+			y[idx].setUB(0);
+		}
+	}
+}
+
 void MultiFlowModel::add_variables() {
 	auto r = problem_instance.input_graph[problem_instance.root].id;
 	auto n = this->problem_instance.num_vertices;

@@ -22,6 +22,7 @@ class MultiFlowModel : public Model {
 	void add_variables();
 	void add_objective_function();
 	void add_constraints();
+	std::vector<bool> zero_variables;
 //	flow goes through arc (i,j) transporting token k
 //	token k has to be delivery to vertex k
 
@@ -32,6 +33,8 @@ public:
 	MultiFlowModel();
 	MultiFlowModel(ajns::instance&);
 	MultiFlowModel(ajns::instance&, bool);
+	//MultiFlowModel(ajns::instance&, bool, std::vector<bool>);
+	void reset_upper_bounds(std::vector<bool> zero_variables);
 	IloNumVarArray get_y_variables();
 	IloNumVarArray y;
 	IloNumVarArray x;

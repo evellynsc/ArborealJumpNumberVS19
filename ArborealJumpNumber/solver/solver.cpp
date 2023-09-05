@@ -6,6 +6,7 @@
  */
 
 #include "solver.h"
+#include "multi_flow_model.h"
 
 namespace solver {
 solver::~solver() {
@@ -53,6 +54,20 @@ vector<double> solver::get_values_main_variables() {
 
 int solver::get_status() {
 	return status;
+}
+
+void solver::set_model(std::vector<bool> zero_variables) {
+}
+
+solver::solver(std::string model_name, ajns::instance& instance, bool linear_relaxation, std::vector<bool> zero_variables) {
+	this->config = solver_params();
+	this->num_jumps = 0;	
+	this->status = -1;
+	this->model = NULL;
+	if (model_name == "flow") {
+		this->model = new MultiFlowModel(instance, true);
+	}
+	this->cplex_solver = IloCplex(model->get_cplex_model());
 }
 
 

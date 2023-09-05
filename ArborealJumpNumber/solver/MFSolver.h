@@ -26,9 +26,15 @@ class MFSolver : public solver {
 public:
 //	MFSolver();
 	MFSolver(solver_params& solver_config, MultiFlowModel& ajnp_model) :
-		solver(solver_config, &ajnp_model) {model = ajnp_model;}
+		solver(solver_config, &ajnp_model) {
+		model = ajnp_model;
+		std::cout << "mfsolver.cpp\n";
+		setup_cplex();
+		model.create();
+	}
 	void solve();
 	vector<double> get_values_main_variables();
+	void set_model(std::vector<bool>);
 	virtual ~MFSolver() = default;
 };
 

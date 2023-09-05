@@ -23,6 +23,7 @@ namespace solver {
 //MFSolver::MFSolver(solver_params& solver_config, MultiFlowModel& ajnp_model) :
 //		solver(solver_config, &ajnp_model) {model = ajnp_model;}
 
+//REFACTORE ME, PLX
 std::vector<double> MFSolver::get_values_main_variables() {
 	auto problem_instance = model.get_ajnp_instance();
 	int n = problem_instance.num_vertices;
@@ -31,8 +32,8 @@ std::vector<double> MFSolver::get_values_main_variables() {
 	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 		auto i = problem_instance.input_graph[e].source_id;
 		auto j = problem_instance.input_graph[e].target_id;
-		if (cplex_solver.getValue(model.y[n * i + j]) > 1e-6) {
-			int idx = n * i + j;
+		int idx = n * i + j;
+		if (cplex_solver.getValue(model.y[idx]) > 1e-6) {			
 			values[idx] = cplex_solver.getValue(model.y[idx]);
 		}
 	}
@@ -40,14 +41,24 @@ std::vector<double> MFSolver::get_values_main_variables() {
 	return values;
 }
 
+//REFACTORE ME, PLX
+void MFSolver::set_model(std::vector<bool> zero_variables) {
+	auto problem_instance = model.get_ajnp_instance();
+	int n = problem_instance.num_vertices;
+
+	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
+		auto i = problem_instance.input_graph[e].source_id;
+		auto j = problem_instance.input_graph[e].target_id;
+		int idx = n * i + j;
+		if (zero_variables[idx]) {
+			model.y[idx].setUB(0);
+		}
+	}
+}
+
 void MFSolver::solve() {
 	try {
-		std::cout << "mfsolver.cpp\n";
-		setup_cplex();
-		model.create();
 		auto env = model.get_cplex_env();
-		//		TODO: this can not be done by dynamic cast! FIX IT!
-
 
 		if (cplex_solver.solve()) {
 			auto y = model.get_y_variables();
@@ -68,7 +79,7 @@ void MFSolver::solve() {
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
 
-			std::cout << "covering graph\n";
+			/*std::cout << "covering graph\n";
 
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 				auto i = problem_instance.covering_graph[e].source_id;
@@ -78,20 +89,21 @@ void MFSolver::solve() {
 
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
-			std::cout << "================================================\n";
+			std::cout << "================================================\n";*/
 
-			std::cout << "valor de x\n";
+			std::cout << "valor de y\n";
 		
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;
 				if (cplex_solver.getValue(model.y[n*i + j]) > 1e-6) {
-					std::cout << i+1 << ", " << j+1 << " " << cplex_solver.getValue(model.y[n * i + j]) << " " << problem_instance.input_graph[e].type << std::endl;
+					std::cout << i << "->" << j << " [label=" << problem_instance.input_graph[e].type << "];\n";
+					//std::cout << n * i + j << ',' << i + 1 << ", " << j + 1 << " " << cplex_solver.getValue(model.y[n * i + j]) << " " << problem_instance.input_graph[e].type << std::endl;
 				}
 			}
 
 			
-			std::cout << "valor de f\n";
+			/*std::cout << "valor de f\n";
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
 			std::cout << "================================================\n";
@@ -105,9 +117,7 @@ void MFSolver::solve() {
 						std::cout << i + 1 << ", " << j + 1 << ", " << k + 1 << " " << cplex_solver.getValue(model.x[i + j * n + n * n * k]) << std::endl;
 					}
 				}
-			}
-
-
+			}*/
 
 			/*for (IloInt i = 0; i < n; i++) {
 				for (IloInt j = 0; j < n; ++j) {
