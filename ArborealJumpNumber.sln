@@ -9,16 +9,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|ARM.ActiveCfg = Debug|Win32
+		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|x64.ActiveCfg = Debug|x64
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|x64.Build.0 = Debug|x64
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|x86.ActiveCfg = Debug|Win32
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Debug|x86.Build.0 = Debug|Win32
+		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Release|ARM.ActiveCfg = Release|Win32
+		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Release|ARM64.ActiveCfg = Release|Win32
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Release|x64.ActiveCfg = Release|x64
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Release|x64.Build.0 = Release|x64
 		{296A874A-D833-440B-BCD9-BB89C71B12A3}.Release|x86.ActiveCfg = Release|Win32

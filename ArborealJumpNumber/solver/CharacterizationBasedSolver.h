@@ -13,7 +13,7 @@ namespace solver {
 		CharacterizationBasedFormulation model;
 
 	public:
-
+		CharacterizationBasedSolver();
 		CharacterizationBasedSolver(solver_params& solver_config, CharacterizationBasedFormulation& ajnp_model) :
 			solver(solver_config, &ajnp_model) {
 			model = ajnp_model;

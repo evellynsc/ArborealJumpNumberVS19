@@ -23,6 +23,6 @@ namespace solver {
 		void solve();
 		virtual ~DDLSolver() = default;
 	};
-}
+} /* namespace solver */
 
 #endif /* SOLVER_DDLSOLVER_H_ */

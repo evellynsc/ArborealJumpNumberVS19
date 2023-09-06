@@ -75,7 +75,7 @@ SOLVER_H	=$(PROG_DIR)/solver/solver.h
 SOLVER_OBJ	=$(PROG_BIN)/solver.o
 
 MF_SOLVER_SRC	=$(PROG_DIR)/solver/MFSolver.cpp
-MF_SOLVER_H	=$(PROG_DIR)/solver/MFSolver.h
+MF_SOLVER_H		=$(PROG_DIR)/solver/MFSolver.h
 MF_SOLVER_OBJ	=$(PROG_BIN)/MFSolver.o
 
 DDL_SOLVER_SRC	=$(PROG_DIR)/solver/DDLSolver.cpp
@@ -83,11 +83,11 @@ DDL_SOLVER_H	=$(PROG_DIR)/solver/DDLSolver.h
 DDL_SOLVER_OBJ	=$(PROG_BIN)/DDLSolver.o
 
 DDL_MODEL_SRC	=$(PROG_DIR)/solver/ddl_model.cpp
-DDL_MODEL_H	=$(PROG_DIR)/solver/ddl_model.h
+DDL_MODEL_H		=$(PROG_DIR)/solver/ddl_model.h
 DDL_MODEL_OBJ	=$(PROG_BIN)/ddl_model.o
 
 BC_SOLVER_SRC	=$(PROG_DIR)/solver/BCSolver.cpp
-BC_SOLVER_H	=$(PROG_DIR)/solver/BCSolver.h
+BC_SOLVER_H		=$(PROG_DIR)/solver/BCSolver.h
 BC_SOLVER_OBJ	=$(PROG_BIN)/BCSolver.o
 
 CHAR_MODEL_SRC	=$(PROG_DIR)/solver/CharacterizationBasedFormulation.cpp
@@ -99,7 +99,7 @@ CHAR_SOLVER_H	=$(PROG_DIR)/solver/CharacterizationBasedSolver.h
 CHAR_SOLVER_OBJ	=$(PROG_BIN)/CharacterizationBasedSolver.o
 
 KERNEL_SOLVER_SRC	=$(PROG_DIR)/solver/Kernel.cpp
-KERNEL_SOLVER_H	=$(PROG_DIR)/solver/Kernel.h
+KERNEL_SOLVER_H		=$(PROG_DIR)/solver/Kernel.h
 KERNEL_SOLVER_OBJ	=$(PROG_BIN)/Kernel.o
 
 SOLVER_PARAMS_H		=$(PROG_DIR)/solver/solver_params.h
@@ -222,11 +222,17 @@ UTILS_CALLBACKS_OBJ: $(UTILS_CALLBACKS_H)
 UTILS_PREPROCESSING_OBJ: $(UTILS_PREPROCESSING_H)
 	$(CC) $(CFLAGS2) -c $(UTILS_PREPROCESSING_H) -o $(UTILS_PREPROCESSING_OBJ)
 
-ajns: ELEMENTARY_OBJ GRAPH_OBJ INSTANCE_OBJ SOLUTION_OBJ HEURISTIC_OBJ INSTANCE_GENERATOR_OBJ READER_OBJ PROBLEM_DATA_OBJ FLOW_OBJ MODEL_OBJ EXPONENTIAL_MODEL_OBJ FLOW_MODEL_OBJ SOLVER_OBJ MF_SOLVER_OBJ BC_SOLVER_OBJ SOLVER_PARAMS_OBJ PI_INEQUALITY_OBJ PI_SIGMA_INEQUALITY_OBJ ADD_MIN_CUTS_LC_OBJ ADD_MIN_CUTS_UC_OBJ PREC_INEQUALITY_OBJ REACHES_INEQUALITY_OBJ SIGMA_INEQUALITY_OBJ UTILS_CALLBACKS_OBJ UTILS_PREPROCESSING_OBJ DDL_SOLVER_OBJ DDL_MODEL_OBJ CHAR_SOLVER_OBJ CHAR_MODEL_OBJ KERNEL_SOLVER_OBJ
-	$(CC) $(CFLAGS2) $(ELEMENTARY_SRC) $(GRAPH_H) $(INSTANCE_H) $(SOLUTION_SRC) $(HEURISTIC_SRC) $(INSTANCE_GENERATOR_SRC) $(READER_SRC) $(PROBLEM_DATA_H) $(FLOW_SRC) $(MODEL_SRC) $(EXPONENTIAL_MODEL_SRC) $(FLOW_MODEL_SRC) $(SOLVER_SRC) $(MF_SOLVER_SRC) $(BC_SOLVER_SRC) $(SOLVER_PARAMS_H) $(DDL_MODEL_H) $(DDL_SOLVER_H) $(CHAR_MODEL_H) $(CHAR_SOLVER_H) $(KERNEL_SOLVER_H) $(PI_INEQUALITY_H) $(PI_SIGMA_INEQUALITY_H) $(PREC_INEQUALITY_H) $(REACHES_INEQUALITY_H) $(ADD_MIN_CUTS_UC_H) $(ADD_MIN_CUTS_LC_H) $(SIGMA_INEQUALITY_H) $(UTILS_CALLBACKS_H) $(UTILS_PREPROCESSING_H) $(MAIN_SRC) -o ajns $(CLNFLAGS)
+ajns_all: ELEMENTARY_OBJ GRAPH_OBJ INSTANCE_OBJ SOLUTION_OBJ HEURISTIC_OBJ INSTANCE_GENERATOR_OBJ READER_OBJ PROBLEM_DATA_OBJ FLOW_OBJ MODEL_OBJ EXPONENTIAL_MODEL_OBJ FLOW_MODEL_OBJ SOLVER_OBJ MF_SOLVER_OBJ BC_SOLVER_OBJ SOLVER_PARAMS_OBJ PI_INEQUALITY_OBJ PI_SIGMA_INEQUALITY_OBJ ADD_MIN_CUTS_LC_OBJ ADD_MIN_CUTS_UC_OBJ PREC_INEQUALITY_OBJ REACHES_INEQUALITY_OBJ SIGMA_INEQUALITY_OBJ UTILS_CALLBACKS_OBJ UTILS_PREPROCESSING_OBJ DDL_SOLVER_OBJ DDL_MODEL_OBJ CHAR_SOLVER_OBJ CHAR_MODEL_OBJ KERNEL_SOLVER_OBJ
+	$(CC) $(CFLAGS2) $(CLNFLAGS) $(ELEMENTARY_SRC) $(GRAPH_H) $(INSTANCE_H) $(SOLUTION_SRC) $(HEURISTIC_SRC) $(INSTANCE_GENERATOR_SRC) $(READER_SRC) $(PROBLEM_DATA_H) $(FLOW_SRC) $(MODEL_SRC) $(EXPONENTIAL_MODEL_SRC) $(FLOW_MODEL_SRC) $(SOLVER_SRC) $(MF_SOLVER_SRC) $(BC_SOLVER_SRC) $(SOLVER_PARAMS_H) $(DDL_MODEL_H) $(DDL_SOLVER_H) $(CHAR_MODEL_H) $(CHAR_SOLVER_H) $(KERNEL_SOLVER_H) $(PI_INEQUALITY_H) $(PI_SIGMA_INEQUALITY_H) $(PREC_INEQUALITY_H) $(REACHES_INEQUALITY_H) $(ADD_MIN_CUTS_UC_H) $(ADD_MIN_CUTS_LC_H) $(SIGMA_INEQUALITY_H) $(UTILS_CALLBACKS_H) $(UTILS_PREPROCESSING_H) $(MAIN_SRC) -o ajns 
+
+ajns:
+	$(CC) $(CFLAGS2) $(CLNFLAGS) $(ELEMENTARY_SRC) $(GRAPH_H) $(INSTANCE_H) $(SOLUTION_SRC) $(HEURISTIC_SRC) $(INSTANCE_GENERATOR_SRC) $(READER_SRC) $(PROBLEM_DATA_H) $(FLOW_SRC) $(MODEL_SRC) $(EXPONENTIAL_MODEL_SRC) $(FLOW_MODEL_SRC) $(SOLVER_SRC) $(MF_SOLVER_SRC) $(BC_SOLVER_SRC) $(SOLVER_PARAMS_H) $(DDL_MODEL_H) $(DDL_SOLVER_H) $(CHAR_MODEL_H) $(CHAR_SOLVER_H) $(KERNEL_SOLVER_H) $(PI_INEQUALITY_H) $(PI_SIGMA_INEQUALITY_H) $(PREC_INEQUALITY_H) $(REACHES_INEQUALITY_H) $(ADD_MIN_CUTS_UC_H) $(ADD_MIN_CUTS_LC_H) $(SIGMA_INEQUALITY_H) $(UTILS_CALLBACKS_H) $(UTILS_PREPROCESSING_H) $(MAIN_SRC) -o ajns 
 
 clean:
 	rm $(PROG_BIN)/*.o
 
+
+# g++ -std=c++17 -w -m64 -O2 -fPIC -fexceptions -DNDEBUG -DIL_STD -DLONG_MAX=0x7FFFFFFFL -I /home/lapo/cplex/cplex201/cplex/include -I /home/lapo/cplex/cplex201/concert/include -I /home/lapo/evellyn/boost_1_78_0 -L/home/lapo/cplex/cplex201/cplex/lib/x86-64_linux/static_pic -L/home/lapo/cplex/cplex201/concert/lib/x86-64_linux/static_pic -L/home/lapo/evellyn/boost_1_78_0  -lilocplex -lconcert -lcplex -m64 -lm -lpthread -ldl
+ 
 
 #g++ -std=c++17 -w -m64 -O2 -fPIC -fexceptions -DNDEBUG -DIL_STD -DLONG_MAX=0x7FFFFFFFL -I /home/lapo/cplex/cplex201/cplex/include -I /home/lapo/cplex/cplex201/concert/include -I /home/lapo/evellyn/boost_1_78_0  ArborealJumpNumber/base/graph.h ArborealJumpNumber/base/instance.h ArborealJumpNumber/base/solution.cpp ArborealJumpNumber/heuristic/minimal_extension.cpp ArborealJumpNumber/preprocessing/instance_generator.cpp ArborealJumpNumber/preprocessing/reader.cpp ArborealJumpNumber/preprocessing/problem_data.h ArborealJumpNumber/algorithms/flow.cpp ArborealJumpNumber/solver/model.cpp ArborealJumpNumber/solver/exponential_model.cpp ArborealJumpNumber/solver/multi_flow_model.cpp ArborealJumpNumber/solver/solver.cpp ArborealJumpNumber/solver/MFSolver.cpp ArborealJumpNumber/solver/BCSolver.cpp ArborealJumpNumber/solver/solver_params.h ArborealJumpNumber/solver/CharacterizationBasedFormulation.h ArborealJumpNumber/solver/Kernel.h ArborealJumpNumber/solver/callbacks/pi_inequality.h ArborealJumpNumber/solver/callbacks/pi_sigma_inequality.h ArborealJumpNumber/solver/callbacks/precedence_inequality.h ArborealJumpNumber/solver/callbacks/reachability.h ArborealJumpNumber/solver/callbacks/add_min_cuts_uc.h ArborealJumpNumber/solver/callbacks/add_min_cuts_lc.h ArborealJumpNumber/solver/callbacks/sigma_inequality.h ArborealJumpNumber/utils/callbacks.h ArborealJumpNumber/utils/preprocessing.h ArborealJumpNumber/ArborealJumpNumber.cpp -o ajns -L/home/lapo/cplex/cplex201/cplex/lib/x86-64_linux/static_pic -L/home/lapo/cplex/cplex201/concert/lib/x86-64_linux/static_pic -L/home/lapo/evellyn/boost_1_78_0  -lilocplex -lconcert -lcplex -m64 -lm -lpthread -ldl

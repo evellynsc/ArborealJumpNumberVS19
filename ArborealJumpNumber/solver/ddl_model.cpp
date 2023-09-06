@@ -256,5 +256,5 @@ namespace solver {
 
 
 	DDLModel::~DDLModel() {}
-};
+} /* namespace ajns */
 

@@ -12,6 +12,7 @@ private:
 	ajns::instance* ajnp;
 
 public:
+	Kernel();
 	Kernel(ajns::instance& ajnp, std::string solver_name, int nbuck);
 	~Kernel();
 	void run();

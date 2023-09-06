@@ -2,6 +2,11 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 
+Kernel::Kernel() {
+	this->nbuck = nbuck;
+	this->ajnp = NULL;
+	this->cpx = NULL;
+}
 
 Kernel::Kernel(ajns::instance& ajnp, std::string solver_name, int nbuck) {
 	this->ajnp = &ajnp;
@@ -32,14 +37,14 @@ void Kernel::run() {
 				kernel[i] = true;
 				kernel_out[i] = false;
 			}
-			/*else {
+			else {
 				boost::random::mt19937 gen;
 				boost::random::uniform_int_distribution<> dist(1, 100);
 				int a = dist(gen);
 				if (a > 50) {
 					kernel_out[i] = false;
 				}
-			}*/
+			}
 		}
 
 		auto solver_config = solver::solver_params();

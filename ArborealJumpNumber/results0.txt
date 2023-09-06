@@ -26,3 +26,6 @@ A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\Arbo
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\esc47.sop.ajn.txt 49 2147 0 0 0.788668
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.2.sop.ajn.txt 54 2650 0 0 1.433715
 A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.2.sop.ajn.txt 54 2650 0 0 1.313284
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 322.994580
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 319.773957
+A:\Users\evellynsc\Documents\workspace\ArborealJumpNumberSolver\eclipse_old\ArborealJumpNumberSolver\instances\literature\sop\ft53.3.sop.ajn.txt 54 2288 0 0 318.630939

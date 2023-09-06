@@ -3,7 +3,6 @@
 #include <cmath>
 
 namespace solver {
-
 	CharacterizationBasedFormulation::CharacterizationBasedFormulation() {
 		this->type = CHARACTERIZATION;
 		this->s = 0;
@@ -404,5 +403,5 @@ namespace solver {
 	CharacterizationBasedFormulation::~CharacterizationBasedFormulation() {}
 
 	//void DDLModel::
-};
+} /* namespace solver */
 

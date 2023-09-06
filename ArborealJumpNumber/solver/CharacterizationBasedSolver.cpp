@@ -4,6 +4,8 @@
 #include <boost/graph/graphviz.hpp>
 
 namespace solver {
+
+CharacterizationBasedSolver::CharacterizationBasedSolver(){}
 void CharacterizationBasedSolver::solve()
 {
 	try {
@@ -174,5 +176,5 @@ void CharacterizationBasedSolver::solve()
 }
 
 CharacterizationBasedSolver::~CharacterizationBasedSolver() {}
-};
+} /* namespace solver */
 
