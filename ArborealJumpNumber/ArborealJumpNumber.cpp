@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : main.cpp
-// Author      : 
+// Author      :
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -30,6 +30,7 @@
 #include "solver/Kernel.h"
 
 int main(int argc, char* argv[]) {
+	// ./ajns file algo_type relaxed [others]
 	if (argc < 3) {
 		std::cout << "FALTANDO ARGUMENTOS\n" << std::endl;
 		return 1;
@@ -47,6 +48,9 @@ int main(int argc, char* argv[]) {
 
 	prop.num_arcs = my_instance.num_edges;
 	prop.num_nodes = my_instance.num_vertices;
+	auto relaxed = false;
+	if (argv[3] == '1')
+		relaxed = true;
 	//int a;
 	//std::cin >> a;
 
@@ -79,7 +83,7 @@ int main(int argc, char* argv[]) {
 	{
 		prop.algo_t = algo_type::MFLOW;
 		auto solver_config = solver::solver_params();
-		auto exp_model = solver::MultiFlowModel(my_instance, true);
+		auto exp_model = solver::MultiFlowModel(my_instance, relaxed);
 		solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
 		try {
 			ajnp_solver->solve(prop);
@@ -93,7 +97,7 @@ int main(int argc, char* argv[]) {
 	{
 		prop.algo_t = algo_type::DDL;
 		auto solver_config = solver::solver_params();
-		auto model = solver::DDLModel(my_instance, true);
+		auto model = solver::DDLModel(my_instance, relaxed);
 		solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
 		try {
 			ajnp_solver->solve(prop);
@@ -112,7 +116,7 @@ int main(int argc, char* argv[]) {
 		auto s = 1;
 		auto run_next = true;
 		while (run_next) {
-			auto model = solver::CharacterizationBasedFormulation(my_instance, s, false);
+			auto model = solver::CharacterizationBasedFormulation(my_instance, s, relaxed);
 			solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
 			try {
 				ajnp_solver->solve(prop);
