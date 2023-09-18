@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 	prop.num_arcs = my_instance.num_edges;
 	prop.num_nodes = my_instance.num_vertices;
 	auto relaxed = false;
-	if (argv[3] == '1')
+	if (std::atoi(argv[3]) == 1)
 		relaxed = true;
 	//int a;
 	//std::cin >> a;
