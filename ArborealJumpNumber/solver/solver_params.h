@@ -22,8 +22,8 @@ namespace solver {
 		bool add_initial_solution;
 
 		solver_params() {
-			time_limit = 300;
-			tree_memory = 8000;
+			time_limit = 36000;
+			tree_memory = 10000;
 			solver = PLAIN;
 			add_initial_solution = true;
 		}
