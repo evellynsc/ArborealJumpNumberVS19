@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
 				s++;
 			}
 		} else {
-			s =  my_instance.num_vertices - 1;
+			s =  std::atoi(argv[5]);
 			while (run_next and s != 0) {
 				auto model = solver::CharacterizationBasedFormulation(my_instance, s, relaxed);
 				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
