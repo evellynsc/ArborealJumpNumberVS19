@@ -111,33 +111,43 @@ int main(int argc, char* argv[]) {
 	{
 		prop.algo_t = algo_type::CHARACTERIZATION;
 		auto solver_config = solver::solver_params();
-		vector<double> runtime_vec;
 		std::cout << "CHARACTERIZATION\n";
+		auto ascending = true;
+		if (std::atoi(argv[4]) == 0)
+			ascending = false;
 		//auto s = atoi(argv[3]);
 		auto s = 1;
 		auto run_next = true;
-		while (run_next) {
-			auto model = solver::CharacterizationBasedFormulation(my_instance, s, relaxed);
-			solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
-			try {
-				auto start_c = std::chrono::high_resolution_clock::now();
-				ajnp_solver->solve(prop);
-				auto end_c = std::chrono::high_resolution_clock::now();
-				double runtime_c = std::chrono::duration_cast<std::chrono::nanoseconds>(end_c - start_c).count() * 1e-9;				
-				runtime_vec.push_back(runtime_c);
+		if (ascending) {
+			while (run_next and s != my_instance.num_vertices) {
+				auto model = solver::CharacterizationBasedFormulation(my_instance, s, relaxed);
+				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
+				try {
+					ajnp_solver->solve(prop);
+				}
+				catch (...) {
+					std::cout << "algo de errado não está certo\n";
+				}
+				std::cout << ajnp_solver->get_status() << std::endl;
+				run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
+				s++;
 			}
-			catch (...) {
-				std::cout << "algo de errado não está certo\n";
+		} else {
+			s =  std::atoi(argv[5]);
+			while (run_next and s != 0) {
+				auto model = solver::CharacterizationBasedFormulation(my_instance, s, relaxed);
+				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
+				try {
+					ajnp_solver->solve(prop);
+				}
+				catch (...) {
+					std::cout << "algo de errado não está certo\n";
+				}
+				std::cout << ajnp_solver->get_status() << std::endl;
+				run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
+				s--;
 			}
-			std::cout << ajnp_solver->get_status() << std::endl;
-			run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false : true;
-			s++;
 		}
-		std::cout << ">>>>>> ";
-		for (auto t : runtime_vec) {
-			std::cout << t << "\t";
-		}
-		std::cout << std::endl;
 		break;
 	}
 	case 6:
@@ -149,17 +159,18 @@ int main(int argc, char* argv[]) {
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();
-	double runtime_total = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() * 1e-9;
+	double run_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count(); // @suppress("Invalid arguments") // @suppress("Symbol is not resolved") // @suppress("Method cannot be resolved")
+	run_time *= 1e-9;
 
-	prop.run_time = runtime_total;
+	prop.run_time = run_time;
 
 	auto outFile = std::ofstream();
 	auto name_file = "results" + std::to_string(prop.algo_t) + ".txt";
 	outFile.open(name_file, std::ofstream::out | std::ofstream::app);
 
 	outFile << my_instance.id << " " << prop.num_nodes << " " << prop.num_arcs << " " <<
-		prop.num_violators << " " << prop.num_jumps << " " << fixed << prop.run_time << setprecision(9) << std::endl; 
+		prop.num_violators << " " << prop.num_jumps << " " << fixed << prop.run_time << setprecision(9) << std::endl; // @suppress("Invalid overload")
 
-	
+	std::cout << "time === " << fixed << run_time << setprecision(9) << " ===\n";
 	return 0;
 }

@@ -9,10 +9,11 @@ CharacterizationBasedSolver::CharacterizationBasedSolver(){}
 void CharacterizationBasedSolver::solve()
 {
 	try {
-		
+
 		setup_cplex();
-		model.create();
 		std::cout << "creating characterizatoin based formulation...\n";
+		model.create();
+
 		auto env = model.get_cplex_env();
 		cplex_solver.exportModel("characterization_model.lp");
 		cplex_solver.extract(model.get_cplex_model());
@@ -22,7 +23,7 @@ void CharacterizationBasedSolver::solve()
 		auto f = model.get_f_variables();
 		auto g = model.get_g_variables();
 		if (cplex_solver.solve()) {
-			
+
 			auto problem_instance = model.get_ajnp_instance();
 			auto n = problem_instance.num_vertices;
 			auto s = model.get_s();
@@ -81,7 +82,9 @@ void CharacterizationBasedSolver::solve()
 					}
 				}
 			}
-			
+
+
+
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;
@@ -90,7 +93,7 @@ void CharacterizationBasedSolver::solve()
 						std::cout << "a, " << i << ", " << j << ", " << t << " = " << cplex_solver.getValue(a[n * i + j][t]) << std::endl;
 						_selected_edges.push_back({i,j});
 					}
-				}				
+				}
 			}
 
 			solution = new Solution(s, problem_instance.num_vertices, _selected_edges);
@@ -121,7 +124,7 @@ void CharacterizationBasedSolver::solve()
 				std::cout << head << ',' << tail << ' ' << final_solution[e].type << std::endl;
 			}*/
 
-			
+
 		}
 		else {
 			std::cout << "============================\n";
@@ -132,7 +135,7 @@ void CharacterizationBasedSolver::solve()
 				status = 0;
 			else
 				status = 2;
-			
+
 			//if ((cplex_solver.getStatus() == IloAlgorithm::Infeasible) ||
 			//	(cplex_solver.getStatus() == IloAlgorithm::InfeasibleOrUnbounded)) {
 			//	cout << endl << "No solution - starting Conflict refinement" << endl;
@@ -174,4 +177,3 @@ void CharacterizationBasedSolver::solve()
 
 CharacterizationBasedSolver::~CharacterizationBasedSolver() {}
 } /* namespace solver */
-
