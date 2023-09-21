@@ -34,7 +34,7 @@ public:
 	MultiFlowModel(ajns::instance&);
 	MultiFlowModel(ajns::instance&, bool);
 	//MultiFlowModel(ajns::instance&, bool, std::vector<bool>);
-	void reset_upper_bounds(std::vector<bool> zero_variables);
+	void reset_upper_bounds(std::vector<bool>);
 	IloNumVarArray get_y_variables();
 	IloNumVarArray y;
 	IloNumVarArray x;

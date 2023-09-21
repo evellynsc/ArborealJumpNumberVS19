@@ -8,8 +8,11 @@
 #include "MFSolver.h"
 
 #include "../base/solution.h"
+#include <numeric>
+
 
 #include <boost/graph/graphviz.hpp>
+#include <boost/graph/transitive_closure.hpp>
 
 namespace solver {
 //MFSolver::MFSolver() {
@@ -42,26 +45,30 @@ std::vector<double> MFSolver::get_values_main_variables() {
 }
 
 //REFACTORE ME, PLX
-void MFSolver::set_model(std::vector<bool> zero_variables) {
+void MFSolver::reset_model_by_kernel(std::vector<bool> kernel) {
+	std::cout << "setting kernel\n";
 	auto problem_instance = model.get_ajnp_instance();
 	int n = problem_instance.num_vertices;
+	int ii = 0;
 
 	for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 		auto i = problem_instance.input_graph[e].source_id;
 		auto j = problem_instance.input_graph[e].target_id;
 		int idx = n * i + j;
-		if (zero_variables[idx]) {
+		if (not kernel[idx]) {
 			model.y[idx].setUB(0);
+			ii++;
 		}
 	}
+	std::cout << ii << " variáveis foram fixadas" << std::endl;
 }
 
 void MFSolver::solve() {
 	try {
-		auto env = model.get_cplex_env();
+		//auto env = model.get_cplex_env();
 
 		if (cplex_solver.solve()) {
-			auto y = model.get_y_variables();
+			//auto y = model.get_y_variables();
 			auto problem_instance = model.get_ajnp_instance();
 			auto n = problem_instance.num_vertices;
 
@@ -92,16 +99,44 @@ void MFSolver::solve() {
 			std::cout << "================================================\n";*/
 
 			std::cout << "valor de y\n";
+
+			auto solution = my_graph::digraph();
+
+			
+			for (auto v : boost::make_iterator_range(boost::vertices(problem_instance.input_graph))) {
+				boost::add_vertex(problem_instance.input_graph[v], solution);
+			}
+			//		add edges
 		
-			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
+			for (auto const& e : boost::make_iterator_range(boost::edges(problem_instance.input_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;
 				if (cplex_solver.getValue(model.y[n*i + j]) > 1e-6) {
-					std::cout << i << "->" << j << " [label=" << problem_instance.input_graph[e].type << "];\n";
+					boost::add_edge(i,j,solution);
+					std::cout << i << "->" << j << " [label=" << problem_instance.input_graph[e].type << ",value=" << cplex_solver.getValue(model.y[n * i + j]) << "];\n";
 					//std::cout << n * i + j << ',' << i + 1 << ", " << j + 1 << " " << cplex_solver.getValue(model.y[n * i + j]) << " " << problem_instance.input_graph[e].type << std::endl;
 				}
 			}
 
+
+			auto tc_solution = my_graph::digraph();
+
+			std::map<my_graph::vertex, my_graph::vertex> g_to_tc;
+			std::vector<std::size_t> id_map(boost::num_vertices(solution));
+			std::iota(id_map.begin(), id_map.end(), 0u);
+
+			boost::transitive_closure(solution, tc_solution, boost::make_assoc_property_map(g_to_tc), id_map.data());
+
+			for (auto& e : g_to_tc)
+				tc_solution[e.second] = solution[e.first];
+
+			for (auto const& e : boost::make_iterator_range(boost::edges(problem_instance.order_graph))) {
+				auto i = problem_instance.input_graph[e].source_id;
+				auto j = problem_instance.input_graph[e].target_id;
+				if (not boost::edge(i, j, tc_solution).second) {
+					std::cout << "\n === TÁ ERRADO ===" << std::endl;
+				}
+			}
 			
 			/*std::cout << "valor de f\n";
 			std::cout << "================================================\n";

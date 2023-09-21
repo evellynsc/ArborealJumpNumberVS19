@@ -37,7 +37,7 @@ public:
 	int get_status();
 	virtual void solve() = 0;
 
-	virtual void set_model(std::vector<bool>);
+	virtual void reset_model_by_kernel(std::vector<bool>);
 	virtual vector<double> get_values_main_variables();
 	virtual ~solver() = 0;
 };

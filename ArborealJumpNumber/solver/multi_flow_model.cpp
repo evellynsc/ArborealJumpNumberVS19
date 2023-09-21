@@ -75,7 +75,7 @@ void MultiFlowModel::add_objective_function() {
 	for (const auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 		auto i = problem_instance.covering_graph[e].source_id;
 		auto j = problem_instance.covering_graph[e].target_id;
-		cost_sum += y[n*i + j];
+		cost_sum += y[n * i + j];
 	}
 	this->cplex_model.add(IloMaximize(env, cost_sum, "cost_sum"));
 }

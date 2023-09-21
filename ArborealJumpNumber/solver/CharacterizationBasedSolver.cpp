@@ -82,8 +82,6 @@ void CharacterizationBasedSolver::solve()
 				}
 			}
 			
-
-
 			for (auto e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
 				auto i = problem_instance.input_graph[e].source_id;
 				auto j = problem_instance.input_graph[e].target_id;
@@ -94,7 +92,6 @@ void CharacterizationBasedSolver::solve()
 					}
 				}				
 			}
-
 
 			solution = new Solution(s, problem_instance.num_vertices, _selected_edges);
 			solution->save_solution("teste", "dot");

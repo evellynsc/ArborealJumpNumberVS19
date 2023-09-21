@@ -34,7 +34,7 @@ public:
 	}
 	void solve();
 	vector<double> get_values_main_variables();
-	void set_model(std::vector<bool>);
+	void reset_model_by_kernel(std::vector<bool>);
 	virtual ~MFSolver() = default;
 };
 

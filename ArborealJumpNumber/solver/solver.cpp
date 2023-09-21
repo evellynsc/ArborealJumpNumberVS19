@@ -56,7 +56,7 @@ int solver::get_status() {
 	return status;
 }
 
-void solver::set_model(std::vector<bool> zero_variables) {
+void solver::reset_model_by_kernel(std::vector<bool> kernel) {
 }
 
 solver::solver(std::string model_name, ajns::instance& instance, bool linear_relaxation, std::vector<bool> zero_variables) {

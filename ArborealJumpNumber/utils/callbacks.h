@@ -102,7 +102,7 @@ namespace solver {
 		my_graph::digraph candidate_graph;
 		boost::copy_graph(graph, candidate_graph);
 
-		for (auto e : boost::make_iterator_range(boost::edges(graph))) {
+		for (const auto& e : boost::make_iterator_range(boost::edges(graph))) {
 			auto i = candidate_graph[e].id;
 			auto h = boost::source(e, graph);
 			auto t = boost::target(e, graph);
@@ -128,7 +128,7 @@ namespace solver {
 
 		boost::copy_graph(graph, lr_graph);
 
-		for (auto e : boost::make_iterator_range(boost::edges(lr_graph))) {
+		for (const auto& e : boost::make_iterator_range(boost::edges(lr_graph))) {
 			auto i = lr_graph[e].id;
 			auto x_value = x_values[i];
 			if (x_values[i] <= 1e-6)
@@ -152,10 +152,10 @@ namespace solver {
 			const my_graph::digraph &imutable_graph) {
 		auto in_edges_v = boost::in_edges(v, imutable_graph);
 		auto out_edges_v = boost::out_edges(v, imutable_graph);
-		for (auto e : boost::make_iterator_range(in_edges_v)) {
+		for (const auto& e : boost::make_iterator_range(in_edges_v)) {
 			graph[e].capacity = 0;
 		}
-		for (auto e : boost::make_iterator_range(out_edges_v)) {
+		for (const auto& e : boost::make_iterator_range(out_edges_v)) {
 			graph[e].capacity = 0;
 		}
 //		std::cout << "reset_edges_of_vertice\n";

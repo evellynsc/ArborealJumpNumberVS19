@@ -408,7 +408,7 @@ void minimal_extension::run() {
 			boost::make_assoc_property_map(g_to_tr), boost::get(&my_graph::vertex_info::index, extension));
 	auto tr_extension = my_graph::digraph();
 	boost::copy_graph(extension, tr_extension);
-	for (auto e : boost::make_iterator_range(boost::edges(extension))) {
+	for (const auto& e : boost::make_iterator_range(boost::edges(extension))) {
 		auto head = boost::source(e, extension);
 		auto tail = boost::target(e, extension);
 		if (not boost::edge(g_to_tr[head], g_to_tr[tail], aux_graph).second) {
