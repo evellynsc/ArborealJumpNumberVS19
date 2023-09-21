@@ -27,18 +27,18 @@ solver::solver(solver_params &solver_config,  Model* model) {
 
 void solver::setup_cplex() {
 // https://www.ibm.com/docs/ru/icos/20.1.0?topic=parameters-mip-dynamic-search-switch
-	cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_ON);
+	cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_OFF);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::HeuristicFreq, CPX_ON);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::RINSHeur, CPX_ON);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::FPHeur, CPX_ON);
-	cplex_solver.setParam(IloCplex::Param::Preprocessing::Linear, 0); //1 when running branch and cut
-	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::Search, CPX_MIPSEARCH_AUTO); //CPX_MIPSEARCH_AUTO
-	cplex_solver.setParam(IloCplex::Param::Threads, 4);
-	cplex_solver.setParam(IloCplex::Param::TimeLimit, config.time_limit);
+	//cplex_solver.setParam(IloCplex::Param::Preprocessing::Linear, 0); //1 when running branch and cut
+	//cplex_solver.setParam(IloCplex::Param::MIP::Strategy::Search, CPX_MIPSEARCH_AUTO); //CPX_MIPSEARCH_AUTO
+	//cplex_solver.setParam(IloCplex::Param::Threads, 4);
+	/*cplex_solver.setParam(IloCplex::Param::TimeLimit, config.time_limit);
 	cplex_solver.setParam(IloCplex::Param::MIP::Limits::TreeMemory, config.tree_memory);
 	cplex_solver.setParam(IloCplex::Param::Emphasis::MIP, CPX_MIPEMPHASIS_FEASIBILITY);
 	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::Probe, 1);
-	cplex_solver.setParam(IloCplex::Param::MIP::Limits::ProbeDetTime, 4000);
+	cplex_solver.setParam(IloCplex::Param::MIP::Limits::ProbeDetTime, 4000);*/
 	//https://www.ibm.com/docs/en/icos/20.1.0?topic=performance-memory-emphasis-letting-optimizer-use-disk-storage
 
 }
