@@ -1,5 +1,8 @@
 #include "gurobi_c++.h"
-#include <map>
+#include "headers/data_reader.hpp"
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
 
 int main(int argc, char *argv[])
 {
@@ -10,13 +13,18 @@ int main(int argc, char *argv[])
         int num_jumps = 0;
         bool relaxed = false;
 
-        if (argc == 3 && argv[2] != "0")
+        if (argc == 3 && strcmp(argv[2], "0") != 0)
             algo = atoi(argv[2]);
-        if (argc == 4 && argv[3] != "0")
+        if (argc == 4 && strcmp(argv[3], "0") != 0)
             relaxed = true;
         if (argc == 5)
             num_jumps = atoi(argv[4]);
         if (algo > 4) throw(1);
+
+        DataReader reader(argv[1]);
+        if (not reader.open_file())
+            return 1;
+        
 
 
     } catch (int error_type) {
