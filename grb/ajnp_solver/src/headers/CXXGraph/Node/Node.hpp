@@ -41,6 +41,7 @@ class Node {
   void setId(const std::string &);
 
  public:
+  Node();
   Node(const std::string &, const T& data);
   // Move constructor
   Node(const std::string &, T&& data) noexcept;

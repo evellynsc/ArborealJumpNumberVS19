@@ -1,5 +1,5 @@
 #include "gurobi_c++.h"
-#include "headers/data_reader.hpp"
+#include "headers/data_reader.h"
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
         DataReader reader(argv[1]);
         if (not reader.open_file())
             return 1;
-        
+
 
 
     } catch (int error_type) {
