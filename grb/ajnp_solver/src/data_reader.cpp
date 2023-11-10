@@ -1,94 +1,137 @@
 #include "headers/data_reader.h"
 
-// using MyNode = CXXGraph::Node<NodeData>;
-
-DataReader::DataReader(std::string _filename) {
+DataReader::DataReader(std::string _filename)
+{
     this->filename = _filename;
+    this->file_extension = TXT;
 }
 
-bool DataReader::open_file() {
+DataReader::DataReader(std::string _filename, FileExtension _file_extension)
+{
+    this->filename = _filename;
+    this->file_extension = _file_extension;
+}
+
+void DataReader::open_file()
+{
     ifs.open(this->filename.c_str());
-    if (!ifs) {
-        std::cerr << "Unable to open file\n" << this->filename << std::endl;
-        return false; // terminate with error
-    }
-
-    int type;
-    ifs >> type;
-
-    switch (type)
+    if (!ifs)
     {
-    case 1:
-        read_pairs();
-        break;
-
-    default:
-        read_matrix();
-        break;
+        std::cerr << "Unable to open file " << this->filename << std::endl;
+        exit(0); // terminate with error
     }
-
-    return true;
 }
 
-std::unordered_map<std::string, std::shared_ptr<CXXGraph::Node<NodeData>>> DataReader::create_nodes(std::string l, int n) {
-    std::unordered_map<std::string, std::shared_ptr<CXXGraph::Node<NodeData>>> nodes;
-    std::string id;
-    if (l == "n")
-        for (auto i = 0; i < n; i++) {
-            auto s = std::to_string(i);
-            nodes.emplace(s, std::make_shared<CXXGraph::Node<NodeData>>(s, NodeData(i)));
-        }
-    else
-        for (auto i = 0; i < n; i++) {
-            ifs >> id;
-            nodes.emplace(id, std::make_shared<CXXGraph::Node<NodeData>>(id, NodeData(i)));
-        }
-    return nodes;
-}
-
-CXXGraph::T_EdgeSet<NodeData> DataReader::create_edges(int m, std::unordered_map<std::string, std::shared_ptr<CXXGraph::Node<NodeData>>> nodes) {
-    using Edge_t = CXXGraph::DirectedWeightedEdge<NodeData>;
-    CXXGraph::T_EdgeSet<NodeData> edges;
-    std::string u, v;
-    while (ifs >> u) {
-        ifs >> v;
-        int idx_edge = nodes[u]->getData().idx*m + nodes[v]->getData().idx;
-        Edge_t edge(idx_edge, nodes[u], nodes[v], 0.0);
-        edges.insert(std::make_shared<Edge_t>(edge));
-    }
-    if (edges.size() != m) {
-        std::cerr << "Error: wrong number of edges." << std::endl;
-        std::exit(0);
-    }
-    return edges;
-}
-
-
-void DataReader::read_pairs() {
-    int n, m;
-    std::string l;
-
-    ifs >> l;
+void DataReader::read_pairs()
+{
+    long unsigned int n, m;
     ifs >> n;
     ifs >> m;
 
-    auto nodes = create_nodes(l, n);
-    auto edges = create_edges(m, nodes);
+    // auto nodes = create_nodes(l, n);
+    // auto edges = create_edges(m, nodes);
 
-    CXXGraph::Graph<NodeData> graph(edges);
+    // CXXGraph::Graph<NodeData> graph(edges);
 }
 
-void DataReader::read_matrix() {
-    int n;
-    char l;
+void DataReader::read_matrix(long unsigned n, std::vector<std::vector<bool>>& adj_mtx)
+{
+    adj_mtx = std::vector<std::vector<bool>>(n, std::vector<bool>(n,0));
+    
+    bool e;    
+    for (long unsigned i = 0; i < n; i++) {
+        for (long unsigned j = 0; j < n; j++) {
+            ifs >> e;            
+            if (e == 1)
+                adj_mtx[i][j] = true; 
+            // {
 
-    ifs >> n;
-    ifs >> l;
-
-    while (ifs.good()) {
-        int pos;
-        for (int i = 0u; i < n; i++) {
-            ifs >> pos;
+                // auto idx = node_map[std::to_string(i)] + node_map[std::to_string(j)]*n;
+                // edge_map.insert({idx, {std::to_string(i), std::to_string(j)}});
+            // }
         }
     }
+}
+
+
+
+void DataReader::read_nodes(long unsigned n, std::map<std::string, long unsigned>& node_map) {
+    std::string label;
+
+    for (long unsigned i = 0; i < n; i++) {
+        ifs >> label;
+        node_map.insert({label,i});
+    }        
+}
+
+void DataReader::read(std::map<std::string, long unsigned>& node_map, std::unordered_map<long unsigned, std::pair<std::string, std::string>>& edge_map) {
+    open_file();
+    
+    int type;
+    ifs >> type;
+
+    std::string l;
+    ifs >> l;
+
+    long unsigned int n;
+    ifs >> n;
+
+    // std::cout << l << " " << type << std::endl;
+    if (l == "n") {
+        for (long unsigned i = 0; i < n; i++) 
+            node_map.insert({std::to_string(i),i});    
+    } else {
+        read_nodes(n, node_map);
+    }
+    
+    switch (type)
+    {
+    case TXT:
+        // read_matrix(node_map, edge_map);        
+        break;
+
+    case PR:        
+        break;
+    }
+    ifs.close();
+
+    // std::unique_ptr<Graph> graph = std::make_unique<Graph>(node_vct.size());
+    // graph->add_edges(edge_map);
+    // graph->print();
+}
+
+void DataReader::read(std::vector<std::string>& node_vct, std::vector<std::vector<bool>>& adj_mtx) {
+    open_file();
+    
+    int type;
+    ifs >> type;
+    std::cout << type << " ";
+
+    std::string l;
+    ifs >> l;
+    std::cout << l << " ";
+
+    long unsigned int n;
+    ifs >> n;
+    std::cout << n << std::endl;
+
+    // std::cout << l << " " << type << std::endl;
+    if (l == "n") {
+        for (long unsigned i = 0; i < n; i++) 
+            node_vct.push_back(std::to_string(i));    
+    } 
+    // else {
+    //     read_nodes(n, adj_mtx);
+    // }
+    
+    switch (type)
+    {
+    case TXT:
+        read_matrix(n, adj_mtx);        
+        break;
+
+    case PR:        
+        break;
+    }
+    ifs.close();
 }

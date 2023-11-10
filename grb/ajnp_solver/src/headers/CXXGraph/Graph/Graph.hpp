@@ -1301,6 +1301,7 @@ template <typename T>
 int Graph<T>::readFromDot(const std::string &workingDir,
                           const std::string &fileName) {
   // Define the edge maps
+  
   std::unordered_map<CXXGraph::id_t, std::pair<std::string, std::string>>
       edgeMap;
   std::unordered_map<std::string, T> nodeFeatMap;
@@ -1316,11 +1317,14 @@ int Graph<T>::readFromDot(const std::string &workingDir,
   const std::string completePathToFileGraph =
       workingDir + '/' + fileName + ".dot";
 
+  std::cout << completePathToFileGraph << std::endl;
+
   // Check if the graph is directed
   bool directed = false;
   std::ifstream fileContentStream(completePathToFileGraph);
   std::string fileContent(std::istreambuf_iterator<char>{fileContentStream},
                           {});
+  std::cout << fileContent;
   if (fileContent.find("->") != std::string::npos) {
     directed = true;
   }

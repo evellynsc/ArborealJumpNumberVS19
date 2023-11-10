@@ -40,7 +40,7 @@ void CharacterizationBasedSolver::solve()
 
 			IloNumArray values(env);
 			cplex_solver.getValues(values, f);
-			env.out() << "Values = " << values << endl;
+			env.out() << "Values = " << values << std::endl;
 
 			for (int i = 0; i < n; i++) {
 				for (int t = 0; t <= s; t++) {

@@ -1,8 +1,12 @@
-#include "gurobi_c++.h"
-#include "headers/data_reader.h"
+#include "headers/instance.h"
+#include "headers/global.h"
+#include "headers/solver.h"
+#include "headers/feasibility_solver.h"
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <memory>
+
 
 int main(int argc, char *argv[])
 {
@@ -10,7 +14,7 @@ int main(int argc, char *argv[])
         if (argc < 2) throw(0);
 
         int algo = 0;
-        int num_jumps = 0;
+        long unsigned nparts = 0;
         bool relaxed = false;
 
         if (argc == 3 && strcmp(argv[2], "0") != 0)
@@ -18,13 +22,17 @@ int main(int argc, char *argv[])
         if (argc == 4 && strcmp(argv[3], "0") != 0)
             relaxed = true;
         if (argc == 5)
-            num_jumps = atoi(argv[4]);
+            nparts = atoi(argv[4]);
         if (algo > 4) throw(1);
 
-        DataReader reader(argv[1]);
-        if (not reader.open_file())
-            return 1;
 
+        // auto poset = 
+        auto instance = std::make_unique<Instance>(argv[1], TXT, false);
+        auto solver = operations_research::FeasibilitySolver("characterization", std::move(instance), nparts, GUROBI);
+        solver.create_model();
+        solver.solve_model();
+
+        return EXIT_SUCCESS;
 
 
     } catch (int error_type) {

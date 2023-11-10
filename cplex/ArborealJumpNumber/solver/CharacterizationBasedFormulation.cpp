@@ -175,13 +175,8 @@ namespace solver {
 	}
 
 	void CharacterizationBasedFormulation::add_constraints() {
-		for (int i = 0; i < problem_instance.num_vertices; i++) {
-			if (i == problem_instance.root) {
-				cplex_model.add(r[index_parser_ns[i][0]] == 1);
-				break;
-			}
-		}
-
+		cplex_model.add(r[index_parser_ns[problem_instance.root][0]] == 1);
+	
 		for (int t = 0; t <= s; t++) {
 			IloExpr sum_r(env);
 			for (int i = 0; i < problem_instance.num_vertices; i++) {
@@ -197,7 +192,7 @@ namespace solver {
 				auto idx = index_parser_ns[i][t];
 				sum_x += x[idx];
 			}
-			cplex_model.add(sum_x == 1);
+			cplex_model.add(sum_x <= 1);
 		}
 
 		for (auto const e : boost::make_iterator_range(boost::edges(problem_instance.covering_graph))) {
@@ -252,7 +247,7 @@ namespace solver {
 			}
 		}
 
-
+// não tem na implementação com ortools
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
 			auto idx_it = index_parser_ns[i][0];
 			cplex_model.add(f[idx_it] == 0);
@@ -364,7 +359,7 @@ namespace solver {
 				}
 			}
 		}
-
+// as restrições abaixo não estão na implementação do ortools
 		for (int i = 0; i < problem_instance.num_vertices; i++) {
 			auto idx_i0 = index_parser_ns[i][0];
 			cplex_model.add(g[idx_i0] == 0);

@@ -1,20 +1,31 @@
-struct NodeData {
-    int idx;
-    bool to_be_removed;
-    bool is_maximum;
-    bool is_root;
+#pragma once
 
-    NodeData(): idx(0), to_be_removed(false), is_maximum(false), is_root(false) {}
+#include<iostream>
+#include<cstring>
 
-    NodeData(int _idx): idx(_idx), to_be_removed(false), is_maximum(false), is_root(false) {}
+class Node
+{
+	long unsigned id; //static can change during execution
+	std::string label; //fixed, can't change during execution
+	bool to_be_removed;
+	bool is_maximum;
+	bool is_root;
 
-    NodeData(int _idx, bool _is_root, bool _to_be_removed):
-		idx(_idx), to_be_removed(_to_be_removed), is_maximum(false), is_root(_is_root) {}
+public:
+	Node() : id(0), label(""), to_be_removed(false), is_maximum(false), is_root(false) {}
+	Node(long unsigned _id) : id(_id), to_be_removed(false), is_maximum(false), is_root(false) { label = std::to_string(_id); }
+	Node(long unsigned _id, std::string _label) : id(_id), label(_label), to_be_removed(false), is_maximum(false), is_root(false) {}
+	Node(long unsigned _id, bool _is_root, bool _to_be_removed) : id(_id), to_be_removed(_to_be_removed), is_maximum(false), is_root(_is_root) {}
+	Node(long unsigned _id, bool _is_root, bool _to_be_removed, bool _is_maximum) : id(_id), to_be_removed(_to_be_removed), is_maximum(_is_maximum), is_root(_is_root) {}
 
-    NodeData(int _idx, bool _is_root, bool _to_be_removed, bool _is_maximum):
-		idx(_idx), to_be_removed(_to_be_removed), is_maximum(_is_maximum), is_root(_is_root) {}
+	void set_id(long unsigned _id);
+	long unsigned get_id() const;
+	bool operator==(const Node&) const;
+	bool operator<(const Node&) const;
+};
 
-    void set_idx(int _idx) {
-        idx = _idx;
-    }
+
+class NodeHash {
+public:
+    long unsigned operator()(const Node& n) const;
 };
