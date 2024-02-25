@@ -10,21 +10,25 @@
 
 
 #include "graph.h"
-namespace ajns::solution {
-	my_graph::digraph construct_from_edges(my_graph::digraph &input_graph, std::vector<bool> &selected_edges);
+#include <map>
+#include <fstream>
+#include <boost/graph/graphviz.hpp>
 
-//class solution {
-//
-//public:
-//	solution();
-//	digraph construct_graph(digraph &input_graph, std::vector<bool> &selected_edges);
-//	virtual ~solution();
-//};
+//my_graph::digraph construct_from_edges(my_graph::digraph &input_graph, std::vector<bool> &selected_edges);
+
+class Solution {
+	int num_jumps;
+	my_graph::digraph arboreal_extension;
+	my_graph::digraph construct_graph(int, std::vector<std::pair<int, int>>&);
+
+public:
+	Solution();
+	Solution(int, int, std::vector<std::pair<int, int>>&);
+	my_graph::digraph construct_from_edges(my_graph::digraph& input_graph, std::vector<bool>& selected_edges);
+	void save_solution(std::string, std::string);
+	virtual ~Solution() = default;
+};
 
 
-//namespace solution {
-//} /* namespace solution */
-
-} /* namespace ajns */
 
 #endif /* BASE_SOLUTION_H_ */

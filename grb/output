@@ -1,0 +1,34 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1706216148.404249       9 environment.cc:405] Found the Gurobi library in '/opt/gurobi/linux64/lib/libgurobi110.so.
+I0000 00:00:1706216149.161112       9 feasibility_solver.cpp:39] 9
+I0000 00:00:1706216149.161172       9 feasibility_solver.cpp:40] Number of variables = 1161
+I0000 00:00:1706216149.165892       9 feasibility_solver.cpp:281] Number of constraints = 1602
+I0000 00:00:1706216149.188258       9 feasibility_solver.cpp:290] The problem has an optimal solution!
+I0000 00:00:1706216149.188293       9 feasibility_solver.cpp:301] Advanced usage:
+I0000 00:00:1706216149.188295       9 feasibility_solver.cpp:302] Problem solved in 30 milliseconds
+I0000 00:00:1706216149.188314       9 feasibility_solver.cpp:303] Problem solved in 0 iterations
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1706216149.206599      13 environment.cc:405] Found the Gurobi library in '/opt/gurobi/linux64/lib/libgurobi110.so.
+I0000 00:00:1706216149.216798      13 feasibility_solver.cpp:39] 7
+I0000 00:00:1706216149.216856      13 feasibility_solver.cpp:40] Number of variables = 735
+I0000 00:00:1706216149.222833      13 feasibility_solver.cpp:281] Number of constraints = 1026
+I0000 00:00:1706216149.237407      13 feasibility_solver.cpp:290] The problem has an optimal solution!
+I0000 00:00:1706216149.237454      13 feasibility_solver.cpp:301] Advanced usage:
+I0000 00:00:1706216149.237459      13 feasibility_solver.cpp:302] Problem solved in 24 milliseconds
+I0000 00:00:1706216149.237476      13 feasibility_solver.cpp:303] Problem solved in 0 iterations
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1706216149.253577      16 environment.cc:405] Found the Gurobi library in '/opt/gurobi/linux64/lib/libgurobi110.so.
+I0000 00:00:1706216149.263933      16 feasibility_solver.cpp:39] 1
+I0000 00:00:1706216149.263990      16 feasibility_solver.cpp:40] Number of variables = 33
+I0000 00:00:1706216149.264534      16 feasibility_solver.cpp:281] Number of constraints = 38
+I0000 00:00:1706216149.271500      16 feasibility_solver.cpp:290] The problem has an optimal solution!
+I0000 00:00:1706216149.271553      16 feasibility_solver.cpp:301] Advanced usage:
+I0000 00:00:1706216149.271571      16 feasibility_solver.cpp:302] Problem solved in 10 milliseconds
+I0000 00:00:1706216149.271592      16 feasibility_solver.cpp:303] Problem solved in 0 iterations
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1706216149.286027      19 environment.cc:405] Found the Gurobi library in '/opt/gurobi/linux64/lib/libgurobi110.so.
+I0000 00:00:1706216149.308434      19 feasibility_solver.cpp:39] 10
+I0000 00:00:1706216149.308494      19 feasibility_solver.cpp:40] Number of variables = 1410
+I0000 00:00:1706216149.315938      19 feasibility_solver.cpp:281] Number of constraints = 1980
+I0000 00:00:1706216149.336444      19 feasibility_solver.cpp:292] The problem does not have an optimal solution!
+I0000 00:00:1706216149.336505      19 feasibility_solver.cpp:296] The solver could not solve the problem.

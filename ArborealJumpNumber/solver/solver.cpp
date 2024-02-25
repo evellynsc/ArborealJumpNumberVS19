@@ -14,12 +14,14 @@ solver::~solver() {
 
 solver::solver() {
 	num_jumps = 0;
+	this->status = -1;
 }
 
 solver::solver(solver_params &solver_config,  Model* model) {
 	this->config = solver_config;
 	this->num_jumps = 0;
 	cplex_solver = IloCplex(model->get_cplex_model());
+	this->status = -1;
 }
 
 void solver::setup_cplex() {
@@ -33,6 +35,7 @@ void solver::setup_cplex() {
 	cplex_solver.setParam(IloCplex::Param::Threads, 4);
 	cplex_solver.setParam(IloCplex::Param::TimeLimit, config.time_limit);
 	cplex_solver.setParam(IloCplex::Param::MIP::Limits::TreeMemory, config.tree_memory);
+	cplex_solver.setParam(IloCplex::Param::Emphasis::MIP, CPX_MIPEMPHASIS_FEASIBILITY);
 }
 //
 //
@@ -41,6 +44,10 @@ void solver::solve(ajns::properties &p) {
 	std::cout << "solver.cpp\n";
 	solve();
 	p.num_jumps = num_jumps;
+}
+
+int solver::get_status() {
+	return status;
 }
 
 

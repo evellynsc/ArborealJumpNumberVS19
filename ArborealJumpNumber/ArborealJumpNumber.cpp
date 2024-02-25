@@ -6,9 +6,12 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+#define _HAS_STD_BYTE 0
 #include <iostream>
 #include <chrono>
 #include <cstring>
+#include <cstdlib>
+
 #include "preprocessing/reader.h"
 #include "preprocessing/instance_generator.h"
 #include "base/instance.h"
@@ -22,6 +25,15 @@
 #include "heuristic/minimal_extension.h"
 #include "base/properties.h"
 
+#include "solver/CharacterizationBasedFormulation.h"
+#include "solver/CharacterizationBasedSolver.h"
+#include "windows.h"
+#include "psapi.h"
+
+
+
+
+
 
 int main(int argc, char* argv[]) {
 	if (argc < 4) {
@@ -29,16 +41,23 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+
 	auto input_file = ajns::reader(argv[1]);
 	auto problem_data = input_file.read();
 	auto generator = ajns::instance_generator();
 	auto my_instance = generator.create_instance(problem_data);
+
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto prop = ajns::properties();
 
 	prop.num_arcs = my_instance.num_edges;
 	prop.num_nodes = my_instance.num_vertices;
+	//int a;
+	//std::cin >> a;
+
+	//exit(1);
+
 
 	auto run_linear_relaxation = false;
 
@@ -88,6 +107,29 @@ int main(int argc, char* argv[]) {
 			catch (...) {
 				std::cout << "algo de errado não está certo\n";
 			}
+		}
+		// TODO: verificar se funciona quando s = 0, se não funcionar, identificar o porquê.
+		else if (argv[2] == std::string("c")) {
+			prop.algo_t = algo_type::CHARACTERIZATION;
+			auto solver_config = solver::solver_params();
+			std::cout << "CHARACTERIZATION\n";
+			//auto s = atoi(argv[3]);
+			auto s = 1;
+			auto run_next = true;
+			while (run_next) {
+				auto model = solver::CharacterizationBasedFormulation(my_instance, s, false);
+				solver::solver* ajnp_solver = new solver::CharacterizationBasedSolver(solver_config, model);
+				try {
+					ajnp_solver->solve(prop);
+				}
+				catch (...) {
+					std::cout << "algo de errado não está certo\n";
+				}
+				std::cout << ajnp_solver->get_status() << std::endl;
+				run_next = (ajnp_solver->get_status() == 1 || ajnp_solver->get_status() == 2) ? false:true;
+				s++;
+			}
+			
 		}
 	}
 
