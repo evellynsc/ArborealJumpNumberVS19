@@ -12,6 +12,7 @@
 #include "edge.h"
 #include "data_reader.h"
 
+// FIXME: add atribute root
 class Instance {
     std::string name;
     std::unique_ptr<DataReader> reader;

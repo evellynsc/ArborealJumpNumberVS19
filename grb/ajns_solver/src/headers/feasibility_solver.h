@@ -22,26 +22,22 @@ class FeasibilitySolver
     static std::unordered_map<SolverEnum, const std::string> solver_map;
     // void InitSolver();
 
+    // x_{it} binary variable which value is one if vertex i ∈ V belongs to part t, zero, otherwise.
     std::vector<const MPVariable*> x;
+    // r_{it} binary variable which value is one if vertex i ∈ V is the root of part t, zero, otherwise.
     std::vector<const MPVariable*> r;
+    // f_{it} binary variable which value is one if f (πt) = i, zero, otherwise.
     std::vector<const MPVariable*> f;
+    // g_{it} binary variable which value is one if i ∈ g(πt), zero, otherwise.
     std::vector<const MPVariable*> g;
+    // a_{ijt} binary variable which value is one if arc (i, j) ∈ R− belongs to part πt, zero, otherwise.
     std::vector<const MPVariable*> a;
+    // h_{ijtu} binary variable which value is one if fju, xjt and git, t < u, are also one, zero, otherwise. h_{ijtu} = f_{ju}x_{jt}g_{it}.
     std::vector<const MPVariable*> h;
+    // w_{itu} binary variable which value is one if g_{iu} and x_{iu}, t < u, are also one, zero, otherwise. w_{itu} = x_{it}g_{iu}.
     std::vector<const MPVariable*> w;
 
     std::vector<MPConstraint*> constraints;
-
-    // std::vector<std::vector<const MPVariable*>> a;
-    // std::vector<std::vector<const MPVariable*>> h;
-    // std::vector<std::vector<const MPVariable*>> w;
-
-    // // vector that parses a integer to 
-    // vector<vector<int>> idx_vct_nj;
-    // vector<vector<int>> index_parser_m;
-    // vector<vector<int>> index_parser_s2;
-
-
 
 public:
     

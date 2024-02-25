@@ -50,8 +50,10 @@ void operations_research::FeasibilitySolver::create_model()
 
 void operations_research::FeasibilitySolver::create_constraints()
 {
-    // arcs and vertices
-    std::cout << "sum_x" << std::endl;
+    // ============== INDUCED ARBOREAL SUBPOSET ==============
+
+    // \sum_{t \in nparts} x_{it} <= 1 \forall i \in data->n
+    // each vertex can belong to one part, at maximum.
     for (long unsigned i = 0; i < data->n; ++i)
     {
         LinearExpr sum_x;
@@ -61,6 +63,34 @@ void operations_research::FeasibilitySolver::create_constraints()
         solver->MakeRowConstraint(sum_x <= 1.0);
     }
 
+    // x_{it} - a_{ijt} \geq 0 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    // x_{jt} - a_{ijt} \geq 0 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    // a_{ijt} - x_{it} -  x_{jt} \geq  - 1 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    for (long unsigned t = 0; t < nparts; ++t)
+        for (long unsigned i = 0; i < data->n; ++i)
+            for (long unsigned j = 0; j < data->n; ++j) 
+            {
+                if (data->adj_mtx_reduction[i][j]) 
+                {
+                    LinearExpr lhs;
+                    auto it = get_index_d2({i, data->n}, {t, nparts});
+                    auto jt = get_index_d2({j, data->n}, {t, nparts});
+                    auto ijt = get_index_d3({i, data->n}, {j, data->n}, {t, nparts});
+                    
+                    lhs = LinearExpr(x[it]) - LinearExpr(a[ijt]);
+                    solver->MakeRowConstraint(lhs >= 0.0); 
+                    
+                    lhs = LinearExpr(x[jt]) - LinearExpr(a[ijt]);
+                    solver->MakeRowConstraint(lhs >= 0.0);
+                    
+                    lhs = LinearExpr(a[ijt]) - LinearExpr(x[it]) - LinearExpr(x[jt]);
+                    solver->MakeRowConstraint(lhs >= -1.0);
+                }
+                
+            }  
+
+    // \sum_{t>u} x_{it} + x_{ju} \leq 1 \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall u,t \in nparts
+    // if t > u and j \in u, then i cannot belong to part t.
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             if (data->adj_mtx_reduction[i][j])
@@ -79,33 +109,15 @@ void operations_research::FeasibilitySolver::create_constraints()
                         solver->MakeRowConstraint(sum_x <= 1.0);
                     }                        
                 }
-         
-    for (long unsigned t = 0; t < nparts; ++t)
-        for (long unsigned i = 0; i < data->n; ++i)
-            for (long unsigned j = 0; j < data->n; ++j) 
-            {
-                if (data->adj_mtx_reduction[i][j]) 
-                {
-                    LinearExpr lhs;
-                    auto idx_xi = get_index_d2({i, data->n}, {t, nparts});
-                    auto idx_xj = get_index_d2({j, data->n}, {t, nparts});
-                    auto idx_a = get_index_d3({i, data->n}, {j, data->n}, {t, nparts});
-                    lhs = LinearExpr(x[idx_xi]) - LinearExpr(a[idx_a]);
-                    solver->MakeRowConstraint(lhs >= 0.0); 
-                    lhs = LinearExpr(x[idx_xj]) - LinearExpr(a[idx_a]);
-                    solver->MakeRowConstraint(lhs >= 0.0);
-                    lhs = LinearExpr(a[idx_a]) - LinearExpr(x[idx_xi]) - LinearExpr(x[idx_xj]);
-                    solver->MakeRowConstraint(lhs >= -1.0);
-                }
-                
-            }  
-
     
     // roots, vertices and arcs
+
     // the root is the vertex data->n-1
+    // r_{00} = 1
     LinearExpr lhs = LinearExpr(r[get_index_d2({data->n-1, data->n}, {0, nparts})]);
     solver->MakeRowConstraint(lhs == 1.0);
     
+    // \sum_{i \in V} r_{it} = 1 & \forall t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
     {
         LinearExpr sum_r;
@@ -115,18 +127,19 @@ void operations_research::FeasibilitySolver::create_constraints()
         solver->MakeRowConstraint(sum_r == 1.0);
     }
     
-    // the root is the vertex data->n-1
+    // x_{jt} \geq r_{jt} & \forall j \in data->n-1, \forall t \in nparts
     for (long unsigned j = 0; j < data->n-1; ++j) 
         for (long unsigned t = 0; t < nparts; ++t)
             solver->MakeRowConstraint(LinearExpr(x[get_index_d2({j,data->n},{t, nparts})]) >= LinearExpr(r[get_index_d2({j,data->n},{t, nparts})]));
 
+    // \sum_{t \in \pi} r_{jt} + \sum_{i \in \phi^-(j)}\sum_{t \in \pi}a_{ijt} = 1, \forall j \in data->n-1
     for (long unsigned j = 0; j < data->n-1; ++j) 
     {
         LinearExpr sum_r;
         LinearExpr sum_a;
         for (long unsigned t = 0; t < nparts; ++t)
         {
-            for (long unsigned i = 0; i < data->n; ++i)
+            for (long unsigned i = 0; i < data->n-1; ++i)
             {
                 if (data->adj_mtx_reduction[i][j])
                     sum_a += a[get_index_d3({i, data->n},{j,data->n},{t, nparts})];
@@ -136,6 +149,8 @@ void operations_research::FeasibilitySolver::create_constraints()
         solver->MakeRowConstraint(sum_r + sum_a == 1.0);
     }
 
+    // \sum_{t\in \pi} a_{ijt} \leq 1& \forall (i,j) \in data->adj_mtx_reduction[i][j]
+    // \sum_{t\in \pi} a_{ijt} = 0& \forall (i,j) \notin data->adj_mtx_reduction[i][j]
     for (long unsigned j = 0; j < data->n; j++) 
         for (long unsigned i = 0; i < data->n; i++) 
         {
@@ -149,9 +164,9 @@ void operations_research::FeasibilitySolver::create_constraints()
                 solver->MakeRowConstraint(sum_a == 0.0);
         }
 
-    //define f 
+    // ============== f FUNCTION DEFINITION ==============
 
-
+    // \sum_{i \in data->n} f_{it} = 1 & \forall t > 0, t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
     {
         LinearExpr sum_f;
@@ -160,9 +175,10 @@ void operations_research::FeasibilitySolver::create_constraints()
         if (t > 0)
             solver->MakeRowConstraint(sum_f == 1.0);
         else 
-            solver->MakeRowConstraint(sum_f == 0.0);
+            solver->MakeRowConstraint(sum_f == 0.0); //ALERT: is it mandatory?
     }
 
+    // f_{iu} \leq \sum_{t \in nparts, t < u} x_{it} & \forall i \in data->n, \forall u > 0, u \in nparts
     for (long unsigned u = 1; u < nparts; ++u)
     {
         for (long unsigned i = 0; i < data->n; ++i)
@@ -175,6 +191,7 @@ void operations_research::FeasibilitySolver::create_constraints()
         }
     }
 
+    // f_{it} + r_{jt} + d_{ij} \leq 2 & \forall i,j \in data->n, \forall t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
         for (long unsigned i = 0; i < data->n; ++i)
             for (long unsigned j = 0; j < data->n; ++j)
@@ -184,10 +201,9 @@ void operations_research::FeasibilitySolver::create_constraints()
                 lhs += r[get_index_d2({j, data->n}, {t, nparts})];
                 lhs += (double) data->adj_mtx_closure[i][j];
                 solver->MakeRowConstraint(lhs <= 2.0);
-            }
-                
-   
-    
+            }               
+
+    // ============== g FUNCTION DEFINITION ==============
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)            
             for (long unsigned u = 1; u < nparts; ++u)
@@ -266,11 +282,6 @@ void operations_research::FeasibilitySolver::create_constraints()
         sum_g += g[get_index_d2({i, data->n},{0, nparts})];
     }
     solver->MakeRowConstraint(sum_g == 0.0);
-        
-/**/
-                             
-        
-
     
     std::string text;
     solver->ExportModelAsLpFormat(false, &text);
