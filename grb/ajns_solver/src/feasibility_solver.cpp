@@ -149,8 +149,8 @@ void operations_research::FeasibilitySolver::create_constraints()
         solver->MakeRowConstraint(sum_r + sum_a == 1.0);
     }
 
-    // \sum_{t\in \pi} a_{ijt} \leq 1& \forall (i,j) \in data->adj_mtx_reduction[i][j]
-    // \sum_{t\in \pi} a_{ijt} = 0& \forall (i,j) \notin data->adj_mtx_reduction[i][j]
+    // \sum_{t\in \pi} a_{ijt} \leq 1& \forall (i,j) \in data->adj_mtx_reduction
+    // \sum_{t\in \pi} a_{ijt} = 0& \forall (i,j) \notin data->adj_mtx_reduction
     for (long unsigned j = 0; j < data->n; j++) 
         for (long unsigned i = 0; i < data->n; i++) 
         {
@@ -204,6 +204,10 @@ void operations_research::FeasibilitySolver::create_constraints()
             }               
 
     // ============== g FUNCTION DEFINITION ==============
+    // h_{ijtu} \leq f_{ju} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \leq x_{jt} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \leq g_{it} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \geq f_{ju} + x_{jt} + g_{it} - 2 & \forall i,j \in data->n, \forall u,t \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)            
             for (long unsigned u = 1; u < nparts; ++u)
@@ -223,10 +227,10 @@ void operations_research::FeasibilitySolver::create_constraints()
                     rhs += x[get_index_d2({j, data->n},{t, nparts})];
                     rhs += g[get_index_d2({i, data->n},{t, nparts})];
                     rhs -= 2.0;
-
                     solver->MakeRowConstraint(lhs >= rhs);                    
                 }  
 
+    // g_{iu} = f_{iu} + \sum_{j \in data->n} \sum_{t \in nparts, t < u} h_{ijtu} & \forall i \in data->n, \forall u \in nparts\{0} 
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned u = 1; u < nparts; ++u)
         {
@@ -238,7 +242,10 @@ void operations_research::FeasibilitySolver::create_constraints()
             LinearExpr lhs = g[get_index_d2({i, data->n},{u, nparts})];
             solver->MakeRowConstraint(lhs == rhs);  
         }
-            
+
+    // w_{itu} \leq x_{it} & \forall i \in data->n, \forall u,t \in nparts, t < u
+    // w_{itu} \leq g_{iu} \forall i \in data->n, \forall u,t \in nparts, t < u 
+    // w_{itu} \geq x_{it} + g_{iu}  - 1 & \forall i \in data->n, \forall u,t \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned u = 1; u < nparts; ++u)
             for (long unsigned t = 0; t < u; ++t)
@@ -256,6 +263,7 @@ void operations_research::FeasibilitySolver::create_constraints()
                 solver->MakeRowConstraint(lhs >= rhs);
             }
 
+    // x_{it} + x_{ju} \leq 1 + \sum_{k \in data->adj_mtx_closure[i]} w_{ktu} & \forall (i,j) \in data->adj_mtx_reduction, \forall t, u \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             if (data->adj_mtx_reduction[i][j])
