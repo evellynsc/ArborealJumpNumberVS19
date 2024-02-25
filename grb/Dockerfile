@@ -3,7 +3,7 @@ FROM gurobi/optimizer:11.0.0 AS gurobi_ortools
 WORKDIR /output/instances
 WORKDIR /ajns
 
-# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update -yq \
     && apt-get -y install build-essential cmake lsb-release wget

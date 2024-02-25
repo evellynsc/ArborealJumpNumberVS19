@@ -23,8 +23,6 @@ PROG_BIN=bin
 
 MAIN_SRC=$(PROG_DIR)/ArborealJumpNumber.cpp
 
-
-
 FLOW_SRC=$(PROG_DIR)/algorithms/flow.cpp
 FLOW_H=$(PROG_DIR)/algorithms/flow.h
 FLOW_OBJ=$(PROG_BIN)/flow.o

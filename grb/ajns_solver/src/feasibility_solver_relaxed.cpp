@@ -1,9 +1,9 @@
-#include "headers/feasibility_solver.h"
+#include "headers/feasibility_solver_relaxed.h"
 
-std::unordered_map<SolverEnum, const std::string> operations_research::FeasibilitySolver::solver_map = {{GUROBI, "GUROBI"}, {CPLEX, "CPLEX"}, {HIGHS, "HIGHS"}}; 
+std::unordered_map<SolverEnum, const std::string> operations_research::FeasibilitySolverRelaxed::solver_map = {{GUROBI, "GUROBI"}, {CPLEX, "CPLEX"}, {HIGHS, "HIGHS"}}; 
 
 
-void operations_research::FeasibilitySolver::create_variables()
+void operations_research::FeasibilitySolverRelaxed::create_variables()
 {
     // const double infinity = solver->infinity();
     
@@ -11,10 +11,10 @@ void operations_research::FeasibilitySolver::create_variables()
     {
         for (unsigned long t = 0; t < nparts; t++)
         {
-            x.push_back(solver->MakeIntVar(0.0, 1, "x_" + std::to_string(i) + "_" + std::to_string(t)));
-            r.push_back(solver->MakeIntVar(0.0, 1, "r_" + std::to_string(i) + "_" + std::to_string(t)));
-            f.push_back(solver->MakeIntVar(0.0, 1, "f_" + std::to_string(i) + "_" + std::to_string(t)));
-            g.push_back(solver->MakeIntVar(0.0, 1, "g_" + std::to_string(i) + "_" + std::to_string(t)));
+            x.push_back(solver->MakeNumVar(0.0, 1, "x_" + std::to_string(i) + "_" + std::to_string(t)));
+            r.push_back(solver->MakeNumVar(0.0, 1, "r_" + std::to_string(i) + "_" + std::to_string(t)));
+            f.push_back(solver->MakeNumVar(0.0, 1, "f_" + std::to_string(i) + "_" + std::to_string(t)));
+            g.push_back(solver->MakeNumVar(0.0, 1, "g_" + std::to_string(i) + "_" + std::to_string(t)));
         }
     }
 
@@ -23,9 +23,9 @@ void operations_research::FeasibilitySolver::create_variables()
         for (unsigned long j = 0; j < data->n; j++)
             for (unsigned long t = 0; t < nparts; t++)
             {
-                a.push_back(solver->MakeIntVar(0.0, 1, "a_" + std::to_string(i) + "_" + std::to_string(j) + "_" + std::to_string(t)));
+                a.push_back(solver->MakeNumVar(0.0, 1, "a_" + std::to_string(i) + "_" + std::to_string(j) + "_" + std::to_string(t)));
                 for (unsigned long u = 0; u < nparts; u++)
-                    h.push_back(solver->MakeIntVar(0.0, 1, "h_" + std::to_string(i) + "_" + std::to_string(j) + "_" + std::to_string(t) + "_" + std::to_string(u)));
+                    h.push_back(solver->MakeNumVar(0.0, 1, "h_" + std::to_string(i) + "_" + std::to_string(j) + "_" + std::to_string(t) + "_" + std::to_string(u)));
             }
     }
 
@@ -33,7 +33,7 @@ void operations_research::FeasibilitySolver::create_variables()
     {
         for (unsigned long t = 0; t < nparts; t++)
             for (unsigned long u = 0; u < nparts; u++)
-                w.push_back(solver->MakeIntVar(0.0, 1, "w_" + std::to_string(i) + "_" + std::to_string(t) + "_" + std::to_string(u)));
+                w.push_back(solver->MakeNumVar(0.0, 1, "w_" + std::to_string(i) + "_" + std::to_string(t) + "_" + std::to_string(u)));
     }
 
     LOG(INFO) << data->n;
@@ -41,14 +41,14 @@ void operations_research::FeasibilitySolver::create_variables()
 }
 
 
-void operations_research::FeasibilitySolver::create_model()
+void operations_research::FeasibilitySolverRelaxed::create_model()
 {
     create_variables();
     // create_objective();
     create_constraints();
 }
 
-void operations_research::FeasibilitySolver::create_constraints()
+void operations_research::FeasibilitySolverRelaxed::create_constraints()
 {
     // arcs and vertices
     std::cout << "sum_x" << std::endl;
@@ -281,7 +281,7 @@ void operations_research::FeasibilitySolver::create_constraints()
     LOG(INFO) << "Number of constraints = " << solver->NumConstraints();
 }
 
-void operations_research::FeasibilitySolver::solve_model()
+void operations_research::FeasibilitySolverRelaxed::solve_model()
 {
     const MPSolver::ResultStatus result_status = solver->Solve();
 

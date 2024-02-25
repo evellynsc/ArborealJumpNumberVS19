@@ -14,7 +14,7 @@
 
 namespace operations_research {
 
-class FeasibilitySolver
+class FeasibilitySolverRelaxed
 {
     const std::string name;
     const std::unique_ptr<Instance> data; 
@@ -32,20 +32,9 @@ class FeasibilitySolver
 
     std::vector<MPConstraint*> constraints;
 
-    // std::vector<std::vector<const MPVariable*>> a;
-    // std::vector<std::vector<const MPVariable*>> h;
-    // std::vector<std::vector<const MPVariable*>> w;
-
-    // // vector that parses a integer to 
-    // vector<vector<int>> idx_vct_nj;
-    // vector<vector<int>> index_parser_m;
-    // vector<vector<int>> index_parser_s2;
-
-
-
 public:
     
-    FeasibilitySolver(std::string _name, std::unique_ptr<Instance> _data, long unsigned _nparts, SolverEnum _solver)
+    FeasibilitySolverRelaxed(std::string _name, std::unique_ptr<Instance> _data, long unsigned _nparts, SolverEnum _solver)
     : name(_name), data(std::move(_data)), nparts(_nparts)
     {
         // TODO: fix this turnaround!!
@@ -58,7 +47,7 @@ public:
             return;
         }
     }
-    ~FeasibilitySolver()=default;
+    ~FeasibilitySolverRelaxed()=default;
     void create_model();
     void solve_model();
 
