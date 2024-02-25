@@ -2,8 +2,8 @@
 
 
 #include <boost/graph/graphviz.hpp>
-
 namespace solver {
+
 
 CharacterizationBasedSolver::CharacterizationBasedSolver(){}
 void CharacterizationBasedSolver::solve()
@@ -101,6 +101,11 @@ void CharacterizationBasedSolver::solve()
 			status = 1;
 
 
+			solution = new Solution(s, problem_instance.num_vertices, _selected_edges);
+			solution->save_solution("teste", "dot");
+			status = 1;
+
+
 			/*for (size_t i = 0; i < n; i++) {
 				for (size_t j = 0; j < n; j++) {
 					if (i != j) {
@@ -124,7 +129,7 @@ void CharacterizationBasedSolver::solve()
 				std::cout << head << ',' << tail << ' ' << final_solution[e].type << std::endl;
 			}*/
 
-
+			
 		}
 		else {
 			std::cout << "============================\n";

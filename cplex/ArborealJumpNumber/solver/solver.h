@@ -25,6 +25,7 @@ protected:
 	std::size_t num_jumps; // mudar aqui pra double
 	Solution* solution;
 	Model* model;
+
 	int status;
 
 public:

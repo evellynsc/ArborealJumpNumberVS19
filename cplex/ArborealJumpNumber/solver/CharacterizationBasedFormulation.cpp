@@ -372,13 +372,13 @@ namespace solver {
 			}
 		}
 
-
 		for (int t = 1; t <= s; t++) {
 			IloExpr sum_x_l(env), sum_x_r(env);
 			for (int i = 0; i < problem_instance.num_vertices; i++) {
 				auto idx_it = index_parser_ns[i][t];
 				sum_x_l += x[idx_it];
 			}
+
 			for (int i = 0; i < problem_instance.num_vertices; i++) {
 				auto idx_it = index_parser_ns[i][t-1];
 				sum_x_r += x[idx_it];
