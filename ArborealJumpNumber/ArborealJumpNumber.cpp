@@ -36,7 +36,7 @@
 
 
 int main(int argc, char* argv[]) {
-	if (argc < 3) {
+	if (argc < 4) {
 		std::cout << "FALTANDO ARGUMENTOS\n" << std::endl;
 		return 1;
 	}
@@ -58,6 +58,12 @@ int main(int argc, char* argv[]) {
 
 	//exit(1);
 
+
+	auto run_linear_relaxation = false;
+
+	if (argv[3] == std::string("lr")) {
+		run_linear_relaxation = true;
+	}
 
 	if (argv[2] == std::string("h")) {
 		prop.algo_t = algo_type::HH;
@@ -81,7 +87,7 @@ int main(int argc, char* argv[]) {
 		else if (argv[2] == std::string("f")) {
 			prop.algo_t = algo_type::MFLOW;
 			auto solver_config = solver::solver_params();
-			auto exp_model = solver::MultiFlowModel(my_instance, true);
+			auto exp_model = solver::MultiFlowModel(my_instance, run_linear_relaxation);
 			solver::solver* ajnp_solver = new solver::MFSolver(solver_config, exp_model);
 			try {
 				ajnp_solver->solve(prop);
@@ -93,7 +99,7 @@ int main(int argc, char* argv[]) {
 		else if (argv[2] == std::string("d")) {
 			prop.algo_t = algo_type::DDL;
 			auto solver_config = solver::solver_params();
-			auto model = solver::DDLModel(my_instance, true);
+			auto model = solver::DDLModel(my_instance, run_linear_relaxation);
 			solver::solver* ajnp_solver = new solver::DDLSolver(solver_config, model);
 			try {
 				ajnp_solver->solve(prop);
@@ -137,8 +143,8 @@ int main(int argc, char* argv[]) {
 	auto name_file = "results" + std::to_string(prop.algo_t) + ".txt";
 	outFile.open(name_file, std::ofstream::out | std::ofstream::app);
 
-	outFile << my_instance.id << " " << prop.num_nodes << " " << prop.num_arcs << " " <<
-		prop.num_violators << " " << prop.num_jumps << " " << fixed << prop.run_time << setprecision(9) << std::endl; // @suppress("Invalid overload")
+	outFile << my_instance.id << "," << prop.num_nodes << "," << prop.num_arcs << "," <<
+		prop.num_violators << "," << prop.num_jumps << "," << fixed << prop.run_time << setprecision(9) << std::endl; // @suppress("Invalid overload")
 
 	std::cout << "time === " << fixed << run_time << setprecision(9) << " ===\n";
 	return 0;
