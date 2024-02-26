@@ -64,7 +64,7 @@ CMD ["bash"]
 # RUN cmake -S. -Bbuild -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOTNET=OFF -DUSE_SCIP=OFF -DUSE_COINOR=OFF -DUSE_GUROBI=ON -DBUILD_DEPS=ON 
 # RUN cmake --build build --target all -j16
 
-# docker build . -t ajns
+# docker build . -t ajns --rm
 # docker run -it --name ortools --rm ajns
 # docker run -it --name ortools --rm ajns ./ajns.bin br17.12.txt 0 0 3 
 # docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --rm ajns ./ajns.bin br17.12.txt 0 0 3 
