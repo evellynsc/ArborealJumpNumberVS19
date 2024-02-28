@@ -22,10 +22,10 @@ COPY . /ajns
 
 ENV GRB_LICENSE_FILE /opt/gurobi/gurobi.lic
 
-FROM gurobi_ortools 
+FROM gurobi_ortools
 
 WORKDIR /ajns/ajns_solver
-RUN make all
+RUN make all && chmod +x run.sh
 
 
 CMD ["bash"]
@@ -61,13 +61,13 @@ CMD ["bash"]
 # WORKDIR /root/or-tools
 # RUN rm -rf build
 
-# RUN cmake -S. -Bbuild -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOTNET=OFF -DUSE_SCIP=OFF -DUSE_COINOR=OFF -DUSE_GUROBI=ON -DBUILD_DEPS=ON 
+# RUN cmake -S. -Bbuild -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOTNET=OFF -DUSE_SCIP=OFF -DUSE_COINOR=OFF -DUSE_GUROBI=ON -DBUILD_DEPS=ON
 # RUN cmake --build build --target all -j16
 
 # docker build . -t ajns --rm
 # docker run -it --name ortools --rm ajns
-# docker run -it --name ortools --rm ajns ./ajns.bin br17.12.txt 0 0 3 
-# docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --rm ajns ./ajns.bin br17.12.txt 0 0 3 
+# docker run -it --name ortools --rm ajns ./ajns.bin br17.12.txt 0 0 3
+# docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --rm ajns ./ajns.bin br17.12.txt 0 0 3
 # docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --volume=/mnt/a/Users/evellynsc/Documents/results_25_01_24:/output/instances --rm ajns ./run.sh
 
 # https://organicprogrammer.com/2020/07/28/linux-cpp-docker/
