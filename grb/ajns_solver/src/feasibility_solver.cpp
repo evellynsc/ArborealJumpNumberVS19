@@ -60,7 +60,7 @@ void operations_research::FeasibilitySolver::create_constraints()
         for (long unsigned t = 0; t < nparts; ++t)
             sum_x += x[get_index_d2({i, data->n},{t, nparts})];
 
-        solver->MakeRowConstraint(sum_x <= 1.0);
+        solver->MakeRowConstraint(sum_x == 1.0); //reunião dia 28/02/2024
     }
 
     // x_{it} - a_{ijt} \geq 0 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
@@ -94,14 +94,14 @@ void operations_research::FeasibilitySolver::create_constraints()
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             if (data->adj_mtx_reduction[i][j])
-                for (long unsigned u = 0; u < nparts; ++u)
+                for (long unsigned u = 0; u < nparts; ++u)//poderia fazer u < nparts-1
                 {
                     LinearExpr sum_x;
                     bool add = false;
-                    for (long unsigned t = u+1; t < nparts; ++t)
+                    for (long unsigned t = u+1; t < nparts; ++t) 
                     {
                         sum_x += x[get_index_d2({i, data->n},{t, nparts})];
-                        add = true;
+                        add = true; 
                     }
                     if (add)
                     {
@@ -130,7 +130,8 @@ void operations_research::FeasibilitySolver::create_constraints()
     // x_{jt} \geq r_{jt} & \forall j \in data->n-1, \forall t \in nparts
     for (long unsigned j = 0; j < data->n-1; ++j) 
         for (long unsigned t = 0; t < nparts; ++t)
-            solver->MakeRowConstraint(LinearExpr(x[get_index_d2({j,data->n},{t, nparts})]) >= LinearExpr(r[get_index_d2({j,data->n},{t, nparts})]));
+            solver->MakeRowConstraint(LinearExpr(x[get_index_d2({j,data->n},{t, nparts})]) >= 
+                LinearExpr(r[get_index_d2({j,data->n},{t, nparts})]));
 
     // \sum_{t \in \pi} r_{jt} + \sum_{i \in \phi^-(j)}\sum_{t \in \pi}a_{ijt} = 1, \forall j \in data->n-1
     for (long unsigned j = 0; j < data->n-1; ++j) 
@@ -139,7 +140,7 @@ void operations_research::FeasibilitySolver::create_constraints()
         LinearExpr sum_a;
         for (long unsigned t = 0; t < nparts; ++t)
         {
-            for (long unsigned i = 0; i < data->n-1; ++i)
+            for (long unsigned i = 0; i < data->n; ++i) // estava data->n-1
             {
                 if (data->adj_mtx_reduction[i][j])
                     sum_a += a[get_index_d3({i, data->n},{j,data->n},{t, nparts})];
