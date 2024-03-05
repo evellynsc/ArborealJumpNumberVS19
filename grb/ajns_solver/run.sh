@@ -6,11 +6,11 @@ do
     ./ajns.bin "$file" 0 0 10 > /output/"$file"
 done
 
-# run median instances
-# for file in instances/median*;
-# do
-#     ./ajns.bin "$file" 0 0 3 > /output/"$file"
-# done
+run median instances
+for file in instances/median*;
+do
+    ./ajns.bin "$file" 0 0 15 > /output/"$file"
+done
 
 # run big instances
 # for file in instances/big*;

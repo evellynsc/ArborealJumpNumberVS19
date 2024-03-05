@@ -21,30 +21,52 @@ int main(int argc, char *argv[])
         int algo = 0;
         long unsigned nparts = 0;
         bool relaxed = false;
-
+        bool desc = true;
+	// FIXME: change to switch
         if (argc == 3 && strcmp(argv[2], "0") != 0)
             algo = atoi(argv[2]);
         if (argc == 4 && strcmp(argv[3], "0") != 0)
             relaxed = true;
         if (argc == 5)
             nparts = atoi(argv[4]);
+	    if (argc == 6)
+            if (strcmp(desc, "0") == 0)
+                desc = false;
         if (algo > 4) throw(1);
 
-        for (int i = nparts; i >= 1; i--) 
-        {
-            LOG(INFO) << "Number of parts: " << i;
-            if (relaxed) {
-                auto instance = std::make_unique<Instance>(argv[1], TXT, false);
-                auto solver = operations_research::FeasibilitySolverRelaxed("characterization", std::move(instance), i, GUROBI);
-                solver.create_model();
-                solver.solve_model();
-            } else {                
-                auto instance = std::make_unique<Instance>(argv[1], TXT, false);
-                auto solver = operations_research::FeasibilitySolver("characterization", std::move(instance), i, GUROBI);
-                solver.create_model();
-                solver.solve_model();
-            }
-        }
+	if (desc) {
+    	for (int i = nparts; i >= 1; i--)
+    	{
+    	    LOG(INFO) << "Number of parts: " << i;
+    	    if (relaxed) {
+        		auto instance = std::make_unique<Instance>(argv[1], TXT, false);
+        		auto solver = operations_research::FeasibilitySolverRelaxed("characterization", std::move(instance), i, GUROBI);
+        		solver.create_model();
+        		solver.solve_model();
+    	    } else {
+        		auto instance = std::make_unique<Instance>(argv[1], TXT, false);
+        		auto solver = operations_research::FeasibilitySolver("characterization", std::move(instance), i, GUROBI);
+        		solver.create_model();
+        		solver.solve_model();
+    	    }
+    	}
+	} else {
+        for (int i = 0; i <= nparts; i++)
+    	{
+    	    LOG(INFO) << "Number of parts: " << i;
+    	    if (relaxed) {
+        		auto instance = std::make_unique<Instance>(argv[1], TXT, false);
+        		auto solver = operations_research::FeasibilitySolverRelaxed("characterization", std::move(instance), i, GUROBI);
+        		solver.create_model();
+        		solver.solve_model();
+    	    } else {
+        		auto instance = std::make_unique<Instance>(argv[1], TXT, false);
+        		auto solver = operations_research::FeasibilitySolver("characterization", std::move(instance), i, GUROBI);
+        		solver.create_model();
+        		solver.solve_model();
+    	    }
+    	}
+    }
 
         return EXIT_SUCCESS;
     } catch (int error_type) {
@@ -52,7 +74,7 @@ int main(int argc, char *argv[])
             case 0:
                 std::cerr << "Wrong number of arguments. Provide at least one arguments" << std::endl;
                 std::cerr << "Usage: ./ajns <file_name> [algorithm_id|default:0] ";
-                std::cerr << "[relaxed|default:0] [max_num_jumps]" << std::endl;
+                std::cerr << "[relaxed|default:0] [max_num_jumps] []" << std::endl;
                 return 1;
             case 1:
                 std::cerr << "Wrong algorithm id. Choose a number between 0 and 4." << std::endl;
