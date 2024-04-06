@@ -1,9 +1,9 @@
 FROM gurobi/optimizer:11.0.0 AS gurobi_ortools
 
-WORKDIR /output/instances
-WORKDIR /ajns
+WORKDIR "/output/instances"
+WORKDIR "/ajns"
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf "/usr/share/zoneinfo/$TZ" "/etc/localtime" && echo "$TZ" > "/etc/timezone"
 
 RUN apt-get update -yq \
     && apt-get -y install build-essential cmake lsb-release wget
@@ -15,12 +15,12 @@ RUN wget -q "https://github.com/google/or-tools/releases/download/v9.8/or-tools_
 
 # RUN export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ajns/ortools/lib/
 # adicionar diretório que contém a lib do ortools no sistema
-RUN echo "/ajns/ortools/lib/" >> /etc/ld.so.conf && ldconfig
-RUN echo "/opt/gurobi/linux64/lib/" >> /etc/ld.so.conf && ldconfig
+RUN echo "/ajns/ortools/lib/" >> "/etc/ld.so.conf" && ldconfig
+RUN echo "/opt/gurobi/linux64/lib/" >> "/etc/ld.so.conf" && ldconfig
 
 COPY . /ajns
 
-ENV GRB_LICENSE_FILE /opt/gurobi/gurobi.lic
+ENV GRB_LICENSE_FILE "/opt/gurobi/gurobi.lic"
 
 FROM gurobi_ortools 
 
@@ -64,10 +64,10 @@ CMD ["bash"]
 # RUN cmake -S. -Bbuild -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOTNET=OFF -DUSE_SCIP=OFF -DUSE_COINOR=OFF -DUSE_GUROBI=ON -DBUILD_DEPS=ON 
 # RUN cmake --build build --target all -j16
 
-# docker build . -t ajns --rm
+# docker build . -t ajns:grb --rm
 # docker run -it --name ortools --rm ajns
 # docker run -it --name ortools --rm ajns ./ajns.bin br17.12.txt 0 0 3 
-# docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --rm ajns ./ajns.bin br17.12.txt 0 0 3 
+# docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --rm ajns ./ajns.bin instances/small-br17.12.sop.ajn.txt 0 0 3 
 # docker run -it --name ortools --volume=/mnt/a/Users/evellynsc/Documents/gurobi.lic:/opt/gurobi/gurobi.lic:ro --volume=/mnt/a/Users/evellynsc/Documents/results_25_01_24:/output/instances --rm ajns ./run.sh
 
 # https://organicprogrammer.com/2020/07/28/linux-cpp-docker/
