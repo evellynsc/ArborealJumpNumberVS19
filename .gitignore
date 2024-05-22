@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+cplex\cos_installer_preview-22.1.1.0.R0-M08SWML-linux-x86-64.bin

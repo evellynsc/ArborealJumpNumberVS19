@@ -52,7 +52,19 @@ void operations_research::FeasibilitySolver::create_constraints()
 {
     // ============== INDUCED ARBOREAL SUBPOSET ==============
 
-    // \sum_{t \in nparts} x_{it} <= 1 \forall i \in data->n
+    // added 07/04/24
+    // \sum_{i \in V} x_{it} >= 1 \forall t \in nparts
+    // each part must have at least one vertex
+    for (long unsigned t = 0; t < nparts; ++t)
+    {
+        LinearExpr sum_x;
+        for (long unsigned i = 0; i < data->n; ++i)
+            sum_x += x[get_index_d2({i, data->n},{t, nparts})];
+
+        solver->MakeRowConstraint(sum_x >= 1.0); 
+    }
+
+    // \sum_{t \in nparts} x_{it} == 1 \forall i \in data->n
     // each vertex can belong to one part, at maximum.
     for (long unsigned i = 0; i < data->n; ++i)
     {
@@ -113,7 +125,7 @@ void operations_research::FeasibilitySolver::create_constraints()
     // roots, vertices and arcs
 
     // the root is the vertex data->n-1
-    // r_{00} = 1
+    // r_{data->n-1,0} = 1
     LinearExpr lhs = LinearExpr(r[get_index_d2({data->n-1, data->n}, {0, nparts})]);
     solver->MakeRowConstraint(lhs == 1.0);
 
@@ -301,7 +313,7 @@ void operations_research::FeasibilitySolver::create_constraints()
     LOG(INFO) << "Number of constraints = " << solver->NumConstraints();
 }
 
-void operations_research::FeasibilitySolver::solve_model()
+bool operations_research::FeasibilitySolver::solve_model()
 {
     const MPSolver::ResultStatus result_status = solver->Solve();
 
@@ -309,13 +321,12 @@ void operations_research::FeasibilitySolver::solve_model()
     if (result_status == MPSolver::OPTIMAL) {
         LOG(INFO) << "The problem has an optimal solution!";
     } else if (result_status != MPSolver::OPTIMAL) {
-        LOG(INFO) << "The problem does not have an optimal solution!";
         if (result_status == MPSolver::FEASIBLE) {
             LOG(INFO) << "A potentially suboptimal solution was found";
         } else {
             LOG(INFO) << "The solver could not solve the problem.";
-            return;
         }
+        return false;
     }
 
     LOG(INFO) << "Problem solved in " << solver->wall_time() << " milliseconds";
@@ -351,4 +362,6 @@ void operations_research::FeasibilitySolver::solve_model()
         for (long unsigned t = 0; t < nparts; ++t)
             if (g[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
                 std::cout << "g(" << i << "," << t << ")" << std::endl;
+
+    return true;
 }

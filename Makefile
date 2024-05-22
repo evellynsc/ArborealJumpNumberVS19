@@ -15,7 +15,7 @@ BOOSTINCDIR = -I$(BOOSTLIBDIR)
 CFLAGS = $(COPT) $(GENERALINCDIR) $(BOOSTINCDIR)
 CFLAGS2  = $(COPT) $(CPLEXINCDIR) 
 
-CC=g++ -std=c++17 -w
+CC=g++ -std=c++17 -W
 CC_VALGRIND=g++ -std=c++17 -g -O0
 
 PROG_DIR=ArborealJumpNumber

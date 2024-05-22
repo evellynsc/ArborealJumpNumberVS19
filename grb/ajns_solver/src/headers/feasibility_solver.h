@@ -56,7 +56,7 @@ public:
     }
     ~FeasibilitySolver()=default;
     void create_model();
-    void solve_model();
+    bool solve_model();
 
 protected:
     std::unique_ptr<MPSolver> solver;

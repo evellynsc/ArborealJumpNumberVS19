@@ -1,8 +1,9 @@
 SYSTEM     = x86-64_linux
 LIBFORMAT  = static_pic
-CPLEXDIR      = /home/lapo/cplex/cplex201
-CONCERTDIR    = /home/lapo/cplex/cplex201/concert
-BOOSTLIBDIR = /home/lapo/evellyn/boost_1_78_0
+CPLEXDIR      = /opt/CPLEX
+CONCERTDIR    = /opt/CPLEX/concert
+BOOSTADA = /home/evellyn/boost_1_83_0
+BOOSTLIBDIR = /usr/local/include/boost
 CPLEXLIBDIR   = $(CPLEXDIR)/cplex/lib/$(SYSTEM)/$(LIBFORMAT)
 CONCERTLIBDIR = $(CONCERTDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 CLNFLAGS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR) -L$(BOOSTLIBDIR)  -lilocplex -lconcert -lcplex -m64 -lm -lpthread -ldl
