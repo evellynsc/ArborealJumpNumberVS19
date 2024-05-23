@@ -81,3 +81,5 @@ CMD ["bash"]
 # docker tag local-image:tagname new-repo:tagname
 # docker push new-repo:tagname
 # docker run -i -t image/container /bin/bash.
+
+# docker run -i -t --volume=/mnt/c/Users/evellynsc/source/repos/ArborealJumpNumber/cplex:/ajns/cplex ajns_cplex
