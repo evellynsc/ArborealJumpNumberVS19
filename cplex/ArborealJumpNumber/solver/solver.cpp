@@ -27,7 +27,7 @@ solver::solver(solver_params &solver_config,  Model* model) {
 
 void solver::setup_cplex() {
 // https://www.ibm.com/docs/ru/icos/20.1.0?topic=parameters-mip-dynamic-search-switch
-	cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_ON);
+	// cplex_solver.setParam(IloCplex::Param::Preprocessing::Presolve, CPX_ON);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::HeuristicFreq, CPX_ON);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::RINSHeur, CPX_ON);
 //	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::FPHeur, CPX_ON);
@@ -46,7 +46,6 @@ void solver::setup_cplex() {
 	cplex_solver.setParam(IloCplex::Param::MIP::Strategy::File, 3);
 	cplex_solver.setParam(IloCplex::Param::MIP::Display, 4);
 	cplex_solver.setParam(IloCplex::Param::Emphasis::MIP, CPX_MIPEMPHASIS_FEASIBILITY);
-
 }
 
 //

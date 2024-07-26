@@ -49,10 +49,13 @@ solver_h=src/headers/solver.h
 feasibility_src=src/feasibility_solver.cpp
 feasibility_h=src/headers/feasibility_solver.h
 
+feasibility_relaxed_src=src/feasibility_solver_relaxed.cpp
+feasibility_relaxed_h=src/headers/feasibility_solver_relaxed.h
+
 all: ajns
 
-ajns: main.o data_reader.o graph.o edge.o node.o instance.o feasibility.o
-	g++ $(CPP_FLAGS) $(LDFLAGS) -o ajns.bin $(main_src) $(reader_src) $(graph_src) $(edge_src) $(node_src) $(instance_src) $(feasibility_src) $(LIB_DIRS) $(INCLUDE_DIRS) $(ORTOOLS_FLAGS)
+ajns: main.o data_reader.o graph.o edge.o node.o instance.o feasibility.o feasibility_relaxed.o
+	g++ $(CPP_FLAGS) $(LDFLAGS) -o ajns.bin $(main_src) $(reader_src) $(graph_src) $(edge_src) $(node_src) $(instance_src) $(feasibility_src) $(feasibility_relaxed_src) $(LIB_DIRS) $(INCLUDE_DIRS) $(ORTOOLS_FLAGS)
 	rm -rf *.o *~
 	
 main.o: $(main_src)
@@ -78,6 +81,9 @@ solver.o: $(solver_src)
 
 feasibility.o: $(feasibility_src)
 	g++ $(CPP_FLAGS) $(LDFLAGS) -o feasibility.o -c $(feasibility_src) $(LIB_DIRS) $(INCLUDE_DIRS) $(ORTOOLS_FLAGS)
+
+feasibility_relaxed.o: $(feasibility_relaxed_src)
+	g++ $(CPP_FLAGS) $(LDFLAGS) -o feasibility_relaxed.o -c $(feasibility_relaxed_src) $(LIB_DIRS) $(INCLUDE_DIRS) $(ORTOOLS_FLAGS)
 
 clean:
 	rm -rf *.o *~ ajns.bin 
