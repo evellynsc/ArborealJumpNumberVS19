@@ -1,0 +1,8 @@
+{
+    "input_file_name": "arquivo_entrada",
+    "relaxed": true,
+    "algo": {"type": "CHARACTERIZATION", "options": {"order": "ASC"}},
+    "time_limit": 3600,
+    "memory_limit": "40000",
+    "num_threads": 4
+}

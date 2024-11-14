@@ -10,7 +10,7 @@
 
 #include <set>
 
-enum solver_type { PLAIN, BC, POLY };
+enum solver_type { PLAIN, EXPONENCIAL, BC, MULTIFLOW };
 enum user_cut { SIGMA, PI, SIGMA_PI };
 
 namespace solver {
@@ -25,8 +25,13 @@ namespace solver {
 			time_limit = 18000;
 			tree_memory = 20000;
 			solver = PLAIN;
-			add_initial_solution = true;
+			add_initial_solution = false;
 		}
+
+		solver_params(double time_limit, double memory_tree, solver_type solver) :
+			time_limit(time_limit),
+			tree_memory(memory_tree),
+			solver(solver) {}
 
 		solver_params(double time_limit, double memory_tree, solver_type solver,
 				std::set<user_cut> cuts, bool add_initial_solution) :

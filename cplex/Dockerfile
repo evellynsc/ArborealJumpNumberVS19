@@ -1,7 +1,11 @@
-# https://github.com/victorskl/docker-cplex/blob/master/Dockerfile
-# https://leimao.github.io/blog/Boost-Docker/
-
 FROM gcc:13.2.0
+
+# HEALTHCHECK --interval=5m --timeout=3s \
+#   CMD curl -f http://localhost/ || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
+
+RUN useradd -m ajnsuser
+USER ajnsuser
 
 ARG BOOST_VERSION=1.80.0
 ARG CMAKE_VERSION=3.25.1
@@ -20,8 +24,7 @@ WORKDIR /
 RUN rm -rf "./cplex"
 
 # Install package dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         software-properties-common \
         autoconf \
@@ -48,10 +51,9 @@ ENV LANGUAGE en_US.UTF-8
 
 # Install CMake
 WORKDIR /tmp
-RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar xzf cmake-${CMAKE_VERSION}.tar.gz && \
-    cd cmake-${CMAKE_VERSION} && \
-    ./bootstrap && \
+RUN wget --progress=dot:giga https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && tar xzf cmake-${CMAKE_VERSION}.tar.gz
+WORKDIR /tmp/cmake-${CMAKE_VERSION}
+RUN ./bootstrap && \
     make -j${NUM_JOBS} && \
     make install && \
     rm -rf /tmp/*
@@ -61,9 +63,9 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
 WORKDIR /tmp
 RUN BOOST_VERSION_MOD=$(echo $BOOST_VERSION | tr . _) && \
     wget https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION_MOD}.tar.bz2 && \
-    tar --bzip2 -xf boost_${BOOST_VERSION_MOD}.tar.bz2 && \
-    cd boost_${BOOST_VERSION_MOD} && \
-    ./bootstrap.sh --prefix=/usr/local && \
+    tar --bzip2 -xf boost_${BOOST_VERSION_MOD}.tar.bz2
+WORKDIR /tmp/boost_${BOOST_VERSION_MOD}
+RUN ./bootstrap.sh --prefix=/usr/local && \
     ./b2 install && \
     rm -rf /tmp/*
 
@@ -83,3 +85,5 @@ CMD ["bash"]
 # docker run -i -t image/container /bin/bash.
 
 # docker run -i -t --volume=/mnt/c/Users/evellynsc/source/repos/ArborealJumpNumber/cplex:/ajns/cplex ajns_cplex
+# https://github.com/victorskl/docker-cplex/blob/master/Dockerfile
+# https://leimao.github.io/blog/Boost-Docker/

@@ -24,7 +24,7 @@ instance instance_generator::create_instance(problem_data &data) {
 			data.adjacency_matrix);
 	auto covering_graph = create_covering_graph(order_graph);
 	
-	//Remove vértices que formam um caminho o-o-o-o, onde o último vértice é uma folha
+	//Remove vÃ©rtices que formam um caminho o-o-o-o, onde o Ãºltimo vÃ©rtice Ã© uma folha
 	set_vertices_to_remove(covering_graph);
 	set_edges_to_remove(covering_graph);
 	auto artificial_arcs_pair = std::vector<std::pair<int, int>>();
@@ -44,8 +44,8 @@ instance instance_generator::create_instance(problem_data &data) {
 	auto ajnp = instance(data.id, root, order_graph, t_order_graph,
 			covering_graph, input_graph, predecessors, sucessors, covering_predecessors, covering_sucessors, artificial_arcs_pair);
 
-	auto dot = "dot -Tpdf ";
-	auto command = std::string();
+	// auto dot = "dot -Tpdf ";
+	// auto command;
 	std::ofstream outFile;
 	auto name_file = data.id + "_order.dot";
 	outFile.open(name_file);
@@ -55,7 +55,7 @@ instance instance_generator::create_instance(problem_data &data) {
 			boost::make_label_writer(
 					boost::get(&my_graph::edge_info::type, order_graph)));
 	outFile.close();
-	command = dot + name_file + " -o " + data.id + "_order.pdf";
+	// command = dot + name_file + " -o " + data.id + "_order.pdf";
 //	std::system(command.c_str());
 	name_file = data.id + "_covering.dot";
 	outFile.open(name_file);
@@ -65,7 +65,7 @@ instance instance_generator::create_instance(problem_data &data) {
 			boost::make_label_writer(
 					boost::get(&my_graph::edge_info::type, covering_graph)));
 	outFile.close();
-	command = dot + name_file + " -o " + data.id + "_covering.pdf";
+	// command = dot + name_file + " -o " + data.id + "_covering.pdf";
 //	std::system(command.c_str());
 	name_file = data.id + "_input.dot";
 	outFile.open(name_file);
