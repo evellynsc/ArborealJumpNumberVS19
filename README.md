@@ -13,7 +13,7 @@ The tool is setted up using a json file formatted as described below.
 ### Format of input file
 
 #### 1. Main configurations
----
+
 Configuration | Description | value type
 ---|---|---
 infile_name | Input file name of an instance in a valid format. Valid formats are m, mtx, p.| string
@@ -22,11 +22,11 @@ time_limit | Total time the solver is allowed to execute in seconds. The executi
 memnory_limit | Total memory the solver is allowed to use in MB. The execution is stopped when memory limit is reached | integer
 num_threads | Total number os threads the solver is allowed to use. | integer
 outfile_name | Output file name in a valid format. | string
----
+
 
 #### 2. Algorithm configuration
 The algorithm configuration is setted up using a dictionary as described below
----
+
 Configuration | Description | value type
 ---|---|---
 type | Algorithm to solve the ajnp. Valid options are MULTIFLOW, RANDOM_HEURISTIC, ORDERED_HEURISTIC, CHARACTERIZATION. | dictionary
