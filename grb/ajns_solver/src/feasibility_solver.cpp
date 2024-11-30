@@ -1,13 +1,13 @@
 #include "headers/feasibility_solver.h"
 
-std::unordered_map<SolverEnum, const std::string> operations_research::FeasibilitySolver::solver_map = {{GUROBI, "GUROBI"}, {CPLEX, "CPLEX"}, {HIGHS, "HIGHS"}}; 
+std::unordered_map<SolverEnum, const std::string> operations_research::FeasibilitySolver::solver_map = {{GUROBI, "GUROBI"}, {CPLEX, "CPLEX"}, {HIGHS, "HIGHS"}};
 
 
 void operations_research::FeasibilitySolver::create_variables()
 {
     // const double infinity = solver->infinity();
-    
-    for (unsigned long i = 0; i < data->n; i++) 
+
+    for (unsigned long i = 0; i < data->n; i++)
     {
         for (unsigned long t = 0; t < nparts; t++)
         {
@@ -18,7 +18,7 @@ void operations_research::FeasibilitySolver::create_variables()
         }
     }
 
-    for (unsigned long i = 0; i < data->n; i++) 
+    for (unsigned long i = 0; i < data->n; i++)
     {
         for (unsigned long j = 0; j < data->n; j++)
             for (unsigned long t = 0; t < nparts; t++)
@@ -29,14 +29,14 @@ void operations_research::FeasibilitySolver::create_variables()
             }
     }
 
-    for (unsigned long i = 0; i < data->n; i++) 
+    for (unsigned long i = 0; i < data->n; i++)
     {
         for (unsigned long t = 0; t < nparts; t++)
             for (unsigned long u = 0; u < nparts; u++)
                 w.push_back(solver->MakeIntVar(0.0, 1, "w_" + std::to_string(i) + "_" + std::to_string(t) + "_" + std::to_string(u)));
     }
 
-    LOG(INFO) << data->n;
+    LOG(INFO) << "Number of vertices = " << data->n;
     LOG(INFO) << "Number of variables = " << solver->NumVariables();
 }
 
@@ -50,21 +50,63 @@ void operations_research::FeasibilitySolver::create_model()
 
 void operations_research::FeasibilitySolver::create_constraints()
 {
-    // arcs and vertices
-    std::cout << "sum_x" << std::endl;
+    // ============== INDUCED ARBOREAL SUBPOSET ==============
+
+    // added 07/04/24
+    // \sum_{i \in V} x_{it} >= 1 \forall t \in nparts
+    // each part must have at least one vertex
+    for (long unsigned t = 0; t < nparts; ++t)
+    {
+        LinearExpr sum_x;
+        for (long unsigned i = 0; i < data->n; ++i)
+            sum_x += x[get_index_d2({i, data->n},{t, nparts})];
+
+        solver->MakeRowConstraint(sum_x >= 1.0); 
+    }
+
+    // \sum_{t \in nparts} x_{it} == 1 \forall i \in data->n
+    // each vertex can belong to one part, at maximum.
     for (long unsigned i = 0; i < data->n; ++i)
     {
         LinearExpr sum_x;
         for (long unsigned t = 0; t < nparts; ++t)
             sum_x += x[get_index_d2({i, data->n},{t, nparts})];
 
-        solver->MakeRowConstraint(sum_x <= 1.0);
+        solver->MakeRowConstraint(sum_x == 1.0); //reunião dia 28/02/2024
     }
 
+    // x_{it} - a_{ijt} \geq 0 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    // x_{jt} - a_{ijt} \geq 0 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    // a_{ijt} - x_{it} -  x_{jt} \geq  - 1 & \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall t \in nparts
+    for (long unsigned t = 0; t < nparts; ++t)
+        for (long unsigned i = 0; i < data->n; ++i)
+            for (long unsigned j = 0; j < data->n; ++j)
+            {
+                if (data->adj_mtx_reduction[i][j])
+                {
+                    LinearExpr lhs;
+                    auto it = get_index_d2({i, data->n}, {t, nparts});
+                    auto jt = get_index_d2({j, data->n}, {t, nparts});
+                    auto ijt = get_index_d3({i, data->n}, {j, data->n}, {t, nparts});
+
+                    lhs = LinearExpr(x[it]) - LinearExpr(a[ijt]);
+                    solver->MakeRowConstraint(lhs >= 0.0);
+
+                    lhs = LinearExpr(x[jt]) - LinearExpr(a[ijt]);
+                    solver->MakeRowConstraint(lhs >= 0.0);
+
+                    lhs = LinearExpr(a[ijt]) - LinearExpr(x[it]) - LinearExpr(x[jt]);
+                    solver->MakeRowConstraint(lhs >= -1.0);
+                }
+
+            }
+
+    // \sum_{t>u} x_{it} + x_{ju} \leq 1 \forall (i,j) \in data->adj_mtx_reduction[i][j], \forall u,t \in nparts
+    // if t > u and j \in u, then i cannot belong to part t.
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             if (data->adj_mtx_reduction[i][j])
-                for (long unsigned u = 0; u < nparts; ++u)
+                for (long unsigned u = 0; u < nparts; ++u)//poderia fazer u < nparts-1
                 {
                     LinearExpr sum_x;
                     bool add = false;
@@ -77,35 +119,17 @@ void operations_research::FeasibilitySolver::create_constraints()
                     {
                         sum_x += x[get_index_d2({j, data->n},{u, nparts})];
                         solver->MakeRowConstraint(sum_x <= 1.0);
-                    }                        
+                    }
                 }
-         
-    for (long unsigned t = 0; t < nparts; ++t)
-        for (long unsigned i = 0; i < data->n; ++i)
-            for (long unsigned j = 0; j < data->n; ++j) 
-            {
-                if (data->adj_mtx_reduction[i][j]) 
-                {
-                    LinearExpr lhs;
-                    auto idx_xi = get_index_d2({i, data->n}, {t, nparts});
-                    auto idx_xj = get_index_d2({j, data->n}, {t, nparts});
-                    auto idx_a = get_index_d3({i, data->n}, {j, data->n}, {t, nparts});
-                    lhs = LinearExpr(x[idx_xi]) - LinearExpr(a[idx_a]);
-                    solver->MakeRowConstraint(lhs >= 0.0); 
-                    lhs = LinearExpr(x[idx_xj]) - LinearExpr(a[idx_a]);
-                    solver->MakeRowConstraint(lhs >= 0.0);
-                    lhs = LinearExpr(a[idx_a]) - LinearExpr(x[idx_xi]) - LinearExpr(x[idx_xj]);
-                    solver->MakeRowConstraint(lhs >= -1.0);
-                }
-                
-            }  
 
-    
     // roots, vertices and arcs
+
     // the root is the vertex data->n-1
+    // r_{data->n-1,0} = 1
     LinearExpr lhs = LinearExpr(r[get_index_d2({data->n-1, data->n}, {0, nparts})]);
     solver->MakeRowConstraint(lhs == 1.0);
-    
+
+    // \sum_{i \in V} r_{it} = 1 & \forall t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
     {
         LinearExpr sum_r;
@@ -114,19 +138,21 @@ void operations_research::FeasibilitySolver::create_constraints()
 
         solver->MakeRowConstraint(sum_r == 1.0);
     }
-    
-    // the root is the vertex data->n-1
-    for (long unsigned j = 0; j < data->n-1; ++j) 
-        for (long unsigned t = 0; t < nparts; ++t)
-            solver->MakeRowConstraint(LinearExpr(x[get_index_d2({j,data->n},{t, nparts})]) >= LinearExpr(r[get_index_d2({j,data->n},{t, nparts})]));
 
-    for (long unsigned j = 0; j < data->n-1; ++j) 
+    // x_{jt} \geq r_{jt} & \forall j \in data->n-1, \forall t \in nparts
+    for (long unsigned j = 0; j < data->n-1; ++j)
+        for (long unsigned t = 0; t < nparts; ++t)
+            solver->MakeRowConstraint(LinearExpr(x[get_index_d2({j,data->n},{t, nparts})]) >=
+                LinearExpr(r[get_index_d2({j,data->n},{t, nparts})]));
+
+    // \sum_{t \in \pi} r_{jt} + \sum_{i \in \phi^-(j)}\sum_{t \in \pi}a_{ijt} = 1, \forall j \in data->n-1
+    for (long unsigned j = 0; j < data->n-1; ++j)
     {
         LinearExpr sum_r;
         LinearExpr sum_a;
         for (long unsigned t = 0; t < nparts; ++t)
         {
-            for (long unsigned i = 0; i < data->n; ++i)
+            for (long unsigned i = 0; i < data->n; ++i) // estava data->n-1
             {
                 if (data->adj_mtx_reduction[i][j])
                     sum_a += a[get_index_d3({i, data->n},{j,data->n},{t, nparts})];
@@ -136,22 +162,24 @@ void operations_research::FeasibilitySolver::create_constraints()
         solver->MakeRowConstraint(sum_r + sum_a == 1.0);
     }
 
-    for (long unsigned j = 0; j < data->n; j++) 
-        for (long unsigned i = 0; i < data->n; i++) 
+    // \sum_{t\in \pi} a_{ijt} \leq 1& \forall (i,j) \in data->adj_mtx_reduction
+    // \sum_{t\in \pi} a_{ijt} = 0& \forall (i,j) \notin data->adj_mtx_reduction
+    for (long unsigned j = 0; j < data->n; j++)
+        for (long unsigned i = 0; i < data->n; i++)
         {
-            LinearExpr sum_a;            
+            LinearExpr sum_a;
             for (long unsigned t = 0; t < nparts; t++)
                 sum_a += a[get_index_d3({i, data->n},{j, data->n},{t, nparts})];
-            
+
             if (data->adj_mtx_reduction[i][j])
                 solver->MakeRowConstraint(sum_a <= 1.0);
-            else 
+            else
                 solver->MakeRowConstraint(sum_a == 0.0);
         }
 
-    //define f 
+    // ============== f FUNCTION DEFINITION ==============
 
-
+    // \sum_{i \in data->n} f_{it} = 1 & \forall t > 0, t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
     {
         LinearExpr sum_f;
@@ -159,10 +187,11 @@ void operations_research::FeasibilitySolver::create_constraints()
             sum_f += f[get_index_d2({i,data->n},{t, nparts})];
         if (t > 0)
             solver->MakeRowConstraint(sum_f == 1.0);
-        else 
-            solver->MakeRowConstraint(sum_f == 0.0);
+        else
+            solver->MakeRowConstraint(sum_f == 0.0); //ALERT: is it mandatory?
     }
 
+    // f_{iu} \leq \sum_{t \in nparts, t < u} x_{it} & \forall i \in data->n, \forall u > 0, u \in nparts
     for (long unsigned u = 1; u < nparts; ++u)
     {
         for (long unsigned i = 0; i < data->n; ++i)
@@ -175,6 +204,7 @@ void operations_research::FeasibilitySolver::create_constraints()
         }
     }
 
+    // f_{it} + r_{jt} + d_{ij} \leq 2 & \forall i,j \in data->n, \forall t \in nparts
     for (long unsigned t = 0; t < nparts; ++t)
         for (long unsigned i = 0; i < data->n; ++i)
             for (long unsigned j = 0; j < data->n; ++j)
@@ -185,11 +215,14 @@ void operations_research::FeasibilitySolver::create_constraints()
                 lhs += (double) data->adj_mtx_closure[i][j];
                 solver->MakeRowConstraint(lhs <= 2.0);
             }
-                
-   
-    
+
+    // ============== g FUNCTION DEFINITION ==============
+    // h_{ijtu} \leq f_{ju} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \leq x_{jt} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \leq g_{it} & \forall i,j \in data->n, \forall u,t \in nparts, t < u
+    // h_{ijtu} \geq f_{ju} + x_{jt} + g_{it} - 2 & \forall i,j \in data->n, \forall u,t \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
-        for (long unsigned j = 0; j < data->n; ++j)            
+        for (long unsigned j = 0; j < data->n; ++j)
             for (long unsigned u = 1; u < nparts; ++u)
                 for (long unsigned t = 0; t < u; ++t)
                 {
@@ -207,10 +240,10 @@ void operations_research::FeasibilitySolver::create_constraints()
                     rhs += x[get_index_d2({j, data->n},{t, nparts})];
                     rhs += g[get_index_d2({i, data->n},{t, nparts})];
                     rhs -= 2.0;
+                    solver->MakeRowConstraint(lhs >= rhs);
+                }
 
-                    solver->MakeRowConstraint(lhs >= rhs);                    
-                }  
-
+    // g_{iu} = f_{iu} + \sum_{j \in data->n} \sum_{t \in nparts, t < u} h_{ijtu} & \forall i \in data->n, \forall u \in nparts\{0}
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned u = 1; u < nparts; ++u)
         {
@@ -220,16 +253,19 @@ void operations_research::FeasibilitySolver::create_constraints()
                     sum_h += h[get_index_d4({i, data->n},{j, data->n},{t, nparts},{u, nparts})];
             LinearExpr rhs = f[get_index_d2({i, data->n},{u, nparts})] + sum_h;
             LinearExpr lhs = g[get_index_d2({i, data->n},{u, nparts})];
-            solver->MakeRowConstraint(lhs == rhs);  
+            solver->MakeRowConstraint(lhs == rhs);
         }
-            
+
+    // w_{itu} \leq x_{it} & \forall i \in data->n, \forall u,t \in nparts, t < u
+    // w_{itu} \leq g_{iu} \forall i \in data->n, \forall u,t \in nparts, t < u
+    // w_{itu} \geq x_{it} + g_{iu}  - 1 & \forall i \in data->n, \forall u,t \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned u = 1; u < nparts; ++u)
             for (long unsigned t = 0; t < u; ++t)
             {
                 LinearExpr lhs = w[get_index_d3({i, data->n},{t, nparts},{u, nparts})];
                 LinearExpr rhs = x[get_index_d2({i, data->n},{t, nparts})];
-                solver->MakeRowConstraint(lhs <= rhs);  
+                solver->MakeRowConstraint(lhs <= rhs);
 
                 rhs = g[get_index_d2({i, data->n},{u, nparts})];
                 solver->MakeRowConstraint(lhs <= rhs);
@@ -240,6 +276,7 @@ void operations_research::FeasibilitySolver::create_constraints()
                 solver->MakeRowConstraint(lhs >= rhs);
             }
 
+    // x_{it} + x_{ju} \leq 1 + \sum_{k \in data->adj_mtx_closure[i]} w_{ktu} & \forall (i,j) \in data->adj_mtx_reduction, \forall t, u \in nparts, t < u
     for (long unsigned i = 0; i < data->n; ++i)
         for (long unsigned j = 0; j < data->n; ++j)
             if (data->adj_mtx_reduction[i][j])
@@ -266,12 +303,7 @@ void operations_research::FeasibilitySolver::create_constraints()
         sum_g += g[get_index_d2({i, data->n},{0, nparts})];
     }
     solver->MakeRowConstraint(sum_g == 0.0);
-        
-/**/
-                             
-        
 
-    
     std::string text;
     solver->ExportModelAsLpFormat(false, &text);
     std::ofstream myfile;
@@ -281,7 +313,7 @@ void operations_research::FeasibilitySolver::create_constraints()
     LOG(INFO) << "Number of constraints = " << solver->NumConstraints();
 }
 
-void operations_research::FeasibilitySolver::solve_model()
+bool operations_research::FeasibilitySolver::solve_model()
 {
     const MPSolver::ResultStatus result_status = solver->Solve();
 
@@ -289,16 +321,14 @@ void operations_research::FeasibilitySolver::solve_model()
     if (result_status == MPSolver::OPTIMAL) {
         LOG(INFO) << "The problem has an optimal solution!";
     } else if (result_status != MPSolver::OPTIMAL) {
-        LOG(INFO) << "The problem does not have an optimal solution!";
         if (result_status == MPSolver::FEASIBLE) {
             LOG(INFO) << "A potentially suboptimal solution was found";
         } else {
             LOG(INFO) << "The solver could not solve the problem.";
-            return;
         }
+        return false;
     }
 
-    LOG(INFO) << "Advanced usage:";
     LOG(INFO) << "Problem solved in " << solver->wall_time() << " milliseconds";
     LOG(INFO) << "Problem solved in " << solver->iterations() << " iterations";
 
@@ -332,4 +362,6 @@ void operations_research::FeasibilitySolver::solve_model()
         for (long unsigned t = 0; t < nparts; ++t)
             if (g[get_index_d2({i, data->n},{t, nparts})]->solution_value() == 1)
                 std::cout << "g(" << i << "," << t << ")" << std::endl;
+
+    return true;
 }

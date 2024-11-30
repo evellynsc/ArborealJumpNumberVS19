@@ -222,15 +222,15 @@ namespace solver {
 		std::cout << "terminou c8" << std::endl;*/
 
 
-		for (auto i = 0u; i < n; i++) {
-			for (auto j = 0u; j < n; j++) {
-				auto edge_in_order = problem_instance.exist_edge_in_order_graph(i, j);
-				if (edge_in_order and i != j) {
-					std::cout << y[j + n * i + t_max * n * n].getName() << " == 1" << std::endl;
-					cplex_model.add(y[j + n * i + t_max * n * n] == 1);	
-				}
-			}
-		}
+		// for (auto i = 0u; i < n; i++) {
+		// 	for (auto j = 0u; j < n; j++) {
+		// 		auto edge_in_order = problem_instance.exist_edge_in_order_graph(i, j);
+		// 		if (edge_in_order and i != j) {
+		// 			std::cout << y[j + n * i + t_max * n * n].getName() << " == 1" << std::endl;
+		// 			cplex_model.add(y[j + n * i + t_max * n * n] == 1);	
+		// 		}
+		// 	}
+		// }
 		std::cout << "terminou c9" << std::endl;
 	}
 

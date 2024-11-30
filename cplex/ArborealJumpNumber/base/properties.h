@@ -20,6 +20,7 @@ struct properties {
 	std::size_t num_arcs;
 	std::size_t num_violators;
 	std::size_t num_jumps;
+	std::size_t order_strength;
 	double run_time;
 	algo_type algo_t;
 
