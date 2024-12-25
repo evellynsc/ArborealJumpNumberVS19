@@ -25,7 +25,7 @@ outfile_name | Output file name in a valid format. | string
 
 
 #### 2. Algorithm configuration
-The algorithm configuration is setted up using a dictionary as described below
+The algorithm configuration is set up using a dictionary as described below
 
 Configuration | Description | value type
 ---|---|---
